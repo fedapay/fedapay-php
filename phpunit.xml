@@ -1,0 +1,17 @@
+<phpunit 	bootstrap="vendor/autoload.php"
+			colors="true"
+			convertErrorsToExceptions="true"
+			convertNoticesToExceptions="true"
+			convertWarningsToExceptions="true"
+			stopOnFailure="true">
+			<testsuites>
+				<testsuite name="Fedapay PHP Test Suite">
+					<directory>tests</directory>
+				</testsuite>
+			</testsuites>
+			<filter>
+        <whitelist>
+            <directory>lib</directory>
+        </whitelist>
+      </filter>
+</phpunit>

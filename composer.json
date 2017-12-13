@@ -1,0 +1,31 @@
+{
+  "name": "fedapay/fedapay-php",
+  "description": "fedapay PHP Library",
+  "keywords": [
+    "fedapay",
+    "payment processing",
+    "api"
+  ],
+  "homepage": "https://fedapay.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Fedapay and contributors",
+      "homepage": "https://gitlab.com/nautilus-technology/fedapay-php/contributors"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0",
+    "satooshi/php-coveralls": "~0.6.1",
+    "squizlabs/php_codesniffer": "~2.0"
+  },
+  "autoload": {
+    "psr-4": { "Fedapay\\" : "lib/" }
+  }
+}
