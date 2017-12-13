@@ -4,7 +4,7 @@ You can sign up for a Fedapay account at https://fedapay.com.
 
 ## Requirements
 
-PHP 5.4 and later.
+PHP 5.3.3 and later.
 
 ## Composer
 
