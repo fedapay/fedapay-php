@@ -1,4 +1,4 @@
-<phpunit 	bootstrap="vendor/autoload.php"
+<phpunit 	bootstrap="tests/bootstrap.php"
 			colors="true"
 			convertErrorsToExceptions="true"
 			convertNoticesToExceptions="true"
@@ -6,7 +6,7 @@
 			stopOnFailure="true">
 			<testsuites>
 				<testsuite name="Fedapay PHP Test Suite">
-					<directory>tests</directory>
+					<directory suffix="Test.php">tests</directory>
 				</testsuite>
 			</testsuites>
 			<filter>
