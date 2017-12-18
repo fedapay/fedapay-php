@@ -2,7 +2,7 @@
 
 namespace Fedapay;
 
-class CustomerTest extends Test
+class CustomerTest extends TestCase
 {
     public function testDeletion()
     {
