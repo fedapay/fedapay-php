@@ -31,9 +31,8 @@ abstract class Resource
             $class = get_called_class();
             $message = "Could not determine which URL to request: "
                . "$class instance has invalid ID: $id";
-            throw new Error\InvalidRequest($message, null);
+            throw new Error\ErrorHandler($message, null);
         }
-        $id = Util\Util::utf8($id);
         $base = static::classUrl();
         $extn = urlencode($id);
         return "$base/$extn";
@@ -52,22 +51,26 @@ abstract class Resource
                . "method calls.  (HINT: an example call to create a customer "
                . "would be: \"Fedapay\\Customer::create(array('firstname' => toto, "
                . "'lastname' => 'zoro', 'email' => 'admin@gmail.com', 'phone' => '66666666'))\")";
-            throw new Error\Api($message);
+            throw new Error\ErrorHandler($message);
         }
     }
-    protected function _request($method, $url, $params = array(), $options = null)
+
+    protected static function Request($method, $url, $params, $options)
     {
-        $opts = $this->_opts->merge($options);
-        list($resp, $options) = static::_staticRequest($method, $url, $params, $opts);
-        $this->setLastResponse($resp);
-        return array($resp->json, $options);
-    }
-    protected static function _staticRequest($method, $url, $params, $options)
-    {
+        try
+          {
+          $header = array(‘Authorization’=>’Bearer ‘ . $this->accessToken);
+          $response = $this->client->get($url, array(‘headers’ => $header));
+          $result = $response->getBody()->getContents();
+          return $result;
+          }
+          catch (RequestException $e)
+          {
+          $response = $this->StatusCodeHandling($e);
+          return $response;
+          }
         $opts = Util\RequestOptions::parse($options);
-        $requestor = new ApiRequestor($opts->apiKey, static::baseUrl());
-        list($response, $opts->apiKey) = $requestor->request($method, $url, $params, $opts->headers);
-        return array($response, $opts);
+        $requestor = new HttpClient($opts->apiKey, static::baseUrl());        
     }
     protected static function _retrieve($id, $options = null)
     {

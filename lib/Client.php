@@ -7,7 +7,7 @@ namespace Fedapay;
  *
  * @package Fedapay
  */
-class ApiRequestor
+class Client
 {
     private $_apiKey;
 
@@ -41,10 +41,7 @@ class ApiRequestor
         if (!$headers) {
             $headers = array();
         }
-        list($rbody, $rcode, $rheaders, $myApiKey) =
-        $this->_requestRaw($method, $url, $params, $headers);
         $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
-        $resp = new ApiResponse($rbody, $rcode, $rheaders, $json);
         return array($resp, $myApiKey);
     }
 
@@ -53,9 +50,6 @@ class ApiRequestor
      * @param int $rcode
      * @param array $rheaders
      * @param array $resp
-     *
-     * @throws Error\InvalidRequest if the error is caused by the user.
-     * @throws Error\Api otherwise.
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
@@ -67,41 +61,11 @@ class ApiRequestor
 
         $errorData = $resp['error'];
 
-        // $error = null;
-        // if (is_string($errorData)) {
-        //     $error = self::_specificOAuthError($rbody, $rcode, $rheaders, $resp, $errorData);
-        // }
-        // if (!$error) {
-        //     $error = self::_specificAPIError($rbody, $rcode, $rheaders, $resp, $errorData);
-        // }
-
         throw $error;
     }
 
-
     private static function _defaultHeaders($apiKey, $clientInfo = null)
     {
-        $uaString = 'Fedapay/v1 PhpBindings/' . Fedapay::VERSION;
-
-        $langVersion = phpversion();
-        $uname = php_uname();
-
-        $appInfo = Fedapay::getAppInfo();
-        $ua = array(
-            'bindings_version' => Fedapay::VERSION,
-            'lang' => 'php',
-            'lang_version' => $langVersion,
-            'publisher' => 'fedapay',
-            'uname' => $uname,
-        );
-        if ($clientInfo) {
-            $ua = array_merge($clientInfo, $ua);
-        }
-        if ($appInfo !== null) {
-            $uaString .= ' ' . self::_formatAppInfo($appInfo);
-            $ua['application'] = $appInfo;
-        }
-
         $defaultHeaders = array(
             'X-Fedapay-Client-User-Agent' => json_encode($ua),
             'User-Agent' => $uaString,
@@ -110,7 +74,7 @@ class ApiRequestor
         return $defaultHeaders;
     }
 
-  
+
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
         $resp = json_decode($rbody, true);
@@ -127,16 +91,5 @@ class ApiRequestor
         return $resp;
     }
 
-    public static function setHttpClient($client)
-    {
-        self::$_httpClient = $client;
-    }
 
-    private function httpClient()
-    {
-        if (!self::$_httpClient) {
-            self::$_httpClient = HttpClient\CurlClient::instance();
-        }
-        return self::$_httpClient;
-    }
 }

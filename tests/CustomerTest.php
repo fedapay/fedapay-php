@@ -1,9 +1,8 @@
 <?php
 
 namespace Fedapay;
-use PHPUnit\Framework\TestCase;
 
-class CustomerTest extends TestCase
+class CustomerTest extends Test
 {
     public function testDeletion()
     {
@@ -21,8 +20,8 @@ class CustomerTest extends TestCase
         $customer->save();
         $this->assertSame($customer->email, 'toto@gmail.com');
 
-        $stripeCustomer = Customer::retrieve($customer->id);
-        $this->assertSame($customer->email, $stripeCustomer->email);
+        $fedapayCustomer = Customer::retrieve($customer->id);
+        $this->assertSame($customer->email, $fedapayCustomer->email);
 
         Fedapay::setApiKey(null);
         $customer = Customer::create(null, self::API_KEY);

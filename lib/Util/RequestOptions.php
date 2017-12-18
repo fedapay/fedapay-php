@@ -58,10 +58,6 @@ class RequestOptions
             if (array_key_exists('api_key', $options)) {
                 $key = $options['api_key'];
             }
-            
-            if (array_key_exists('fedapay_account', $options)) {
-                $headers['Fedapay-Account'] = $options['fedapay_account'];
-            }
             if (array_key_exists('fedapay_version', $options)) {
                 $headers['Fedapay-Version'] = $options['fedapay_version'];
             }

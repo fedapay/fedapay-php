@@ -3,6 +3,7 @@
 namespace Fedapay;
 
 use PHPUnit\Framework\TestCase;
+use Fedapay;
 /**
  * Base class for Fedapay test cases, provides some utility methods for creating
  * objects.
@@ -24,17 +25,16 @@ class Test extends TestCase
 
   protected function setUp()
   {
-      ApiRequestor::setHttpClient(HttpClient\CurlClient::instance());
+      //ApiRequestor::setHttpClient(HttpClient\CurlClient::instance());
 
       // Peg the API version so that it can be varied independently of the
       // one set on the test account.
-      Fedapay::setApiVersion('v1');
+      Fedapay::setApiVersion('1.0.0');
 
       $this->mock = null;
-      $this->call = 0;
   }
 
-  protected function mockRequest($method, $path, $params = array(), $return = array('id' => 'myId'), $rcode = 200, $base = 'https://api.stripe.com')
+  protected function mockRequest($method, $path, $params = array(), $return = array('id' => 'myId'), $rcode = 200, $base = 'https://api.fedapay.com')
   {
       $mock = $this->setUpMockRequest();
       $mock->expects($this->at($this->call++))

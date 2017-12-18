@@ -2,11 +2,10 @@
 
 namespace Fedapay;
 
-use ApiResource;
 /**
  * Class Customer
  *
- * @property string $id
+ * @property int $id
  * @property string $firstname
  * @property string $lastname
  * @property string $email

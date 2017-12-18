@@ -1,7 +1,7 @@
 <?php
 namespace Fedapay\Error;
 use Exception;
-abstract class Base extends Exception
+abstract class ErrorHandler extends Exception
 {
     public function __construct(
         $message,

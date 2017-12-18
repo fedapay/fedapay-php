@@ -12,9 +12,6 @@ class Fedapay
     // @var string The Fedapay API key to be used for requests.
     public static $apiKey;
 
-    // @var string The Fedapay client_id to be used for Connect requests.
-    public static $clientId;
-
     // @var string The base URL for the Fedapay API.
     public static $apiBase = 'https://api.fedapay.com';
 
@@ -24,13 +21,7 @@ class Fedapay
     // @var string|null The account ID for connected accounts requests.
     public static $accountId = null;
 
-    // @var boolean Defaults to true.
-    public static $verifySslCerts = true;
-
-    // @var array The application's information (name, version, URL)
-    public static $appInfo = null;
-
-    const VERSION = '5.7.0';
+    const VERSION = '1.0.0';
 
     /**
      * @return string The API key used for requests.
@@ -84,26 +75,4 @@ class Fedapay
         self::$accountId = $accountId;
     }
 
-    /**
-     * @return array | null The application's information
-     */
-    public static function getAppInfo()
-    {
-        return self::$appInfo;
-    }
-
-    /**
-     * @param string $appName The application's name
-     * @param string $appVersion The application's version
-     * @param string $appUrl The application's URL
-     */
-    public static function setAppInfo($appName, $appVersion = null, $appUrl = null)
-    {
-        if (self::$appInfo === null) {
-            self::$appInfo = array();
-        }
-        self::$appInfo['name'] = $appName;
-        self::$appInfo['version'] = $appVersion;
-        self::$appInfo['url'] = $appUrl;
-    }
 }
