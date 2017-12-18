@@ -2,57 +2,18 @@
 
 namespace Fedapay;
 /**
- * Class ApiResource
+ * Class Resource
  *
  * @package Fedapay
  */
-abstract class ApiResource
+abstract class Resource
 {
     public static function baseUrl()
     {
         return Fedapay::$apiBase;
     }
 
-    /**
-     * @return ApiResource The refreshed resource.
-     */
-    public function refresh()
-    {
-        $requestor = new ApiRequestor($this->_opts->apiKey, static::baseUrl());
-        $url = $this->instanceUrl();
-        list($response, $this->_opts->apiKey) = $requestor->request(
-            'get',
-            $url,
-            $this->_retrieveOptions,
-            $this->_opts->headers
-        );
-        $this->setLastResponse($response);
-        $this->refreshFrom($response->json, $this->_opts);
-        return $this;
-    }
-    /**
-     * @return string The name of the class, with namespacing and underscores
-     *    stripped.
-     */
-    public static function className()
-    {
-        $class = get_called_class();
-        // Useful for namespaces: Foo\Charge
-        if ($postfixNamespaces = strrchr($class, '\\')) {
-            $class = substr($postfixNamespaces, 1);
-        }
-        // Useful for underscored 'namespaces': Foo_Charge
-        if ($postfixFakeNamespaces = strrchr($class, '')) {
-            $class = $postfixFakeNamespaces;
-        }
-        if (substr($class, 0, strlen('Fedapay')) == 'Fedapay') {
-            $class = substr($class, strlen('Fedapay'));
-        }
-        $class = str_replace('_', '', $class);
-        $name = urlencode($class);
-        $name = strtolower($name);
-        return $name;
-    }
+
     /**
      * @return string The endpoint URL for the given class.
      */
@@ -112,7 +73,6 @@ abstract class ApiResource
     {
         $opts = Util\RequestOptions::parse($options);
         $instance = new static($id, $opts);
-        $instance->refresh();
         return $instance;
     }
     protected static function _all($params = null, $options = null)
@@ -120,14 +80,6 @@ abstract class ApiResource
         self::_validateParams($params);
         $url = static::classUrl();
         list($response, $opts) = static::_staticRequest('get', $url, $params, $options);
-        $obj = Util\Util::convertToFedapayObject($response->json, $opts);
-        if (!is_a($obj, 'Fedapay\\Collection')) {
-            $class = get_class($obj);
-            $message = "Expected type \"Fedapay\\Collection\", got \"$class\" instead";
-            throw new Error\Api($message);
-        }
-        $obj->setLastResponse($response);
-        $obj->setRequestParams($params);
         return $obj;
     }
     protected static function _create($params = null, $options = null)
@@ -135,8 +87,6 @@ abstract class ApiResource
         self::_validateParams($params);
         $url = static::classUrl();
         list($response, $opts) = static::_staticRequest('post', $url, $params, $options);
-
-        $obj->setLastResponse($response);
         return $obj;
     }
     /**
@@ -144,15 +94,13 @@ abstract class ApiResource
      * @param array|null $params
      * @param array|string|null $opts
      *
-     * @return ApiResource the updated API resource
+     * @return Resource the updated API resource
      */
     protected static function _update($id, $params = null, $options = null)
     {
         self::_validateParams($params);
         $url = static::resourceUrl($id);
         list($response, $opts) = static::_staticRequest('post', $url, $params, $options);
-
-        $obj->setLastResponse($response);
         return $obj;
     }
     protected function _save($options = null)

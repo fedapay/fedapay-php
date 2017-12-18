@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": "^5.3.3 || ^7.0",
-    "ext-curl": "*",
+    "guzzlehttp/guzzle": "~6.0",
     "ext-json": "*",
     "ext-mbstring": "*"
   },

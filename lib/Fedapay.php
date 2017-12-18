@@ -51,24 +51,6 @@ class Fedapay
     }
 
     /**
-     * @return string The client_id used for Connect requests.
-     */
-    public static function getClientId()
-    {
-        return self::$clientId;
-    }
-
-    /**
-     * Sets the client_id to be used for Connect requests.
-     *
-     * @param string $clientId
-     */
-    public static function setClientId($clientId)
-    {
-        self::$clientId = $clientId;
-    }
-
-    /**
      * @return string The API version used for requests. null if we're using the
      *    latest version.
      */
@@ -85,23 +67,6 @@ class Fedapay
         self::$apiVersion = $apiVersion;
     }
 
-    /**
-     * @return boolean
-     */
-    public static function getVerifySslCerts()
-    {
-        return self::$verifySslCerts;
-    }
-
-    /**
-     * @param boolean $verify
-     */
-    public static function setVerifySslCerts($verify)
-    {
-        self::$verifySslCerts = $verify;
-    }
-
-    /**
      * @return string | null The Fedapay account ID for connected account
      *   requests.
      */
