@@ -55,42 +55,32 @@ abstract class Resource
         }
     }
 
-    protected static function Request($method, $url, $params, $options)
+    protected static function _staticRequest($method, $url, $params, $options)
     {
-        try
-          {
-          $header = array(‘Authorization’=>’Bearer ‘ . $this->accessToken);
-          $response = $this->client->get($url, array(‘headers’ => $header));
-          $result = $response->getBody()->getContents();
-          return $result;
-          }
-          catch (RequestException $e)
-          {
-          $response = $this->StatusCodeHandling($e);
-          return $response;
-          }
-        $opts = Util\RequestOptions::parse($options);
-        $requestor = new HttpClient($opts->apiKey, static::baseUrl());
+        $requestor = new Client($opts->apiKey, static::baseUrl());
+        $response = $requestor->requestor($method, $url, $params, $opts->headers);
+        return $response;
     }
-    protected static function _retrieve($id, $options = null)
-    {
-        $opts = Util\RequestOptions::parse($options);
-        $instance = new static($id, $opts);
-        return $instance;
+
+    protected static function _retrieve($id, $options = null)    {
+
+      $url = $this->instanceUrl();
+      $response = $requestor->request('get', $url, $params, $options);
+      return $response;
     }
     protected static function _all($params = null, $options = null)
     {
         self::_validateParams($params);
         $url = static::classUrl();
-        list($response, $opts) = static::_staticRequest('get', $url, $params, $options);
-        return $obj;
+        $response = static::_staticRequest('get', $url, $params, $options);
+        return $response;
     }
     protected static function _create($params = null, $options = null)
     {
         self::_validateParams($params);
         $url = static::classUrl();
-        list($response, $opts) = static::_staticRequest('post', $url, $params, $options);
-        return $obj;
+        $response = static::_staticRequest('post', $url, $params, $options);
+        return $response;
     }
     /**
      * @param string $id The ID of the API resource to update.
@@ -103,25 +93,16 @@ abstract class Resource
     {
         self::_validateParams($params);
         $url = static::resourceUrl($id);
-        list($response, $opts) = static::_staticRequest('post', $url, $params, $options);
-        return $obj;
+        $response = static::_staticRequest('post', $url, $params, $options);
+        return $response;
     }
-    protected function _save($options = null)
-    {
-        $params = $this->serializeParameters();
-        if (count($params) > 0) {
-            $url = $this->instanceUrl();
-            list($response, $opts) = $this->_request('post', $url, $params, $options);
-            $this->refreshFrom($response, $opts);
-        }
-        return $this;
-    }
+
     protected function _delete($params = null, $options = null)
     {
         self::_validateParams($params);
         $url = $this->instanceUrl();
-        list($response, $opts) = $this->_request('delete', $url, $params, $options);
-        $this->refreshFrom($response, $opts);
+        $response = static::_staticRequest('delete', $url, $params, $options);
+
         return $this;
     }
 

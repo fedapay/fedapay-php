@@ -1,6 +1,9 @@
 <?php
 
 namespace Fedapay;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * Class ApiRequestor
@@ -13,7 +16,7 @@ class Client
 
     private $_apiBase;
 
-    private static $_httpClient;
+    protected $client;
 
     public function __construct($apiKey = null, $apiBase = null)
     {
@@ -22,6 +25,7 @@ class Client
             $apiBase = Fedapay::$apiBase;
         }
         $this->_apiBase = $apiBase;
+        $this->client = new \GuzzleHttp\Client();
     }
 
     /**
@@ -30,66 +34,38 @@ class Client
      * @param array|null $params
      * @param array|null $headers
      *
-     * @return array An array whose first element is an API response and second
-     *    element is the API key used to make the request.
+     * @return array An API response.
      */
-    public function request($method, $url, $params = null, $headers = null)
+    public function requestor($method, $url, $params, $data=[])
     {
-        if (!$params) {
-            $params = array();
+        try{
+            $header = $this->_defaultHeaders();
+            if ($method == 'get') {
+              $response = $this->client->request($method,$url, array('query' => $params,'headers' => $header));
+            } else {
+              $response = $this->client->request($method,$url, array('query' => $params,'headers' => $header, 'json' => $data));
+            }
+            return json_decode($response->getBody()->getContents());
+        } catch (RequestException $e) {
+            $response = $this->StatusCodeHandling($e);
+            return $response;
         }
-        if (!$headers) {
-            $headers = array();
-        }
-        $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
-        return array($resp, $myApiKey);
     }
 
-    /**
-     * @param string $rbody A JSON string.
-     * @param int $rcode
-     * @param array $rheaders
-     * @param array $resp
-     */
-    public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
+    protected function statusCodeHandling($e)
     {
-        if (!is_array($resp) || !isset($resp['error'])) {
-            $msg = "Invalid response object from API: $rbody "
-              . "(HTTP response code was $rcode)";
-            throw new Error\Api($msg, $rcode, $rbody, $resp, $rheaders);
-        }
-
-        $errorData = $resp['error'];
-
-        throw $error;
+        $response = array("statuscode" => $e->getResponse()->getStatusCode(),
+        "error" => json_decode($e->getResponse()->getBody(true)->getContents()));
+        return $response;
     }
 
-    private static function _defaultHeaders($apiKey, $clientInfo = null)
+    private static function _defaultHeaders()
     {
         $defaultHeaders = array(
-            'X-Fedapay-Client-User-Agent' => json_encode($ua),
-            'User-Agent' => $uaString,
-            'Authorization' => 'Bearer ' . $apiKey,
+            'X-Version' => '',
+            'X-Source' => 'PhpLib',
         );
         return $defaultHeaders;
     }
-
-
-    private function _interpretResponse($rbody, $rcode, $rheaders)
-    {
-        $resp = json_decode($rbody, true);
-        $jsonError = json_last_error();
-        if ($resp === null && $jsonError !== JSON_ERROR_NONE) {
-            $msg = "Invalid response body from API: $rbody "
-              . "(HTTP response code was $rcode, json_last_error() was $jsonError)";
-            throw new Error\Api($msg, $rcode, $rbody);
-        }
-
-        if ($rcode < 200 || $rcode >= 300) {
-            $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
-        }
-        return $resp;
-    }
-
 
 }

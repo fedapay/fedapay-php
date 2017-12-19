@@ -29,7 +29,6 @@ class CustomerTest extends TestCase
         $customer = Customer::create(null, self::API_KEY);
         $customer->save();
 
-        self::authorizeFromEnv();
         $updatedCustomer = Customer::retrieve($customer->id);
         $this->assertSame($updatedCustomer->email, 'toto@gmail.com');
     }

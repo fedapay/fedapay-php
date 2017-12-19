@@ -68,6 +68,6 @@ class RequestOptions
            . 'optional per-request apiKey, which must be a string, or '
            . 'per-request options, which must be an array. (HINT: you can set '
            . 'a global apiKey by "Fedapay::setApiKey(<apiKey>)")';
-        throw new Error\Api($message);
+        throw new Error\ErrorHandler($message);
     }
 }
