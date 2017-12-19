@@ -70,7 +70,7 @@ abstract class Resource
           return $response;
           }
         $opts = Util\RequestOptions::parse($options);
-        $requestor = new HttpClient($opts->apiKey, static::baseUrl());        
+        $requestor = new HttpClient($opts->apiKey, static::baseUrl());
     }
     protected static function _retrieve($id, $options = null)
     {
