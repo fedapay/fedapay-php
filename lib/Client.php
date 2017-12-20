@@ -62,7 +62,7 @@ class Client
     private static function _defaultHeaders()
     {
         $defaultHeaders = array(
-            'X-Version' => '',
+            'X-Version' => '1.0.0',
             'X-Source' => 'PhpLib',
         );
         return $defaultHeaders;

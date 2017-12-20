@@ -58,7 +58,7 @@ class Fedapay
         self::$apiVersion = $apiVersion;
     }
 
-     * @return string | null The Fedapay account ID for connected account
+    /** @return string | null The Fedapay account ID for connected account
      *   requests.
      */
     public static function getAccountId()
