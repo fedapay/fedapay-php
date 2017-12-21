@@ -8,7 +8,7 @@ namespace Fedapay;
  * @property int $id
  * @property mixed $data
  * @property string $type
- * @property int $created 
+ * @property string $created 
  *
  * @package Fedapay
  */
