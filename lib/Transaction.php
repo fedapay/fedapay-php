@@ -13,8 +13,6 @@ namespace Fedapay;
  * @property string $status
  * @property string $items
  * @property int $customer_id
- * @property string $description
- * @property string $callback_url
  * @property string $created_at 
  *
  * @package Fedapay

@@ -16,9 +16,7 @@ class Test {
 
   protected function setUp()
     {
-        // $this->client = new \GuzzleHttp\Client([
-        //     'base_uri' => 'https://api.fedapay.com'
-        // ]);
+
         $apiKey = getenv('FEDAPAY_API_KEY');
         if (!$apiKey) {
             $apiKey = self::API_KEY;
@@ -42,7 +40,7 @@ class Test {
         $client = new Client(['handler' => $handler]);
 
         $response = $client->request($method, $uri,
-                            ['query' => ['api_key' => self::API_KEY]]);
+                            ['query' => ['api_key' => Fedapay::getApiKey()]]);
 
         return $response;
     }
