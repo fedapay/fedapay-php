@@ -13,6 +13,25 @@ abstract class Resource
         return Fedapay::$apiBase;
     }
 
+    public static function className()
+    {
+        $class = get_called_class();
+        // Useful for namespaces: Foo\Charge
+        if ($postfixNamespaces = strrchr($class, '\\')) {
+            $class = substr($postfixNamespaces, 1);
+        }
+        // Useful for underscored 'namespaces': Foo_Charge
+        if ($postfixFakeNamespaces = strrchr($class, '')) {
+            $class = $postfixFakeNamespaces;
+        }
+        if (substr($class, 0, strlen('Fedapay')) == 'Fedapay') {
+            $class = substr($class, strlen('Fedapay'));
+        }
+        $class = str_replace('_', '', $class);
+        $name = urlencode($class);
+        $name = strtolower($name);
+        return $name;
+    }
 
     /**
      * @return string The endpoint URL for the given class.
@@ -57,8 +76,8 @@ abstract class Resource
 
     protected static function _staticRequest($method, $url, $params, $options)
     {
-        $requestor = new Client($opts->apiKey, static::baseUrl());
-        $response = $requestor->requestor($method, $url, $params, $opts->headers);
+        $requestor = new FedapayClient($options->apiKey, static::baseUrl());
+        $response = $requestor->requestor($method, $url, $params, $options->headers);
         return $response;
     }
 

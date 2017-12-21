@@ -10,7 +10,7 @@ use GuzzleHttp\Psr7\Request;
  *
  * @package Fedapay
  */
-class Client
+class FedapayClient
 {
     private $_apiKey;
 
