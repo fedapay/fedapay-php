@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedapay;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client;
@@ -11,40 +11,38 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
 use Fedapay\Test;
 
-class EventTest extends TestCase
+class EventTest extends BaseTestCase
 {
-
-  public function testGetAllEvents()
-  {
-    $responseData = (array('type' =>  'customer.created',
+    public function testGetAllEvents()
+    {
+        $responseData = array('type' =>  'customer.created',
                           'object' =>  'customer',
-                      ));
-    $statusCode = 200;
-    $method = 'GET';
-    $uri = '/v1/events';
+                        );
+        $statusCode = 200;
+        $method = 'GET';
+        $uri = '/v1/events';
 
-    $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
-    $data = json_decode($response->getBody(), true);
-    $this->assertEquals('customer', $data['object']);
-    $this->assertSame($responseData, $data);
-    $this->assertTrue($response->getStatusCode() == $statusCode);
+        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
+        $data = json_decode($response->getBody(), true);
+        $this->assertEquals('customer', $data['object']);
+        $this->assertSame($responseData, $data);
+        $this->assertTrue($response->getStatusCode() == $statusCode);
 
-  }
+    }
 
     public function testOneTransaction()
     {
-      $responseData = (array('type' =>  'customer.created',
+        $responseData = array('type' =>  'customer.created',
                             'object' =>  'customer',
-                        ));
-      $statusCode = 200;
-      $method = 'GET';
-      $uri = '/v1/events/1';
+                        );
+        $statusCode = 200;
+        $method = 'GET';
+        $uri = '/v1/events/1';
 
-      $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
+        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
 
-      $this->assertEquals($statusCode, $response->getStatusCode());
-      $data = json_decode($response->getBody(), true);
-      $this->assertEquals('customer.created', $data['type']);
+        $this->assertEquals($statusCode, $response->getStatusCode());
+        $data = json_decode($response->getBody(), true);
+        $this->assertEquals('customer.created', $data['type']);
     }
-
 }

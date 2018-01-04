@@ -4,7 +4,7 @@ namespace Fedapay\Error;
 
 use Exception;
 
-abstract class ErrorHandler extends Exception
+class InvalidRequest extends Exception
 {
     public function __construct(
         $message,
@@ -55,6 +55,7 @@ abstract class ErrorHandler extends Exception
         $id = $this->requestId ? " from API request '{$this->requestId}'": "";
         $message = explode("\n", parent::__toString());
         $message[0] .= $id;
+
         return implode("\n", $message);
     }
 }

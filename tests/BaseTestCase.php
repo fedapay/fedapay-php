@@ -1,6 +1,6 @@
 <?php
 
-namespace Fedapay;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client;
@@ -10,22 +10,18 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
 
-class Test {
-  protected $client;
-  const API_KEY = 'sk_test_yVr4E9WAib5-4rmKIyBEKpPe';
+abstract class BaseTestCase extends TestCase
+{
+    protected $client;
 
-  protected function setUp()
+    const API_KEY = 'sk_test_1N41L2m5WYR84pd_CW_zVRuf';
+
+    protected function setUp()
     {
-
-        $apiKey = getenv('FEDAPAY_API_KEY');
-        if (!$apiKey) {
-            $apiKey = self::API_KEY;
-        }
-
-        Fedapay::setApiKey($apiKey);
+        \Fedapay\Fedapay::setApiKey(self::API_KEY);
     }
 
-  public function createMockResponse($responseData, $statusCode, $method, $uri)
+    public function createMockResponse($responseData, $statusCode, $method, $uri)
     {
         $headers = ['Content-Type' => 'application/json'];
         $body = json_encode($responseData);
@@ -39,10 +35,11 @@ class Test {
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
 
-        $response = $client->request($method, $uri,
-                            ['query' => ['api_key' => Fedapay::getApiKey()]]);
+        $response = $client->request(
+            $method, $uri,
+            ['query' => ['api_key' => \Fedapay\Fedapay::getApiKey()]]
+        );
 
         return $response;
     }
-
 }

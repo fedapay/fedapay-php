@@ -1,6 +1,7 @@
 <?php
 
 namespace Fedapay;
+
 /**
  * Class Resource
  *
@@ -20,16 +21,20 @@ abstract class Resource
         if ($postfixNamespaces = strrchr($class, '\\')) {
             $class = substr($postfixNamespaces, 1);
         }
+
         // Useful for underscored 'namespaces': Foo_Charge
         if ($postfixFakeNamespaces = strrchr($class, '')) {
             $class = $postfixFakeNamespaces;
         }
+
         if (substr($class, 0, strlen('Fedapay')) == 'Fedapay') {
             $class = substr($class, strlen('Fedapay'));
         }
+
         $class = str_replace('_', '', $class);
         $name = urlencode($class);
         $name = strtolower($name);
+
         return $name;
     }
 
@@ -39,8 +44,9 @@ abstract class Resource
     public static function classUrl()
     {
         $base = static::className();
-        return "/v1/${base}s";
+        return '/' . Fedapay::API_VERSION . "/${base}s";
     }
+
     /**
      * @return string The instance endpoint URL for the given class.
      */
@@ -48,14 +54,17 @@ abstract class Resource
     {
         if ($id === null) {
             $class = get_called_class();
-            $message = "Could not determine which URL to request: "
+            $message = 'Could not determine which URL to request: '
                . "$class instance has invalid ID: $id";
-            throw new Error\ErrorHandler($message, null);
+            throw new Error\InvalidRequest($message, null);
         }
+
         $base = static::classUrl();
         $extn = urlencode($id);
+
         return "$base/$extn";
     }
+
     /**
      * @return string The full API URL for this API resource.
      */
@@ -63,6 +72,7 @@ abstract class Resource
     {
         return static::resourceUrl($this['id']);
     }
+
     protected static function _validateParams($params = null)
     {
         if ($params && !is_array($params)) {
@@ -70,7 +80,7 @@ abstract class Resource
                . "method calls.  (HINT: an example call to create a customer "
                . "would be: \"Fedapay\\Customer::create(array('firstname' => toto, "
                . "'lastname' => 'zoro', 'email' => 'admin@gmail.com', 'phone' => '66666666'))\")";
-            throw new Error\ErrorHandler($message);
+            throw new Error\InvalidRequest($message);
         }
     }
 
@@ -78,32 +88,39 @@ abstract class Resource
     {
         $requestor = new FedapayClient($options->apiKey, static::baseUrl());
         $response = $requestor->requestor($method, $url, $params, $options->headers);
+
         return $response;
     }
 
-    protected static function _retrieve($id, $options = null)    {
+    protected static function _retrieve($id, $options = null)
+    {
+        $url = $this->instanceUrl();
+        $response = static::_staticRequest('get', $url, $params, $options);
 
-      $url = $this->instanceUrl();
-      $response = $requestor->request('get', $url, $params, $options);
-      return $response;
+        return $response;
     }
+
     protected static function _all($params = null, $options = null)
     {
         self::_validateParams($params);
         $url = static::classUrl();
         $response = static::_staticRequest('get', $url, $params, $options);
+
         return $response;
     }
+
     protected static function _create($params = null, $options = null)
     {
         self::_validateParams($params);
         $url = static::classUrl();
         $response = static::_staticRequest('post', $url, $params, $options);
+
         return $response;
     }
+
     /**
-     * @param string $id The ID of the API resource to update.
-     * @param array|null $params
+     * @param string            $id     The ID of the API resource to update.
+     * @param array|null        $params
      * @param array|string|null $opts
      *
      * @return Resource the updated API resource
@@ -113,6 +130,7 @@ abstract class Resource
         self::_validateParams($params);
         $url = static::resourceUrl($id);
         $response = static::_staticRequest('post', $url, $params, $options);
+
         return $response;
     }
 
@@ -124,5 +142,4 @@ abstract class Resource
 
         return $this;
     }
-
-  }
+}

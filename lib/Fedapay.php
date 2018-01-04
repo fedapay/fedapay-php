@@ -23,6 +23,8 @@ class Fedapay
 
     const VERSION = '1.0.0';
 
+    const API_VERSION = 'v1';
+
     /**
      * @return string The API key used for requests.
      */
@@ -74,5 +76,4 @@ class Fedapay
     {
         self::$accountId = $accountId;
     }
-
 }
