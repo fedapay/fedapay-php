@@ -7,7 +7,7 @@ namespace Fedapay;
  *
  * @package Fedapay
  */
-abstract class Resource
+abstract class Resource extends FedapayObject
 {
     public static function baseUrl()
     {
@@ -134,6 +134,11 @@ abstract class Resource
         return $response;
     }
 
+    /**
+     * Send a detele request
+     * @param  array $params
+     * @param  array $options
+     */
     protected function _delete($params = null, $options = null)
     {
         self::_validateParams($params);

@@ -10,8 +10,8 @@ class ResourceTest extends BaseTestCase
      */
     public function testReturnClassName()
     {
-        $this->assertEquals(Foo::className(), 'foo');
-        $this->assertEquals(Foo_Test::className(), 'footest');
+        $this->assertEquals(Fixtures\Foo::className(), 'foo');
+        $this->assertEquals(Fixtures\Foo_Test::className(), 'footest');
     }
 
     /**
@@ -20,8 +20,8 @@ class ResourceTest extends BaseTestCase
      */
     public function testShouldReturnClassUrl()
     {
-        $this->assertEquals(Foo::classUrl(), '/v1/foos');
-        $this->assertEquals(Foo_Test::classUrl(), '/v1/footests');
+        $this->assertEquals(Fixtures\Foo::classUrl(), '/v1/foos');
+        $this->assertEquals(Fixtures\Foo_Test::classUrl(), '/v1/footests');
     }
 
     /**
@@ -32,10 +32,27 @@ class ResourceTest extends BaseTestCase
     {
         $this->expectException(\Fedapay\Error\InvalidRequest::class);
         $this->expectExceptionMessage('Could not determine which URL to request: '.
-        'Tests\Foo instance has invalid ID: ');
-        Foo::resourceUrl(null);
+        'Tests\Fixtures\Foo instance has invalid ID: ');
+        Fixtures\Foo::resourceUrl(null);
+    }
+
+    /**
+     * Should return return resource url
+     * @return void
+     */
+    public function testReturnResourceUrl()
+    {
+        $this->assertEquals(Fixtures\Foo::resourceUrl(1), '/v1/foos/1');
+    }
+
+    /**
+     * Should return return resource url
+     * @return void
+     */
+    public function testReturnInstanceUrl()
+    {
+        $object = new Fixtures\Foo;
+        $object->id = 1;
+        $this->assertEquals($object->instanceUrl(), '/v1/foos/1');
     }
 }
-
-class Foo extends \Fedapay\Resource { }
-class Foo_Test extends \Fedapay\Resource { }
