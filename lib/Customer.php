@@ -15,7 +15,6 @@ namespace Fedapay;
  * @package Fedapay
  */
 class Customer extends Resource {
-
     /**
      * @param array|string $id The ID of the customer to retrieve, or an
      *     options array containing an `id` key.

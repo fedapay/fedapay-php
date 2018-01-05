@@ -11,7 +11,7 @@ abstract class Resource extends FedapayObject
 {
     public static function baseUrl()
     {
-        return Fedapay::$apiBase;
+        return null;
     }
 
     public static function className()
@@ -86,7 +86,7 @@ abstract class Resource extends FedapayObject
 
     protected static function _staticRequest($method, $url, $params, $options)
     {
-        $requestor = new FedapayClient($options->apiKey, static::baseUrl());
+        $requestor = new Requestor(static::baseUrl());
         $response = $requestor->requestor($method, $url, $params, $options->headers);
 
         return $response;

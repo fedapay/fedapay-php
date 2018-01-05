@@ -14,7 +14,7 @@ abstract class BaseTestCase extends TestCase
 {
     protected $client;
 
-    const API_KEY = 'sk_test_1N41L2m5WYR84pd_CW_zVRuf';
+    const API_KEY = 'sk_test_123';
 
     protected function setUp()
     {
