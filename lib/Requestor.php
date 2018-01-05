@@ -40,6 +40,12 @@ class Requestor
      */
     protected $client;
 
+    /**
+     * @param string $apiKey The api key.
+     * @param string $environment the environment. Default is sandbox
+     * Should be one ont these development, sandbox, test, production, live
+     * @param string $apiVersion the api version. Default is v1
+     */
     public function __construct($apiKey = null, $environment = null, $apiVersion = null)
     {
         $this->apiKey = $apiKey ?: Fedapay::getApiKey();
@@ -68,6 +74,57 @@ class Requestor
     }
 
     /**
+     * @return string The requestor API version used for requests.
+     */
+    public function getApiVersion()
+    {
+        return $this->apiVersion;
+    }
+
+    /**
+     * @param string $environment The requestor api environment.
+     * @return void
+     */
+    public function setApiVersion($apiVersion)
+    {
+        $this->apiVersion = $apiVersion;
+    }
+
+    /**
+     * @return string The requestor Api environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * @param string $environment The requestor API environment.
+     * @return void
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
+
+    /**
+     * @return GuzzleHttp\Client The requestor client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param GuzzleHttp\Client $client The requestor client.
+     * @return void
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+    }
+
+    /**
      * @param string     $method
      * @param string     $url
      * @param array|null $params
@@ -78,10 +135,10 @@ class Requestor
     public function request($method, $path, $params = [], $headers = [])
     {
         try {
-            $header = $this->_defaultHeaders();
+            $headers = array_merge($headers, $this->defaultHeaders());
             $url = $this->url($path);
             $method = strtoupper($method);
-            $options = [ 'query' => $params, 'headers' => $header ];
+            $options = [ 'headers' => $headers ];
 
             switch ($method) {
                 case 'GET':
@@ -94,22 +151,25 @@ class Requestor
                     break;
             }
 
+            $response = $this->client->request($method, $url, $options);
+
             return json_decode($response->getBody()->getContents());
         } catch (RequestException $e) {
-            $response = $this->StatusCodeHandling($e);
-
-            return $response;
+            $this->handleRequestException($e);
         }
     }
 
-    protected function statusCodeHandling($e)
+    protected function handleRequestException($e)
     {
-        $response = [
-            'statuscode' => $e->getResponse()->getStatusCode(),
-            'error' => json_decode($e->getResponse()->getBody(true)->getContents())
-        ];
+        $message = 'Request error: '. $e->getMessage();
+        $httpStatusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
+        $httpRequest = $e->getRequest();
+        $httpResponse = $e->getResponse();
 
-        return $response;
+        throw new Error\ApiConnection(
+            $message, $httpStatusCode,
+            $httpRequest, $httpResponse
+        );
     }
 
     protected function defaultHeaders()
@@ -128,15 +188,15 @@ class Requestor
         case 'sandbox':
         case 'test':
         case null:
-            return SANDBOX_BASE;
+            return self::SANDBOX_BASE;
         case 'production':
         case 'live':
-            return PRODUCTION_BASE;
+            return self::PRODUCTION_BASE;
         }
     }
 
     protected function url($path)
     {
-        return $this->baseUrl() . '/' . $this->apiVersion . '/' . $path;
+        return $this->baseUrl() . '/' . $this->apiVersion . $path;
     }
 }

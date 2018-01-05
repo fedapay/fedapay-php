@@ -21,25 +21,16 @@ abstract class BaseTestCase extends TestCase
         \Fedapay\Fedapay::setApiKey(self::API_KEY);
     }
 
-    public function createMockResponse($responseData, $statusCode, $method, $uri)
+    public function createMockClient($status, $headers = [], $body = [])
     {
-        $headers = ['Content-Type' => 'application/json'];
-        $body = json_encode($responseData);
+        $body = json_encode($body);
+        $response = new Response($status, $headers, $body);
 
-        $response = new Response($statusCode, $headers, $body);
-
-        $mock = new MockHandler([
-            $response
-        ]);
+        $mock = new MockHandler([$response]);
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
 
-        $response = $client->request(
-            $method, $uri,
-            ['query' => ['api_key' => \Fedapay\Fedapay::getApiKey()]]
-        );
-
-        return $response;
+        return $client;
     }
 }
