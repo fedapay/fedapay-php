@@ -10,20 +10,14 @@ namespace Fedapay;
 class Fedapay
 {
     // @var string The Fedapay API key to be used for requests.
-    public static $apiKey;
+    protected static $apiKey;
 
-    // @var string The base URL for the Fedapay API.
-    public static $apiBase = 'https://api.fedapay.com';
+    // @var string The environment for the Fedapay API.
+    protected static $environment = 'sandbox';
 
-    // @var string|null The version of the Fedapay API to use for requests.
-    public static $apiVersion = null;
-
-    // @var string|null The account ID for connected accounts requests.
-    public static $accountId = null;
+    protected static $apiVersion = 'v1';
 
     const VERSION = '1.0.0';
-
-    const API_VERSION = 'v1';
 
     /**
      * @return string The API key used for requests.
@@ -37,6 +31,7 @@ class Fedapay
      * Sets the API key to be used for requests.
      *
      * @param string $apiKey
+     * @return void
      */
     public static function setApiKey($apiKey)
     {
@@ -44,8 +39,7 @@ class Fedapay
     }
 
     /**
-     * @return string The API version used for requests. null if we're using the
-     *    latest version.
+     * @return string The API version used for requests.
      */
     public static function getApiVersion()
     {
@@ -53,27 +47,28 @@ class Fedapay
     }
 
     /**
-     * @param string $apiVersion The API version to use for requests.
+     * @param string $environment The API environment.
+     * @return void
      */
     public static function setApiVersion($apiVersion)
     {
         self::$apiVersion = $apiVersion;
     }
 
-    /** @return string | null The Fedapay account ID for connected account
-     *   requests.
+    /**
+     * @return string | null The Fedapay environment
      */
-    public static function getAccountId()
+    public static function getEnvironment()
     {
-        return self::$accountId;
+        return self::$environment;
     }
 
     /**
-     * @param string $accountId The Fedapay account ID to set for connected
-     *   account requests.
+     * @param string $environment The API environment.
+     * @return void
      */
-    public static function setAccountId($accountId)
+    public static function setEnvironment($environment)
     {
-        self::$accountId = $accountId;
+        self::$environment = $environment;
     }
 }

@@ -20,8 +20,8 @@ class ResourceTest extends BaseTestCase
      */
     public function testShouldReturnClassUrl()
     {
-        $this->assertEquals(Fixtures\Foo::classUrl(), '/v1/foos');
-        $this->assertEquals(Fixtures\Foo_Test::classUrl(), '/v1/footests');
+        $this->assertEquals(Fixtures\Foo::classUrl(), '/foos');
+        $this->assertEquals(Fixtures\Foo_Test::classUrl(), '/footests');
     }
 
     /**
@@ -42,7 +42,7 @@ class ResourceTest extends BaseTestCase
      */
     public function testReturnResourceUrl()
     {
-        $this->assertEquals(Fixtures\Foo::resourceUrl(1), '/v1/foos/1');
+        $this->assertEquals(Fixtures\Foo::resourceUrl(1), '/foos/1');
     }
 
     /**
@@ -53,6 +53,6 @@ class ResourceTest extends BaseTestCase
     {
         $object = new Fixtures\Foo;
         $object->id = 1;
-        $this->assertEquals($object->instanceUrl(), '/v1/foos/1');
+        $this->assertEquals($object->instanceUrl(), '/foos/1');
     }
 }

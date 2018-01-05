@@ -16,18 +16,55 @@ class Requestor
 
     const PRODUCTION_BASE = 'https://api.production.fedapay.com';
 
-    protected $_apiKey;
+    /**
+     * Api key
+     * @var string
+     */
+    protected $apiKey;
 
-    protected $_environment;
+    /**
+     * Api environment
+     * @var string
+     */
+    protected $environment;
 
+    /**
+     * Api version
+     * @var string
+     */
+    protected $apiVersion;
+
+    /**
+     * HttpClient
+     * @var GuzzleHttp\Client
+     */
     protected $client;
 
-    public function __construct($apiKey = null, $apiBase = null)
+    public function __construct($apiKey = null, $environment = null, $apiVersion = null)
     {
-        $this->_apiKey = $apiKey ?: Fedapay::$apiKey;
-        $this->_apiBase = $apiBase ?: Fedapay::$apiBase;
+        $this->apiKey = $apiKey ?: Fedapay::getApiKey();
+        $this->environment = $environment ?: Fedapay::getEnvironment();
+        $this->apiVersion = $apiVersion ?: Fedapay::getApiVersion();
 
         $this->client = new \GuzzleHttp\Client();
+    }
+
+    /**
+     * @return string The API key used for requests.
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * Sets the API key to be used for requests.
+     *
+     * @param string $apiKey
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -38,7 +75,7 @@ class Requestor
      *
      * @return array An API response.
      */
-    public function requestor($method, $path, $params, $data = [])
+    public function request($method, $path, $params = [], $headers = [])
     {
         try {
             $header = $this->_defaultHeaders();
@@ -46,8 +83,15 @@ class Requestor
             $method = strtoupper($method);
             $options = [ 'query' => $params, 'headers' => $header ];
 
-            if ($method !== 'GET') {
-                $options['json'] = $data;
+            switch ($method) {
+                case 'GET':
+                case 'HEAD':
+                case 'DELETE':
+                    $options['query'] = $params;
+                    break;
+                default:
+                    $options['json'] = $params;
+                    break;
             }
 
             return json_decode($response->getBody()->getContents());
@@ -73,16 +117,17 @@ class Requestor
         return [
             'X-Version' => '1.0.0',
             'X-Source' => 'PhpLib',
-            'Authorization' => 'Bearer '. $this->_apiKey,
+            'Authorization' => 'Bearer '. $this->apiKey,
         ];
     }
 
     protected function baseUrl()
     {
-        switch ($this->_environment) {
+        switch ($this->environment) {
         case 'development':
         case 'sandbox':
         case 'test':
+        case null:
             return SANDBOX_BASE;
         case 'production':
         case 'live':
@@ -92,6 +137,6 @@ class Requestor
 
     protected function url($path)
     {
-        return $this->baseUrl() . '/' . $path;
+        return $this->baseUrl() . '/' . $this->apiVersion . '/' . $path;
     }
 }

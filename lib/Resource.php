@@ -9,9 +9,25 @@ namespace Fedapay;
  */
 abstract class Resource extends FedapayObject
 {
-    public static function baseUrl()
-    {
-        return null;
+    /**
+     * @var Fedapay\Requestor
+     */
+    protected static $requestor;
+
+    /**
+     * Set requestor
+     * @param Fedapay\Requestor $requestor
+     */
+    public static function setRequestor(Requestor $requestor) {
+        self::$requestor = $requestor;
+    }
+
+    /**
+     * Return the requestor
+     * @return Fedapay\Requestor
+     */
+    public static function getRequestor() {
+        return $this->requestor ?: new Requestor;
     }
 
     public static function className()
@@ -44,7 +60,7 @@ abstract class Resource extends FedapayObject
     public static function classUrl()
     {
         $base = static::className();
-        return '/' . Fedapay::API_VERSION . "/${base}s";
+        return "/${base}s";
     }
 
     /**
@@ -86,8 +102,7 @@ abstract class Resource extends FedapayObject
 
     protected static function _staticRequest($method, $url, $params, $options)
     {
-        $requestor = new Requestor(static::baseUrl());
-        $response = $requestor->requestor($method, $url, $params, $options->headers);
+        $response = self::getRequestor()->request($method, $url, $params, $options->headers);
 
         return $response;
     }
