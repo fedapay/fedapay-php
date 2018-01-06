@@ -2,6 +2,8 @@
 
 namespace Fedapay;
 
+use Fedapay\Util\Util;
+
 /**
  * Class Resource
  *
@@ -27,7 +29,7 @@ abstract class Resource extends FedapayObject
      * @return Fedapay\Requestor
      */
     public static function getRequestor() {
-        return $this->requestor ?: new Requestor;
+        return self::$requestor ?: new Requestor;
     }
 
     public static function className()
@@ -57,7 +59,7 @@ abstract class Resource extends FedapayObject
     /**
      * @return string The endpoint URL for the given class.
      */
-    public static function classUrl()
+    public static function classPath()
     {
         $base = static::className();
         return "/${base}s";
@@ -66,7 +68,7 @@ abstract class Resource extends FedapayObject
     /**
      * @return string The instance endpoint URL for the given class.
      */
-    public static function resourceUrl($id)
+    public static function resourcePath($id)
     {
         if ($id === null) {
             $class = get_called_class();
@@ -75,7 +77,7 @@ abstract class Resource extends FedapayObject
             throw new Error\InvalidRequest($message, null);
         }
 
-        $base = static::classUrl();
+        $base = static::classPath();
         $extn = urlencode($id);
 
         return "$base/$extn";
@@ -86,7 +88,7 @@ abstract class Resource extends FedapayObject
      */
     public function instanceUrl()
     {
-        return static::resourceUrl($this['id']);
+        return static::resourcePath($this['id']);
     }
 
     protected static function _validateParams($params = null)
@@ -100,50 +102,54 @@ abstract class Resource extends FedapayObject
         }
     }
 
-    protected static function _staticRequest($method, $url, $params, $options)
+    protected static function _staticRequest($method, $url, $params, $headers)
     {
-        $response = self::getRequestor()->request($method, $url, $params, $options->headers);
+        $requestor = self::getRequestor();
+        $response = $requestor->request($method, $url, $params, $headers);
+
+        $options = [
+            'apiVersion' => $requestor->getApiVersion(),
+            'environment' => $requestor->getEnvironment()
+        ];
+
+        return Util::arrayToFedapayObject($response, $options);
+    }
+
+    protected static function _retrieve($id)
+    {
+        $url = self::resourcePath($id);
+        $response = static::_staticRequest('get', $url);
 
         return $response;
     }
 
-    protected static function _retrieve($id, $options = null)
-    {
-        $url = $this->instanceUrl();
-        $response = static::_staticRequest('get', $url, $params, $options);
-
-        return $response;
-    }
-
-    protected static function _all($params = null, $options = null)
+    protected static function _all($params = [], $headers = [])
     {
         self::_validateParams($params);
-        $url = static::classUrl();
-        $response = static::_staticRequest('get', $url, $params, $options);
-
-        return $response;
+        $path = static::classPath();
+        return static::_staticRequest('get', $path, $params, $headers);
     }
 
-    protected static function _create($params = null, $options = null)
+    protected static function _create($params = [], $headers = [])
     {
         self::_validateParams($params);
-        $url = static::classUrl();
-        $response = static::_staticRequest('post', $url, $params, $options);
+        $url = static::classPath();
+        $response = static::_staticRequest('post', $url, $params, $headers);
 
         return $response;
     }
 
     /**
-     * @param string            $id     The ID of the API resource to update.
-     * @param array|null        $params
-     * @param array|string|null $opts
+     * @param string $id     The ID of the API resource to update.
+     * @param array $params The request params
+     * @param array $headers the request headers
      *
      * @return Resource the updated API resource
      */
-    protected static function _update($id, $params = null, $options = null)
+    protected static function _update($id, $params = [], $headers = [])
     {
         self::_validateParams($params);
-        $url = static::resourceUrl($id);
+        $url = static::resourcePath($id);
         $response = static::_staticRequest('post', $url, $params, $options);
 
         return $response;
@@ -161,5 +167,10 @@ abstract class Resource extends FedapayObject
         $response = static::_staticRequest('delete', $url, $params, $options);
 
         return $this;
+    }
+
+    protected function _save()
+    {
+
     }
 }

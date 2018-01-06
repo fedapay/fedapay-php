@@ -2,6 +2,11 @@
 
 namespace Tests;
 
+/**
+ * Class RequestorTest
+ *
+ * @package Tests
+ */
 class RequestorTest extends BaseTestCase
 {
     /**

@@ -12,7 +12,7 @@ use GuzzleHttp\Psr7\Request;
  */
 class Requestor
 {
-    const SANDBOX_BASE = 'https://api.sandbox.fedapay.com';
+    const SANDBOX_BASE = 'https://api.fedapay.com';
 
     const PRODUCTION_BASE = 'https://api.production.fedapay.com';
 
@@ -135,6 +135,14 @@ class Requestor
     public function request($method, $path, $params = [], $headers = [])
     {
         try {
+            if (is_null($headers)) {
+                $headers = [];
+            }
+
+            if (is_null($params)) {
+                $params = [];
+            }
+
             $headers = array_merge($headers, $this->defaultHeaders());
             $url = $this->url($path);
             $method = strtoupper($method);
@@ -153,7 +161,7 @@ class Requestor
 
             $response = $this->client->request($method, $url, $options);
 
-            return json_decode($response->getBody()->getContents());
+            return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             $this->handleRequestException($e);
         }
@@ -177,7 +185,7 @@ class Requestor
         return [
             'X-Version' => '1.0.0',
             'X-Source' => 'PhpLib',
-            'Authorization' => 'Bearer '. $this->apiKey,
+            'Authorization' => 'Bearer '. $this->apiKey
         ];
     }
 

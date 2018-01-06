@@ -33,9 +33,9 @@ class Customer extends Resource {
      *
      * @return Collection of Customers
      */
-    public static function all($params = null, $opts = null)
+    public static function all($params = [], $headers = [])
     {
-        return self::_all($params, $opts);
+        return self::_all($params, $headers);
     }
 
     /**

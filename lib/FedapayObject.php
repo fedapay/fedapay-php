@@ -2,6 +2,8 @@
 
 namespace Fedapay;
 
+use Fedapay\Util\Util;
+
 /**
  * Class FedapayObject
  *
@@ -90,5 +92,16 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
     public function __toArray()
     {
         return $this->_values;
+    }
+
+    public function refreshFrom($values, $opts) {
+        foreach ($values as $k => $value) {
+            if (is_array($value)) {
+                $k = Util::stripApiVersion($k, $opts);
+                $this->_values[$k] = Util::arrayToFedapayObject($value, $opts);
+            } else {
+                $this->_values[$k] = $value;
+            }
+        }
     }
 }
