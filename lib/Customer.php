@@ -18,18 +18,18 @@ class Customer extends Resource {
     /**
      * @param array|string $id The ID of the customer to retrieve, or an
      *     options array containing an `id` key.
-     * @param array|string|null $opts
+     * @param array|string|null $headers
      *
      * @return Customer
      */
-    public static function retrieve($id, $opts = null)
+    public static function retrieve($id, $headers = [])
     {
-        return self::_retrieve($id, $opts);
+        return self::_retrieve($id, $headers);
     }
 
     /**
      * @param array|null $params
-     * @param array|string|null $opts
+     * @param array|string|null $headers
      *
      * @return Collection of Customers
      */
@@ -40,13 +40,13 @@ class Customer extends Resource {
 
     /**
      * @param array|null $params
-     * @param array|string|null $opts
+     * @param array|string|null $headers
      *
      * @return Customer The created customer.
      */
-    public static function create($params = null, $opts = null)
+    public static function create($params = [], $headers = [])
     {
-        return self::_create($params, $opts);
+        return self::_create($params, $headers);
     }
 
     /**
@@ -56,30 +56,30 @@ class Customer extends Resource {
      *
      * @return Customer The updated customer.
      */
-    public static function update($id, $params = null, $options = null)
+    public static function update($id, $params = [], $options = null)
     {
         return self::_update($id, $params, $options);
     }
 
     /**
-     * @param array|string|null $opts
+     * @param array|string|null $headers
      *
      * @return Customer The saved customer.
      */
-    public function save($opts = null)
+    public function save($headers = [])
     {
-        return $this->_save($opts);
+        return $this->_save($headers);
     }
 
     /**
      * @param array|null $params
-     * @param array|string|null $opts
+     * @param array|string|null $headers
      *
      * @return Customer The deleted customer.
      */
-    public function delete($params = null, $opts = null)
+    public function delete($params = [], $headers = [])
     {
-        return $this->_delete($params, $opts);
+        return $this->_delete($params, $headers);
     }
 
 }

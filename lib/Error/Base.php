@@ -23,6 +23,16 @@ class Base extends Exception
      */
     private $httpResponse;
 
+    /**
+     * @var string
+     */
+    private $errorMessage;
+
+    /**
+     * @var Array
+     */
+    private $errors;
+
     public function __construct(
         $message,
         $httpStatus = null,
@@ -34,6 +44,8 @@ class Base extends Exception
         $this->httpStatus = $httpStatus;
         $this->httpRequest = $httpRequest;
         $this->httpResponse = $httpResponse;
+
+        $this->fetchErrors();
     }
 
     public function getHttpStatus()
@@ -49,5 +61,36 @@ class Base extends Exception
     public function getHttpResponse()
     {
         return $this->httpResponse;
+    }
+
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public function hasErrors()
+    {
+        return !empty($this->errors);
+    }
+
+    private function fetchErrors()
+    {
+        if ($this->httpResponse) {
+            $body = $this->httpResponse->getBody()->getContents();
+            $json = json_decode($body, true);
+
+            if ($json && isset($json['message'])) {
+                $this->errorMessage = $json['message'];
+            }
+
+            if ($json && isset($json['errors'])) {
+                $this->errors = $json['errors'];
+            }
+        }
     }
 }
