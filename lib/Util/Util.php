@@ -73,7 +73,10 @@ abstract class Util
 
     public static function stripApiVersion($key, $opts)
     {
-        $apiPart = $opts['apiVersion'] . '/';
+        $apiPart = '';
+        if (is_array($opts) && isset($opts['apiVersion'])) {
+            $apiPart = $opts['apiVersion'] . '/';
+        }
 
         return str_replace($apiPart, '', $key);
     }

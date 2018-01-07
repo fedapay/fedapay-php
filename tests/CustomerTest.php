@@ -6,6 +6,9 @@ class CustomerTest extends BaseTestCase
 {
     public function testGetAllCustomers()
     {
-        var_dump(\Fedapay\Customer::all());
+        $object = \Fedapay\Customer::all();
+
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object);
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object);
     }
 }

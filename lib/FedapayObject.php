@@ -13,10 +13,21 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
 {
     protected $_values;
 
+    public function __construct($id = null, $opts = null)
+    {
+        $this->_values = [];
+
+        if (is_array($id)) {
+            $this->refreshFrom($id, $opts);
+        } else if($id !== null) {
+            $this->id = $id;
+        }
+    }
+
     // Standard accessor magic methods
     public function __set($k, $v)
     {
-        if ($v === "") {
+        if ($v === '') {
             throw new \InvalidArgumentException(
                 'You cannot set \''.$k.'\'to an empty string. '
                 .'We interpret empty strings as NULL in requests. '
@@ -25,6 +36,19 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
         }
 
         $this->_values[$k] = $v;
+    }
+
+    public function &__get($k)
+    {
+        // function should return a reference, using $nullval to return a reference to null
+        $nullval = null;
+        if (!empty($this->_values) && array_key_exists($k, $this->_values)) {
+            return $this->_values[$k];
+        } else {
+            $class = get_class($this);
+            error_log("Stripe Notice: Undefined property of $class instance: $k");
+            return $nullval;
+        }
     }
 
     public function __isset($k)
@@ -71,16 +95,7 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
 
     public function jsonSerialize()
     {
-        return $this->__toArray(true);
-    }
-
-    public function __toJSON()
-    {
-        if (defined('JSON_PRETTY_PRINT')) {
-            return json_encode($this->__toArray(true), JSON_PRETTY_PRINT);
-        } else {
-            return json_encode($this->__toArray(true));
-        }
+        return $this->_values;
     }
 
     public function __toString()
@@ -94,7 +109,8 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
         return $this->_values;
     }
 
-    public function refreshFrom($values, $opts) {
+    public function refreshFrom($values, $opts)
+    {
         foreach ($values as $k => $value) {
             if (is_array($value)) {
                 $k = Util::stripApiVersion($k, $opts);
