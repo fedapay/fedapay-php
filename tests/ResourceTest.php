@@ -22,6 +22,8 @@ class ResourceTest extends BaseTestCase
     {
         $this->assertEquals(Fixtures\Foo::classPath(), '/foos');
         $this->assertEquals(Fixtures\Foo_Test::classPath(), '/footests');
+        $this->assertEquals(Fixtures\Foo_Person::classPath(), '/foopeople');
+        $this->assertEquals(Fixtures\Foo_Currency::classPath(), '/foocurrencies');
     }
 
     /**
@@ -53,6 +55,6 @@ class ResourceTest extends BaseTestCase
     {
         $object = new Fixtures\Foo;
         $object->id = 1;
-        $this->assertEquals($object->instancePath(), '/foos/1');
+        $this->assertEquals($object->instanceUrl(), '/foos/1');
     }
 }

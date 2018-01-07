@@ -3,6 +3,7 @@
 namespace Fedapay;
 
 use Fedapay\Util\Util;
+use Fedapay\Util\Inflector;
 
 /**
  * Class Resource
@@ -62,7 +63,9 @@ abstract class Resource extends FedapayObject
     public static function classPath()
     {
         $base = static::className();
-        return "/${base}s";
+        $plurial = Inflector::pluralize($base);
+
+        return "/$plurial";
     }
 
     /**
