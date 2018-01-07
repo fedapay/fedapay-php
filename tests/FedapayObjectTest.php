@@ -44,4 +44,15 @@ class FedapayObjectTest extends BaseTestCase
 
         $this->assertEquals($object->foo, 'value');
     }
+
+    public function testShouldSerializeObjectParams()
+    {
+        $object = new \Fedapay\FedapayObject;
+        $object->refreshFrom(['foo' => 'value', 'id' => 2], null);
+        $params = $object->serializeParameters();
+
+        $this->assertTrue(is_array($params));
+        $this->assertEquals($params['foo'], 'value');
+        $this->assertArrayNotHasKey('id', $params);
+    }
 }

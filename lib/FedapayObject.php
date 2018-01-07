@@ -104,9 +104,26 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
         return $class . ' JSON: ' . $this->__toJSON();
     }
 
-    public function __toArray()
+    public function serializeParameters()
     {
-        return $this->_values;
+        $params = [];
+
+        foreach ($this->_values as $key => $value) {
+            if ($key === 'id') {
+                continue;
+            }
+
+            if ($value instanceof FedapayObject) {
+                $serialized = $value->serializeParameters();
+                if ($serialized) {
+                    $params[$key] = $serialized;
+                }
+            } else {
+                $params[$key] = $value;
+            }
+        }
+
+        return $params;
     }
 
     public function refreshFrom($values, $opts)

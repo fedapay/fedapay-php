@@ -102,7 +102,7 @@ abstract class Resource extends FedapayObject
         }
     }
 
-    protected static function _staticRequest($method, $url, $params, $headers)
+    protected static function _staticRequest($method, $url, $params = [], $headers = [])
     {
         $requestor = self::getRequestor();
         $response = $requestor->request($method, $url, $params, $headers);
@@ -112,31 +112,39 @@ abstract class Resource extends FedapayObject
             'environment' => $requestor->getEnvironment()
         ];
 
-        return Util::arrayToFedapayObject($response, $options);
+        return [$response, $options];
     }
 
     protected static function _retrieve($id)
     {
-        $url = self::resourcePath($id);
-        $response = static::_staticRequest('get', $url);
+        $url = static::resourcePath($id);
+        $className = static::className();
 
-        return $response;
+        list($response, $opts) = static::_staticRequest('get', $url);
+        $object = Util::arrayToFedapayObject($response, $opts);
+
+        return $object->$className;
     }
 
     protected static function _all($params = [], $headers = [])
     {
         self::_validateParams($params);
         $path = static::classPath();
-        return static::_staticRequest('get', $path, $params, $headers);
+        list($response, $opts) = static::_staticRequest('get', $path, $params, $headers);
+
+        return Util::arrayToFedapayObject($response, $opts);
     }
 
     protected static function _create($params = [], $headers = [])
     {
         self::_validateParams($params);
         $url = static::classPath();
-        $response = static::_staticRequest('post', $url, $params, $headers);
+        $className = static::className();
 
-        return $response;
+        list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
+        $object = Util::arrayToFedapayObject($response, $opts);
+
+        return $object->$className;
     }
 
     /**
@@ -150,9 +158,12 @@ abstract class Resource extends FedapayObject
     {
         self::_validateParams($params);
         $url = static::resourcePath($id);
-        $response = static::_staticRequest('post', $url, $params, $options);
+        $className = static::className();
 
-        return $response;
+        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+        $object = Util::arrayToFedapayObject($response, $opts);
+
+        return $object->$className;
     }
 
     /**
@@ -160,17 +171,26 @@ abstract class Resource extends FedapayObject
      * @param  array $params
      * @param  array $options
      */
-    protected function _delete($params = null, $options = null)
+    protected function _delete($headers = [])
     {
-        self::_validateParams($params);
         $url = $this->instanceUrl();
-        $response = static::_staticRequest('delete', $url, $params, $options);
+        static::_staticRequest('delete', $url, [], $headers);
 
         return $this;
     }
 
-    protected function _save()
+    protected function _save($headers = [])
     {
+        $params = $this->serializeParameters();
+        $className = static::className();
+        $url = $this->instanceUrl();
 
+        list($response, $opts) = static::_staticRequest('PUT', $url, $params, $headers);
+        $klass = $opts['apiVersion'] . '/' . $className;
+
+        $json = $response[$klass];
+        $this->refreshFrom($json, $opts);
+
+        return $this;
     }
 }

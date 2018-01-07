@@ -56,9 +56,9 @@ class Customer extends Resource {
      *
      * @return Customer The updated customer.
      */
-    public static function update($id, $params = [], $options = null)
+    public static function update($id, $params = [], $headers = [])
     {
-        return self::_update($id, $params, $options);
+        return self::_update($id, $params, $headers);
     }
 
     /**
@@ -72,14 +72,12 @@ class Customer extends Resource {
     }
 
     /**
-     * @param array|null $params
-     * @param array|string|null $headers
+     * @param array $headers
      *
      * @return Customer The deleted customer.
      */
-    public function delete($params = [], $headers = [])
+    public function delete($headers = [])
     {
-        return $this->_delete($params, $headers);
+        return $this->_delete($headers);
     }
-
 }
