@@ -9,16 +9,16 @@ namespace Fedapay;
  * @property string $firstname
  * @property string $lastname
  * @property string $email
- * @property string $created_at
  * @property string $phone
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @package Fedapay
  */
 class Customer extends Resource {
     /**
-     * @param array|string $id The ID of the customer to retrieve, or an
-     *     options array containing an `id` key.
-     * @param array|string|null $headers
+     * @param array|string $id The ID of the customer to retrieve
+     * @param array|null $headers
      *
      * @return Customer
      */

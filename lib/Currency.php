@@ -19,20 +19,19 @@ namespace Fedapay;
  */
 class Currency extends Resource {
     /**
-     * @param array|string $id The ID of the currency to retrieve, or an
-     *     options array containing an `id` key.
-     * @param array|string|null $opts
+     * @param array|string $id The ID of the currency to retrieve.
+     * @param array|string|null $headers
      *
      * @return Currency
      */
-    public static function retrieve($id, $opts = null)
+    public static function retrieve($id, $headers = null)
     {
-        return self::_retrieve($id, $opts);
+        return self::_retrieve($id, $headers);
     }
 
     /**
      * @param array|null $params
-     * @param array|string|null $opts
+     * @param array|null $headers
      *
      * @return Collection of Currencys
      */
