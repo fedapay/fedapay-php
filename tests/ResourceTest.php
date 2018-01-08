@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests;
+use Tests\Fixtures\Foo;
 
 class ResourceTest extends BaseTestCase
 {
@@ -10,7 +11,7 @@ class ResourceTest extends BaseTestCase
      */
     public function testReturnClassName()
     {
-        $this->assertEquals(Fixtures\Foo::className(), 'foo');
+        $this->assertEquals(Foo::className(), 'foo');
         $this->assertEquals(Fixtures\Foo_Test::className(), 'footest');
     }
 

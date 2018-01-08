@@ -11,7 +11,7 @@
     stopOnFailure="false"
     syntaxCheck="false">
     <testsuites>
-        <testsuite name="Laravel Html Test Suite">
+        <testsuite name="Fedapay PHP Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
