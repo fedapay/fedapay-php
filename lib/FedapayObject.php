@@ -46,7 +46,7 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
             return $this->_values[$k];
         } else {
             $class = get_class($this);
-            error_log("Stripe Notice: Undefined property of $class instance: $k");
+            error_log("Fedapay Notice: Undefined property of $class instance: $k");
             return $nullval;
         }
     }

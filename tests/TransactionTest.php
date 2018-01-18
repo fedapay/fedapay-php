@@ -2,56 +2,184 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
+use Faker\Factory;
 
 class TransactionTest extends BaseTestCase
 {
-    public function testGetAllTransactions()
+    private $customerId = 1;
+
+    /**
+     * Should return array of Fedapay\Transaction
+     */
+    public function testShouldReturnTransactions()
     {
-        $responseData = array('reference' => '1512322613531',
-                         'description' => 'Laudantium est sequi ut quam.',
-                         'callback_url' => 'http://rogahn.io/kaya.mitchell',
-                         'amount' => '38758',
-                         'status' => 'pending',
-                         'items' => '1',
-                         'customer_id' => '1'
-                      );
-        $statusCode = 200;
-        $method = 'GET';
-        $uri = '/v1/transactions';
+        $object = \Fedapay\Transaction::all();
 
-        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
-        $data = json_decode($response->getBody(), true);
-        $this->assertEquals('pending', $data['status']);
-        $this->assertSame($responseData, $data);
-        $this->assertTrue($response->getStatusCode() == $statusCode);
-
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object);
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object->meta);
+        $this->assertTrue(is_array($object->transactions));
     }
 
-    public function testOneTransaction()
+    /**
+     * Should return array of Fedapay\Transaction
+     */
+    public function testTransactionCreationShouldFailed()
     {
-        $responseData = array('reference' => '1512322613531',
-                           'description' => 'Laudantium est sequi ut quam.',
-                           'callback_url' => 'http://rogahn.io/kaya.mitchell',
-                           'amount' => '38758',
-                           'status' => 'pending',
-                           'items' => '1',
-                           'customer_id' => '1'
-                        );
-        $statusCode = 200;
-        $method = 'GET';
-        $uri = '/v1/transactions/1';
+        try {
+            \Fedapay\Transaction::create([
+                'customer' => ['id' => $this->customerId],
+                'currency' => ['iso' => 'XOF']
+            ]);
+        } catch(\Fedapay\Error\ApiConnection $e) {
+            $this->assertTrue($e->hasErrors());
+            $this->assertNotNull($e->getErrorMessage());
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('description', $errors);
+            $this->assertArrayHasKey('items', $errors);
+            $this->assertArrayHasKey('amount', $errors);
+            $this->assertArrayHasKey('callback_url', $errors);
+        }
+    }
 
-        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
+    /**
+     * Should return array of Fedapay\Transaction
+     */
+    public function testShouldCreateATransaction()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => $this->customerId],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'items' => 1,
+            'include' => 'customer,currency'
+        ];
 
-        $this->assertEquals($statusCode, $response->getStatusCode());
-        $data = json_decode($response->getBody(), true);
-        $this->assertEquals('1', $data['items']);
+        $transaction = \Fedapay\Transaction::create($data);
+
+        $this->assertInstanceOf(\Fedapay\Transaction::class, $transaction);
+        $this->assertEquals($transaction->description, $data['description']);
+        $this->assertEquals($transaction->callback_url, $data['callback_url']);
+        $this->assertEquals($transaction->amount, $data['amount']);
+        $this->assertEquals($transaction->items, $data['items']);
+        $this->assertEquals($transaction->customer->id, $data['customer']['id']);
+        $this->assertEquals($transaction->currency->iso, $data['currency']['iso']);
+    }
+
+    /**
+     * Should retrieve a Transaction
+     */
+    public function testShouldRetrievedATransaction()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => $this->customerId],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'items' => 1,
+            'include' => 'customer,currency'
+        ];
+
+        $transaction = \Fedapay\Transaction::create($data);
+
+        $retrieveTransaction = \Fedapay\Transaction::retrieve($transaction->id);
+
+        $this->assertInstanceOf(\Fedapay\Transaction::class, $retrieveTransaction);
+        $this->assertEquals($retrieveTransaction->description, $data['description']);
+        $this->assertEquals($retrieveTransaction->callback_url, $data['callback_url']);
+        $this->assertEquals($retrieveTransaction->amount, $data['amount']);
+        $this->assertEquals($retrieveTransaction->items, $data['items']);
+    }
+
+    /**
+     * Should update a transaction
+     */
+    public function testShouldUpdateATransaction()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => $this->customerId],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'items' => 1,
+        ];
+
+        $updatedData = [
+            'description' => 'Updated description',
+            'callback_url' => $faker->url,
+            'amount' => 10000,
+            'items' => 2,
+        ];
+
+        $transaction = \Fedapay\Transaction::create($data);
+        $updatedTransaction = \Fedapay\Transaction::update($transaction->id, $updatedData);
+
+        $this->assertInstanceOf(\Fedapay\Transaction::class, $updatedTransaction);
+        $this->assertEquals($updatedTransaction->description, $updatedData['description']);
+        $this->assertEquals($updatedTransaction->callback_url, $updatedData['callback_url']);
+        $this->assertEquals($updatedTransaction->amount, $updatedData['amount']);
+        $this->assertEquals($updatedTransaction->items, $updatedData['items']);
+    }
+
+    /**
+     * Should update a transaction with save
+     */
+    public function testShouldUpdateATransactionWithSave()
+    {
+        $faker = Factory::create();
+        $transaction = \Fedapay\Transaction::create([
+            'customer' => ['id' => $this->customerId],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'items' => 1,
+        ]);
+
+        $updatedData = [
+            'description' => 'Updated description',
+            'callback_url' => $faker->url,
+            'amount' => 10000,
+            'items' => 2,
+        ];
+
+        $transaction->description = $updatedData['description'];
+        $transaction->callback_url = $updatedData['callback_url'];
+        $transaction->amount = $updatedData['amount'];
+        $transaction->items = $updatedData['items'];
+
+        $transaction->save();
+
+        $this->assertEquals($transaction->description, $updatedData['description']);
+        $this->assertEquals($transaction->callback_url, $updatedData['callback_url']);
+        $this->assertEquals($transaction->amount, $updatedData['amount']);
+        $this->assertEquals($transaction->items, $updatedData['items']);
+    }
+
+    /**
+     * Should delete a transaction
+     */
+    public function testShouldDeleteATransaction()
+    {
+        $faker = Factory::create();
+        $transaction = \Fedapay\Transaction::create([
+            'customer' => ['id' => $this->customerId],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'items' => 1,
+        ]);
+
+        $transaction->delete();
+
+        $this->expectException(\Fedapay\Error\ApiConnection::class);
+        \Fedapay\Transaction::retrieve($transaction->id);
     }
 }
