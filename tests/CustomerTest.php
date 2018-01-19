@@ -158,7 +158,7 @@ class CustomerTest extends BaseTestCase
 
         $customer->delete();
 
-        $this->expectException(\Fedapay\Error\ApiConnection::class);
+        $this->setExpectedException(\Fedapay\Error\ApiConnection::class);
         \Fedapay\Customer::retrieve($customer->id);
     }
 }

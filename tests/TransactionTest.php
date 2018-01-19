@@ -179,7 +179,7 @@ class TransactionTest extends BaseTestCase
 
         $transaction->delete();
 
-        $this->expectException(\Fedapay\Error\ApiConnection::class);
+        $this->setExpectedException(\Fedapay\Error\ApiConnection::class);
         \Fedapay\Transaction::retrieve($transaction->id);
     }
 }
