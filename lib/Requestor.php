@@ -12,7 +12,7 @@ use GuzzleHttp\Psr7\Request;
  */
 class Requestor
 {
-    const SANDBOX_BASE = 'http://fedapayment-api:3000';
+    const SANDBOX_BASE = 'https://api.fedapay.com';
 
     const PRODUCTION_BASE = 'https://api.production.fedapay.com';
 
