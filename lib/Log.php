@@ -3,27 +3,32 @@
 namespace Fedapay;
 
 /**
- * Class Event
+ * Class Log
  *
  * @property int $id
- * @property string $type
- * @property string $entity
- * @property int $object_id
+ * @property string $method
+ * @property string $url
+ * @property string $status
+ * @property string $ip_address
+ * @property string $version
+ * @property string $source
+ * @property string $query
+ * @property string $body
+ * @property string $response
  * @property int $account_id
- * @property string $object
  * @property string $created_at
  * @property string $updated_at
  *
  * @package Fedapay
  */
-class Event extends Resource
+class Log extends Resource
 {
     /**
-     * @param array|string $id The ID of the event to retrieve, or an options
+     * @param array|string $id The ID of the log to retrieve, or an options
      *     array containing an `id` key.
      * @param array|string|null $opts
      *
-     * @return Event
+     * @return Log
      */
     public static function retrieve($id, $opts = null)
     {
@@ -34,7 +39,7 @@ class Event extends Resource
      * @param array|null $params
      * @param array|string|null $opts
      *
-     * @return Collection of Events
+     * @return Collection of Logs
      */
     public static function all($params = null, $opts = null)
     {
