@@ -2,47 +2,37 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
-use Fedapay\Test;
-
 class EventTest extends BaseTestCase
 {
-    public function testGetAllEvents()
+    /**
+     * Should return array of Fedapay\Event
+     */
+    public function testShouldReturnEvents()
     {
-        $responseData = array('type' =>  'customer.created',
-                          'object' =>  'customer',
-                        );
-        $statusCode = 200;
-        $method = 'GET';
-        $uri = '/v1/events';
+        $object = \Fedapay\Event::all();
 
-        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
-        $data = json_decode($response->getBody(), true);
-        $this->assertEquals('customer', $data['object']);
-        $this->assertSame($responseData, $data);
-        $this->assertTrue($response->getStatusCode() == $statusCode);
-
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object);
+        $this->assertInstanceOf(\Fedapay\FedapayObject::class, $object->meta);
+        $this->assertTrue(is_array($object->events));
+        $this->assertInstanceOf(\Fedapay\Event::class, $object->events[0]);
     }
 
-    public function testOneTransaction()
+    /**
+     * Should retrieve a Event
+     */
+    public function testShouldRetrievedAEvent()
     {
-        $responseData = array('type' =>  'customer.created',
-                            'object' =>  'customer',
-                        );
-        $statusCode = 200;
-        $method = 'GET';
-        $uri = '/v1/events/1';
+        $object = \Fedapay\Event::all();
+        $events = $object->events;
+        $event = $events[0];
 
-        $response = Test::createMockResponse($responseData, $statusCode, $method, $uri);
+        $retrieveEvent = \Fedapay\Event::retrieve($event->id);
 
-        $this->assertEquals($statusCode, $response->getStatusCode());
-        $data = json_decode($response->getBody(), true);
-        $this->assertEquals('customer.created', $data['type']);
+        $this->assertInstanceOf(\Fedapay\Event::class, $retrieveEvent);
+        $this->assertEquals($retrieveEvent->type, $event->type);
+        $this->assertEquals($retrieveEvent->entity, $event->entity);
+        $this->assertEquals($retrieveEvent->object_id, $event->object_id);
+        $this->assertEquals($retrieveEvent->account_id, $event->account_id);
+        $this->assertEquals($retrieveEvent->object, $event->object);
     }
 }

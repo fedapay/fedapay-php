@@ -6,9 +6,13 @@ namespace Fedapay;
  * Class Event
  *
  * @property int $id
- * @property mixed $data
  * @property string $type
- * @property string $created 
+ * @property string $entity
+ * @property string $object_id
+ * @property string $account_id
+ * @property string $object
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @package Fedapay
  */
