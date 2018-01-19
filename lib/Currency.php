@@ -17,7 +17,8 @@ namespace Fedapay;
  *
  * @package Fedapay
  */
-class Currency extends Resource {
+class Currency extends Resource
+{
     /**
      * @param array|string $id The ID of the currency to retrieve.
      * @param array|string|null $headers

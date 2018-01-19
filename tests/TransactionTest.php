@@ -30,7 +30,7 @@ class TransactionTest extends BaseTestCase
                 'customer' => ['id' => $this->customerId],
                 'currency' => ['iso' => 'XOF']
             ]);
-        } catch(\Fedapay\Error\ApiConnection $e) {
+        } catch (\Fedapay\Error\ApiConnection $e) {
             $this->assertTrue($e->hasErrors());
             $this->assertNotNull($e->getErrorMessage());
             $errors = $e->getErrors();

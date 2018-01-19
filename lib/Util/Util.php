@@ -3,6 +3,11 @@ namespace Fedapay\Util;
 
 use Fedapay\FedapayObject;
 
+/**
+ * Class Util
+ *
+ * @package Fedapay\Util
+ */
 abstract class Util
 {
     /**

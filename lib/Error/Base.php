@@ -1,11 +1,16 @@
 <?php
 
 namespace Fedapay\Error;
+
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-
 use Exception;
 
+/**
+ * Class Base
+ *
+ * @package Fedapay\Error
+ */
 class Base extends Exception
 {
     /**

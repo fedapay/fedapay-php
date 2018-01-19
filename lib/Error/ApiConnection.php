@@ -2,4 +2,11 @@
 
 namespace Fedapay\Error;
 
-class ApiConnection extends Base { }
+/**
+ * Class ApiConnection
+ *
+ * @package Fedapay\Error
+ */
+class ApiConnection extends Base
+{
+}

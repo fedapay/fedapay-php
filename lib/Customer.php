@@ -15,7 +15,8 @@ namespace Fedapay;
  *
  * @package Fedapay
  */
-class Customer extends Resource {
+class Customer extends Resource
+{
     /**
      * @param array|string $id The ID of the customer to retrieve
      * @param array|null $headers

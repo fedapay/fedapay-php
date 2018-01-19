@@ -19,7 +19,7 @@ class FedapayObject implements \ArrayAccess, \JsonSerializable
 
         if (is_array($id)) {
             $this->refreshFrom($id, $opts);
-        } else if($id !== null) {
+        } elseif ($id !== null) {
             $this->id = $id;
         }
     }

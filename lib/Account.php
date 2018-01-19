@@ -14,4 +14,6 @@ namespace Fedapay;
  *
  * @package Fedapay
  */
-class Account extends Resource { }
+class Account extends Resource
+{
+}

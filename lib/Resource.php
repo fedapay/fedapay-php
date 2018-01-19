@@ -21,7 +21,8 @@ abstract class Resource extends FedapayObject
      * Set requestor
      * @param Fedapay\Requestor $requestor
      */
-    public static function setRequestor(Requestor $requestor) {
+    public static function setRequestor(Requestor $requestor)
+    {
         self::$requestor = $requestor;
     }
 
@@ -29,7 +30,8 @@ abstract class Resource extends FedapayObject
      * Return the requestor
      * @return Fedapay\Requestor
      */
-    public static function getRequestor() {
+    public static function getRequestor()
+    {
         return self::$requestor ?: new Requestor;
     }
 

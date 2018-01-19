@@ -2,4 +2,11 @@
 
 namespace Fedapay\Error;
 
-class InvalidRequest extends Base { }
+/**
+ * Class InvalidRequest
+ *
+ * @package Fedapay\Error
+ */
+class InvalidRequest extends Base
+{
+}

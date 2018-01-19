@@ -25,7 +25,7 @@ class CustomerTest extends BaseTestCase
     {
         try {
             \Fedapay\Customer::create(['firstname' => 'Myfirstname']);
-        } catch(\Fedapay\Error\ApiConnection $e) {
+        } catch (\Fedapay\Error\ApiConnection $e) {
             $this->assertTrue($e->hasErrors());
             $this->assertNotNull($e->getErrorMessage());
             $errors = $e->getErrors();

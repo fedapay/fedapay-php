@@ -5,6 +5,11 @@ cache:
 before_script:
   - bash .gitlab-ci.sh
 
+code_quality:
+  image: php:7.0
+  script:
+    - php vendor/bin/phpcs -n lib tests *.php
+
 test:5.5:
   image: php:5.5
   script:

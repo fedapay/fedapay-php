@@ -1,6 +1,7 @@
 <?php
 
 namespace Fedapay;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -175,8 +176,10 @@ class Requestor
         $httpResponse = $e->getResponse();
 
         throw new Error\ApiConnection(
-            $message, $httpStatusCode,
-            $httpRequest, $httpResponse
+            $message,
+            $httpStatusCode,
+            $httpRequest,
+            $httpResponse
         );
     }
 
@@ -192,14 +195,14 @@ class Requestor
     protected function baseUrl()
     {
         switch ($this->environment) {
-        case 'development':
-        case 'sandbox':
-        case 'test':
-        case null:
-            return self::SANDBOX_BASE;
-        case 'production':
-        case 'live':
-            return self::PRODUCTION_BASE;
+            case 'development':
+            case 'sandbox':
+            case 'test':
+            case null:
+                return self::SANDBOX_BASE;
+            case 'production':
+            case 'live':
+                return self::PRODUCTION_BASE;
         }
     }
 

@@ -11,7 +11,7 @@ class ResourceTest extends BaseTestCase
     public function testReturnClassName()
     {
         $this->assertEquals(Fixtures\Foo::className(), 'foo');
-        $this->assertEquals(Fixtures\Foo_Test::className(), 'footest');
+        $this->assertEquals(Fixtures\FooTest::className(), 'footest');
     }
 
     /**
@@ -21,9 +21,9 @@ class ResourceTest extends BaseTestCase
     public function testShouldReturnClassUrl()
     {
         $this->assertEquals(Fixtures\Foo::classPath(), '/foos');
-        $this->assertEquals(Fixtures\Foo_Test::classPath(), '/footests');
-        $this->assertEquals(Fixtures\Foo_Person::classPath(), '/foopeople');
-        $this->assertEquals(Fixtures\Foo_Currency::classPath(), '/foocurrencies');
+        $this->assertEquals(Fixtures\FooTest::classPath(), '/footests');
+        $this->assertEquals(Fixtures\FooPerson::classPath(), '/foopeople');
+        $this->assertEquals(Fixtures\FooCurrency::classPath(), '/foocurrencies');
     }
 
     /**
@@ -32,8 +32,10 @@ class ResourceTest extends BaseTestCase
      */
     public function testShouldThrowInvalidRequest()
     {
-        $this->setExpectedException(\Fedapay\Error\InvalidRequest::class,
-        'Could not determine which URL to request: Tests\Fixtures\Foo instance has invalid ID: ');
+        $this->setExpectedException(
+            \Fedapay\Error\InvalidRequest::class,
+            'Could not determine which URL to request: Tests\Fixtures\Foo instance has invalid ID: '
+        );
         Fixtures\Foo::resourcePath(null);
     }
 
