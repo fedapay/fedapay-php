@@ -53,8 +53,8 @@ class Requestor
         $this->environment = $environment ?: Fedapay::getEnvironment();
         $this->apiVersion = $apiVersion ?: Fedapay::getApiVersion();
 
-        $this->client = new \GuzzleHttp\Client();
-      //  var_dump(openssl_get_cert_locations());
+        $this->client = new \GuzzleHttp\Client(['verify' => self::defaultCaBundle()]);
+
     }
 
     /**
@@ -160,7 +160,6 @@ class Requestor
                     $options['json'] = $params;
                     break;
             }
-
             $response = $this->client->request($method, $url, $options);
 
             return json_decode($response->getBody()->getContents(), true);
@@ -210,5 +209,10 @@ class Requestor
     protected function url($path)
     {
         return $this->baseUrl() . '/' . $this->apiVersion . $path;
+    }
+
+    private static function defaultCaBundle()
+    {
+        return dirname(__DIR__) . '/data/cacert.pem';
     }
 }
