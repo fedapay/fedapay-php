@@ -54,6 +54,7 @@ class Requestor
         $this->apiVersion = $apiVersion ?: Fedapay::getApiVersion();
 
         $this->client = new \GuzzleHttp\Client();
+      //  var_dump(openssl_get_cert_locations());
     }
 
     /**
