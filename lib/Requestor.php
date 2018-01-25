@@ -7,133 +7,146 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 
 /**
- * Class Requestor
- *
- * @package Fedapay
- */
+* Class Requestor
+*
+* @package Fedapay
+*/
 class Requestor
 {
-    const SANDBOX_BASE = 'https://api.fedapay.com';
+    const SANDBOX_BASE = 'https://test.api.fedapay.com';
 
-    const PRODUCTION_BASE = 'https://api.production.fedapay.com';
+    const PRODUCTION_BASE = 'https://production.api.fedapay.com';
 
     /**
-     * Api key
-     * @var string
-     */
+    * Api key
+    * @var string
+    */
     protected $apiKey;
 
     /**
-     * Api environment
-     * @var string
-     */
+    * Api environment
+    * @var string
+    */
     protected $environment;
 
     /**
-     * Api version
-     * @var string
-     */
+    * Api version
+    * @var string
+    */
     protected $apiVersion;
 
     /**
-     * HttpClient
-     * @var GuzzleHttp\Client
-     */
+    * HttpClient
+    * @var GuzzleHttp\Client
+    */
     protected $client;
 
     /**
-     * @param string $apiKey The api key.
-     * @param string $environment the environment. Default is sandbox
-     * Should be one ont these development, sandbox, test, production, live
-     * @param string $apiVersion the api version. Default is v1
-     */
-    public function __construct($apiKey = null, $environment = null, $apiVersion = null)
-    {
+    * @param string $apiKey The api key.
+    * @param string $environment the environment. Default is sandbox
+    * Should be one ont these development, sandbox, test, production, live
+    * @param string $apiVersion the api version. Default is v1
+    */
+    public function __construct(
+        $apiKey = null,
+        $environment = null,
+        $apiVersion = null
+    ) {
         $this->apiKey = $apiKey ?: Fedapay::getApiKey();
         $this->environment = $environment ?: Fedapay::getEnvironment();
         $this->apiVersion = $apiVersion ?: Fedapay::getApiVersion();
 
-        $this->client = new \GuzzleHttp\Client(['verify' => self::defaultCaBundle()]);
-
+        $this->client = $this->defaultClient();
     }
 
     /**
-     * @return string The API key used for requests.
-     */
+    * @return string The API key used for requests.
+    */
     public function getApiKey()
     {
         return $this->apiKey;
     }
 
     /**
-     * Sets the API key to be used for requests.
-     *
-     * @param string $apiKey
-     */
+    * Sets the API key to be used for requests.
+    *
+    * @param string $apiKey
+    */
     public function setApiKey($apiKey)
     {
         $this->apiKey = $apiKey;
     }
 
     /**
-     * @return string The requestor API version used for requests.
-     */
+    * @return string The requestor API version used for requests.
+    */
     public function getApiVersion()
     {
         return $this->apiVersion;
     }
 
     /**
-     * @param string $environment The requestor api environment.
-     * @return void
-     */
+    * @param string $environment The requestor api environment.
+    * @return void
+    */
     public function setApiVersion($apiVersion)
     {
         $this->apiVersion = $apiVersion;
     }
 
     /**
-     * @return string The requestor Api environment
-     */
+    * @return string The requestor Api environment
+    */
     public function getEnvironment()
     {
         return $this->environment;
     }
 
     /**
-     * @param string $environment The requestor API environment.
-     * @return void
-     */
+    * @param string $environment The requestor API environment.
+    * @return void
+    */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
     }
 
     /**
-     * @return GuzzleHttp\Client The requestor client
-     */
+    * @return GuzzleHttp\Client The requestor client
+    */
     public function getClient()
     {
         return $this->client;
     }
 
     /**
-     * @param GuzzleHttp\Client $client The requestor client.
-     * @return void
-     */
+    * @param GuzzleHttp\Client $client The requestor client.
+    * @return void
+    */
     public function setClient($client)
     {
         $this->client = $client;
     }
 
+    private function defaultClient()
+    {
+        $options = [];
+
+        if (Fedapay::getVerifySslCerts()) {
+            $options['verify'] = Fedapay::getCaBundlePath();
+        }
+
+        return new \GuzzleHttp\Client($options);
+    }
+
     /**
-     * @param string     $method
-     * @param string     $url
-     * @param array|null $params
-     * @param array|null $headers
-     *
-     * @return array An API response.
-     */
+    * @param string     $method
+    * @param string     $url
+    * @param array|null $params
+    * @param array|null $headers
+    *
+    * @return array An API response.
+    */
     public function request($method, $path, $params = [], $headers = [])
     {
         try {
@@ -209,10 +222,5 @@ class Requestor
     protected function url($path)
     {
         return $this->baseUrl() . '/' . $this->apiVersion . $path;
-    }
-
-    private static function defaultCaBundle()
-    {
-        return dirname(__DIR__) . '/data/cacert.pem';
     }
 }

@@ -9,6 +9,10 @@ namespace Fedapay;
  */
 class Fedapay
 {
+    const VERSION = '1.0.0';
+
+    const DEFAULT_CA_BUNDLE_PATH = __DIR__ . '/../data/ca-certificates.crt';
+
     // @var string The Fedapay API key to be used for requests.
     protected static $apiKey;
 
@@ -17,7 +21,9 @@ class Fedapay
 
     protected static $apiVersion = 'v1';
 
-    const VERSION = '1.0.0';
+    protected static $verifySslCerts = true;
+
+    protected static $caBundlePath = self::DEFAULT_CA_BUNDLE_PATH;
 
     /**
      * @return string The API key used for requests.
@@ -53,6 +59,40 @@ class Fedapay
     public static function setApiVersion($apiVersion)
     {
         self::$apiVersion = $apiVersion;
+    }
+
+    /**
+     * @return bool Determine if the request should verify SSL certificate.
+     */
+    public static function getVerifySslCerts()
+    {
+        return self::$verifySslCerts;
+    }
+
+    /**
+     * @param bool $verify The verify ssl certificates value.
+     * @return void
+     */
+    public static function setVerifySslCerts($verify)
+    {
+        self::$verifySslCerts = $verify;
+    }
+
+    /**
+     * @return string Return the path of the certificate.
+     */
+    public static function getCaBundlePath()
+    {
+        return self::$caBundlePath;
+    }
+
+    /**
+     * @param string $path The path of the certificate.
+     * @return void
+     */
+    public static function setCaBundlePath($path)
+    {
+        self::$caBundlePath = $path;
     }
 
     /**
