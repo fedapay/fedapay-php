@@ -11,8 +11,6 @@ class Fedapay
 {
     const VERSION = '1.0.0';
 
-    const DEFAULT_CA_BUNDLE_PATH = __DIR__ . '/../data/ca-certificates.crt';
-
     // @var string The Fedapay API key to be used for requests.
     protected static $apiKey;
 
@@ -23,7 +21,7 @@ class Fedapay
 
     protected static $verifySslCerts = true;
 
-    protected static $caBundlePath = self::DEFAULT_CA_BUNDLE_PATH;
+    protected static $caBundlePath;
 
     /**
      * @return string The API key used for requests.
@@ -83,6 +81,10 @@ class Fedapay
      */
     public static function getCaBundlePath()
     {
+        if (!self::$caBundlePath) {
+            self::$caBundlePath = dirname(__FILE__) . '/../data/ca-certificates.crt';
+        }
+
         return self::$caBundlePath;
     }
 
