@@ -34,6 +34,7 @@ abstract class Util
     public static function convertToFedapayObject($resp, $opts)
     {
         $types = [
+            'v1/api_key' => 'Fedapay\\ApiKey',
             'v1/account' => 'Fedapay\\Account',
             'v1/currency' => 'Fedapay\\Currency',
             'v1/customer' => 'Fedapay\\Customer',

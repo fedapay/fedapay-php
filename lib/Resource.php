@@ -113,8 +113,8 @@ abstract class Resource extends FedapayObject
         $response = $requestor->request($method, $url, $params, $headers);
 
         $options = [
-            'apiVersion' => $requestor->getApiVersion(),
-            'environment' => $requestor->getEnvironment()
+            'apiVersion' => Fedapay::getApiVersion(),
+            'environment' => Fedapay::getEnvironment()
         ];
 
         return [$response, $options];
