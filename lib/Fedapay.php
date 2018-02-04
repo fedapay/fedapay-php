@@ -12,7 +12,7 @@ class Fedapay
     const VERSION = '1.0.0';
 
     // @var string The Fedapay API key to be used for requests.
-    protected static $apiKey;
+    protected static $apiKey = null;
 
     // @var string|null The Fedapay token to be used for oauth requests.
     protected static $token = null;
@@ -30,7 +30,7 @@ class Fedapay
     protected static $verifySslCerts = true;
 
     // @var string|null the ca bundle path.
-    protected static $caBundlePath;
+    protected static $caBundlePath = null;
 
     /**
      * @return string The API key used for requests.

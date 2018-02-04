@@ -53,7 +53,8 @@ class Requestor
     */
     protected $client;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->apiKey = Fedapay::getApiKey();
         $this->token = Fedapay::getToken();
         $this->environment = Fedapay::getEnvironment();
@@ -119,11 +120,11 @@ class Requestor
                 case 'GET':
                 case 'HEAD':
                 case 'DELETE':
-                $options['query'] = $params;
-                break;
+                    $options['query'] = $params;
+                    break;
                 default:
-                $options['json'] = $params;
-                break;
+                    $options['json'] = $params;
+                    break;
             }
             $response = $this->client->request($method, $url, $options);
 
@@ -170,10 +171,10 @@ class Requestor
             case 'sandbox':
             case 'test':
             case null:
-            return self::SANDBOX_BASE;
+                return self::SANDBOX_BASE;
             case 'production':
             case 'live':
-            return self::PRODUCTION_BASE;
+                return self::PRODUCTION_BASE;
         }
     }
 

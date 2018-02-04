@@ -21,6 +21,17 @@ abstract class BaseTestCase extends TestCase
         \Fedapay\Fedapay::setApiKey(self::API_KEY);
     }
 
+    protected function tearDown()
+    {
+        // Back to default
+        \Fedapay\Fedapay::setApiKey(null);
+        \Fedapay\Fedapay::setApiVersion('v1');
+        \Fedapay\Fedapay::setEnvironment('sandbox');
+        \Fedapay\Fedapay::setToken(null);
+        \Fedapay\Fedapay::setAccountId(null);
+        \Fedapay\Fedapay::setVerifySslCerts(true);
+    }
+
     public function createMockClient($status, $headers = [], $body = [])
     {
         $body = json_encode($body);
