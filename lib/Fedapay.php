@@ -14,13 +14,22 @@ class Fedapay
     // @var string The Fedapay API key to be used for requests.
     protected static $apiKey;
 
+    // @var string|null The Fedapay token to be used for oauth requests.
+    protected static $token = null;
+
+    // @var string|null The account ID for connected accounts requests.
+    public static $accountId = null;
+
     // @var string The environment for the Fedapay API.
     protected static $environment = 'sandbox';
 
+    // @var string The api version.
     protected static $apiVersion = 'v1';
 
+    // @var bool verify ssl certs.
     protected static $verifySslCerts = true;
 
+    // @var string|null the ca bundle path.
     protected static $caBundlePath;
 
     /**
@@ -43,6 +52,44 @@ class Fedapay
     }
 
     /**
+     * @return string The token used for requests.
+     */
+    public static function getToken()
+    {
+        return self::$token;
+    }
+
+    /**
+     * Sets the token to be used for requests.
+     *
+     * @param string $token
+     * @return void
+     */
+    public static function setToken($token)
+    {
+        self::$token = $token;
+    }
+
+    /**
+     * @return string The account id used for connected account.
+     */
+    public static function getAccountId()
+    {
+        return self::$accountId;
+    }
+
+    /**
+     * Sets the account id to be used for connected account.
+     *
+     * @param string $token
+     * @return void
+     */
+    public static function setAccountId($accountId)
+    {
+        self::$accountId = $accountId;
+    }
+
+    /**
      * @return string The API version used for requests.
      */
     public static function getApiVersion()
@@ -51,7 +98,7 @@ class Fedapay
     }
 
     /**
-     * @param string $environment The API environment.
+     * @param string $apiVersion The API version.
      * @return void
      */
     public static function setApiVersion($apiVersion)

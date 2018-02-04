@@ -24,6 +24,12 @@ class Requestor
     protected $apiKey;
 
     /**
+    * Token
+    * @var string
+    */
+    protected $token;
+
+    /**
     * Api environment
     * @var string
     */
@@ -36,79 +42,25 @@ class Requestor
     protected $apiVersion;
 
     /**
+    * Account id
+    * @var string
+    */
+    protected $accountId;
+
+    /**
     * HttpClient
     * @var GuzzleHttp\Client
     */
     protected $client;
 
-    /**
-    * @param string $apiKey The api key.
-    * @param string $environment the environment. Default is sandbox
-    * Should be one ont these development, sandbox, test, production, live
-    * @param string $apiVersion the api version. Default is v1
-    */
-    public function __construct(
-        $apiKey = null,
-        $environment = null,
-        $apiVersion = null
-    ) {
-        $this->apiKey = $apiKey ?: Fedapay::getApiKey();
-        $this->environment = $environment ?: Fedapay::getEnvironment();
-        $this->apiVersion = $apiVersion ?: Fedapay::getApiVersion();
+    public function __construct() {
+        $this->apiKey = Fedapay::getApiKey();
+        $this->token = Fedapay::getToken();
+        $this->environment = Fedapay::getEnvironment();
+        $this->apiVersion = Fedapay::getApiVersion();
+        $this->accountId = Fedapay::getAccountId();
 
         $this->client = $this->defaultClient();
-    }
-
-    /**
-    * @return string The API key used for requests.
-    */
-    public function getApiKey()
-    {
-        return $this->apiKey;
-    }
-
-    /**
-    * Sets the API key to be used for requests.
-    *
-    * @param string $apiKey
-    */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
-    }
-
-    /**
-    * @return string The requestor API version used for requests.
-    */
-    public function getApiVersion()
-    {
-        return $this->apiVersion;
-    }
-
-    /**
-    * @param string $environment The requestor api environment.
-    * @return void
-    */
-    public function setApiVersion($apiVersion)
-    {
-        $this->apiVersion = $apiVersion;
-    }
-
-    /**
-    * @return string The requestor Api environment
-    */
-    public function getEnvironment()
-    {
-        return $this->environment;
-    }
-
-    /**
-    * @param string $environment The requestor API environment.
-    * @return void
-    */
-    public function setEnvironment($environment)
-    {
-        $this->environment = $environment;
     }
 
     /**
@@ -167,11 +119,11 @@ class Requestor
                 case 'GET':
                 case 'HEAD':
                 case 'DELETE':
-                    $options['query'] = $params;
-                    break;
+                $options['query'] = $params;
+                break;
                 default:
-                    $options['json'] = $params;
-                    break;
+                $options['json'] = $params;
+                break;
             }
             $response = $this->client->request($method, $url, $options);
 
@@ -198,11 +150,17 @@ class Requestor
 
     protected function defaultHeaders()
     {
-        return [
+        $default = [
             'X-Version' => '1.0.0',
             'X-Source' => 'PhpLib',
-            'Authorization' => 'Bearer '. $this->apiKey
+            'Authorization' => 'Bearer '. ($this->apiKey ?: $this->token)
         ];
+
+        if ($this->accountId) {
+            $default['Fedapay-Account'] = $this->accountId;
+        }
+
+        return $default;
     }
 
     protected function baseUrl()
@@ -212,10 +170,10 @@ class Requestor
             case 'sandbox':
             case 'test':
             case null:
-                return self::SANDBOX_BASE;
+            return self::SANDBOX_BASE;
             case 'production':
             case 'live':
-                return self::PRODUCTION_BASE;
+            return self::PRODUCTION_BASE;
         }
     }
 
