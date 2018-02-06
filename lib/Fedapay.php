@@ -49,6 +49,7 @@ class Fedapay
     public static function setApiKey($apiKey)
     {
         self::$apiKey = $apiKey;
+        self::$token = null;
     }
 
     /**
@@ -68,6 +69,7 @@ class Fedapay
     public static function setToken($token)
     {
         self::$token = $token;
+        self::$apiKey = null;
     }
 
     /**
