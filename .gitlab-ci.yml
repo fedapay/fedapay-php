@@ -39,12 +39,13 @@ test:7.1:
 
 test:7.2:
   stage: test
-  image: php:7.1
+  image: php:7.2
   script:
     - php vendor/bin/phpunit
     - php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
 
 trigger:
+  image: php:7.2
   stage: trigger
   script:
     # Tribber fedapay-checkout
