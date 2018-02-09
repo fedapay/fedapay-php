@@ -6,7 +6,7 @@ use Faker\Factory;
 
 class AccountTest extends BaseTestCase
 {
-    const TOKEN = '5f99eda3a4aa27602d5425a4845209a91efea8c1463ac171103fce1dbc5866ca';
+    const TOKEN = '442b65ffd0b82104900735bda5627414255adc0d63d6135d06fe7c68100eed81';
 
     protected function setUp()
     {
