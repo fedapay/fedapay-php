@@ -15,6 +15,7 @@ abstract class BaseTestCase extends TestCase
     protected $client;
 
     const API_KEY = 'sk_test_123';
+    const OAUTH_TOKEN = 'oauth_test_token_123';
 
     protected function setUp()
     {

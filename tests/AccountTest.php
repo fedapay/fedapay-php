@@ -6,12 +6,10 @@ use Faker\Factory;
 
 class AccountTest extends BaseTestCase
 {
-    const TOKEN = '442b65ffd0b82104900735bda5627414255adc0d63d6135d06fe7c68100eed81';
-
     protected function setUp()
     {
         \Fedapay\Fedapay::setApiKey(null);
-        \Fedapay\Fedapay::setToken(self::TOKEN);
+        \Fedapay\Fedapay::setToken(self::OAUTH_TOKEN);
     }
 
     /**
