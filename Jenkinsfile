@@ -6,10 +6,6 @@ pipeline {
         }
     }
 
-    environment {
-
-    }
-
     stages {
         stage('php:5.5') {
             steps {
