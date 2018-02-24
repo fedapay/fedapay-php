@@ -51,6 +51,69 @@ pipeline {
                         }
                     }
                 }
+
+                stage('php:7.0') {
+                    agent {
+                        docker {
+                            image 'php:7.0'
+                            args '-u root:sudo'
+                        }
+                    }
+
+                    steps {
+                        withCredentials([
+                          file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                          ]) {
+                            sh '''
+                                bash -x jenkins-ci.sh
+                                php vendor/bin/phpunit
+                                php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                             '''
+                        }
+                    }
+                }
+
+                stage('php:7.1') {
+                    agent {
+                        docker {
+                            image 'php:7.1'
+                            args '-u root:sudo'
+                        }
+                    }
+
+                    steps {
+                        withCredentials([
+                          file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                          ]) {
+                            sh '''
+                                bash -x jenkins-ci.sh
+                                php vendor/bin/phpunit
+                                php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                             '''
+                        }
+                    }
+                }
+
+                stage('php:7.2') {
+                    agent {
+                        docker {
+                            image 'php:7.2'
+                            args '-u root:sudo'
+                        }
+                    }
+
+                    steps {
+                        withCredentials([
+                          file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                          ]) {
+                            sh '''
+                                bash -x jenkins-ci.sh
+                                php vendor/bin/phpunit
+                                php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                             '''
+                        }
+                    }
+                }
             }
         }
     }
