@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Notify') {
-            slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            steps {
+                slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
         }
 
         stage('test') {
@@ -16,14 +18,16 @@ pipeline {
                         }
                     }
 
-                    withCredentials([
-                      file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
-                      ]) {
-                        sh '''
-                            bash -x jenkins-ci.sh
-                            php vendor/bin/phpunit
-                            php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
-                         '''
+                    steps {
+                        withCredentials([
+                          file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                          ]) {
+                            sh '''
+                                bash -x jenkins-ci.sh
+                                php vendor/bin/phpunit
+                                php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                             '''
+                        }
                     }
                 }
 
@@ -35,14 +39,16 @@ pipeline {
                         }
                     }
 
-                    withCredentials([
-                      file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
-                      ]) {
-                        sh '''
-                            bash -x jenkins-ci.sh
-                            php vendor/bin/phpunit
-                            php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
-                         '''
+                    steps {
+                        withCredentials([
+                          file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                          ]) {
+                            sh '''
+                                bash -x jenkins-ci.sh
+                                php vendor/bin/phpunit
+                                php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                             '''
+                        }
                     }
                 }
             }
