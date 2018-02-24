@@ -15,7 +15,7 @@ pipeline {
                   file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
                   ]) {
                     sh '''
-                        ./jenkins-ci.sh
+                        bash ./jenkins-ci.sh
                         php vendor/bin/phpunit
                         php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
                      '''
