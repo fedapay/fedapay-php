@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'php:5.5'
-            args '-u root:sudo'
+            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
         }
     }
 
