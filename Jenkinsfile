@@ -14,7 +14,7 @@ pipeline {
                     agent {
                         docker {
                             image 'php:5.5'
-                            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
+                            args '-u root:sudo'
                         }
                     }
 
@@ -35,7 +35,7 @@ pipeline {
                     agent {
                         docker {
                             image 'php:5.6'
-                            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
+                            args '-u root:sudo'
                         }
                     }
 
