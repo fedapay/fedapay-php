@@ -1,24 +1,49 @@
 pipeline {
-    agent {
-        docker {
-            image 'php:5.5'
-            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
-        }
-    }
+    agent none
 
     stages {
-        stage('php:5.5') {
-            steps {
-                slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        stage('Notify') {
+            slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
 
-                withCredentials([
-                  file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
-                  ]) {
-                    sh '''
-                        bash -x jenkins-ci.sh
-                        php vendor/bin/phpunit
-                        php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
-                     '''
+        stage('test') {
+            parallel {
+                stage('php:5.5') {
+                    agent {
+                        docker {
+                            image 'php:5.5'
+                            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
+                        }
+                    }
+
+                    withCredentials([
+                      file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                      ]) {
+                        sh '''
+                            bash -x jenkins-ci.sh
+                            php vendor/bin/phpunit
+                            php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                         '''
+                    }
+                }
+
+                stage('php:5.6') {
+                    agent {
+                        docker {
+                            image 'php:5.6'
+                            args '-u root:sudo -v /var/lib/dokku/data/storage/caches/composer:/vendor'
+                        }
+                    }
+
+                    withCredentials([
+                      file(credentialsId: 'ssh_private_key_file', variable: 'SSH_PRIVATE_KEY_FILE')
+                      ]) {
+                        sh '''
+                            bash -x jenkins-ci.sh
+                            php vendor/bin/phpunit
+                            php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
+                         '''
+                    }
                 }
             }
         }
