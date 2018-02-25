@@ -29,6 +29,12 @@ pipeline {
                              '''
                         }
                     }
+
+                    post {
+                        always {
+                          sh 'rm -R vendor/'
+                        }
+                    }
                 }
 
                 stage('php:5.6') {
@@ -48,6 +54,12 @@ pipeline {
                                 php vendor/bin/phpunit
                                 php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
                              '''
+                        }
+                    }
+
+                    post {
+                        always {
+                          sh 'rm -R vendor/'
                         }
                     }
                 }
@@ -71,6 +83,12 @@ pipeline {
                              '''
                         }
                     }
+
+                    post {
+                        always {
+                          sh 'rm -R vendor/'
+                        }
+                    }
                 }
 
                 stage('php:7.1') {
@@ -92,6 +110,12 @@ pipeline {
                              '''
                         }
                     }
+
+                    post {
+                        always {
+                          sh 'rm -R vendor/'
+                        }
+                    }
                 }
 
                 stage('php:7.2') {
@@ -111,6 +135,12 @@ pipeline {
                                 php vendor/bin/phpunit
                                 php vendor/bin/phpcs --standard=PSR2 -n lib tests *.php
                              '''
+                        }
+                    }
+
+                    post {
+                        always {
+                          sh 'rm -R vendor/'
                         }
                     }
                 }
