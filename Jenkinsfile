@@ -148,6 +148,8 @@ pipeline {
         }
 
         stage('Trigger') {
+            agent any
+
             when {
                 anyOf {
                     branch 'develop'
