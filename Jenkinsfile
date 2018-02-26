@@ -160,9 +160,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'auth_access', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        URL='http://jenkins.fedapay.com/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
+                        URL='https://jenkins.fedapay.com/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
                         CRUMB=$(curl -s $URL --user ${USERNAME}:${PASSWORD})
-                        curl -X POST -H "$CRUMB" --user ${USERNAME}:${PASSWORD} http://jenkins.fedapay.com/job/fedapay-checkout/job/${BRANCH_NAME}/build
+                        curl -X POST -H "$CRUMB" --user ${USERNAME}:${PASSWORD} https://jenkins.fedapay.com/job/fedapay-checkout/job/${BRANCH_NAME}/build
                     '''
                 }
             }
