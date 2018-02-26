@@ -25,7 +25,7 @@ class RequestorTest extends BaseTestCase
             $this->assertNotNull($httpResponse);
             $this->assertNotNull($httpRequest);
             $uri = $httpRequest->getUri() . '';
-            $this->assertEquals($uri, 'https://test.api.fedapay.com/v1/path?foo=2');
+            $this->assertEquals($uri, 'https://sdx-api.fedapay.com/v1/path?foo=2');
             $this->assertEquals($httpRequest->getMethod(), 'GET');
             $this->assertContains('Bearer sk_test_123', $httpRequest->getHeader('Authorization'));
             $this->assertContains('1.0.0', $httpRequest->getHeader('X-Version'));
@@ -56,7 +56,7 @@ class RequestorTest extends BaseTestCase
             $this->assertNotNull($httpResponse);
             $this->assertNotNull($httpRequest);
             $uri = $httpRequest->getUri() . '';
-            $this->assertEquals($uri, 'https://production.api.fedapay.com/v3/path?foo=2');
+            $this->assertEquals($uri, 'https://api.fedapay.com/v3/path?foo=2');
             $this->assertEquals($httpRequest->getMethod(), 'GET');
             $this->assertContains('Bearer mytoken', $httpRequest->getHeader('Authorization'));
             $this->assertContains('1.0.0', $httpRequest->getHeader('X-Version'));
