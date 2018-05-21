@@ -21,7 +21,7 @@ class RequestorTest extends BaseTestCase
             $httpRequest = $e->getHttpRequest();
             $httpResponse = $e->getHttpResponse();
             $httpStatus = $e->getHttpStatus();
-            $this->assertNotNull($httpStatus, 500);
+            $this->assertEquals($httpStatus, 500);
             $this->assertNotNull($httpResponse);
             $this->assertNotNull($httpRequest);
             $uri = $httpRequest->getUri() . '';
@@ -52,7 +52,7 @@ class RequestorTest extends BaseTestCase
             $httpRequest = $e->getHttpRequest();
             $httpResponse = $e->getHttpResponse();
             $httpStatus = $e->getHttpStatus();
-            $this->assertNotNull($httpStatus, 500);
+            $this->assertEquals($httpStatus, 500);
             $this->assertNotNull($httpResponse);
             $this->assertNotNull($httpRequest);
             $uri = $httpRequest->getUri() . '';
