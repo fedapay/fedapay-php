@@ -53,7 +53,7 @@ class Customer extends Resource
     /**
      * @param string $id The ID of the customer to update.
      * @param array|null $params
-     * @param array|string|null $options
+     * @param array|string|null $headers
      *
      * @return Customer The updated customer.
      */

@@ -49,7 +49,7 @@ class Requestor
 
     /**
     * Http Client
-    * @var GuzzleHttp\Client
+    * @var GuzzleHttp\ClientInterface
     */
     protected static $httpClient;
 
@@ -63,7 +63,7 @@ class Requestor
     }
 
     /**
-    * @param GuzzleHttp\Client $client The requestor http client.
+    * @param GuzzleHttp\ClientInterface $client The requestor http client.
     * @return void
     */
     public static function setHttpClient($client)
@@ -71,6 +71,10 @@ class Requestor
         self::$httpClient = $client;
     }
 
+    /**
+     * The http client
+     * @return GuzzleHttp\ClientInterface
+     */
     private function httpClient()
     {
         if (!self::$httpClient) {
@@ -128,6 +132,12 @@ class Requestor
         }
     }
 
+    /**
+     * Format http request error
+     * @param GuzzleHttp\Exception\RequestException $e
+     * @throws Error\ApiConnection
+     * @return void
+     */
     protected function handleRequestException($e)
     {
         $message = 'Request error: '. $e->getMessage();
@@ -143,6 +153,10 @@ class Requestor
         );
     }
 
+    /**
+     * Return the default request headers
+     * @return array
+     */
     protected function defaultHeaders()
     {
         $default = [
@@ -158,6 +172,10 @@ class Requestor
         return $default;
     }
 
+    /**
+     * Return the base url of the requests
+     * @return string
+     */
     protected function baseUrl()
     {
         switch ($this->environment) {
@@ -172,6 +190,10 @@ class Requestor
         }
     }
 
+    /**
+     * Return the request url
+     * @return string
+     */
     protected function url($path)
     {
         return $this->baseUrl() . '/' . $this->apiVersion . $path;
