@@ -9,7 +9,7 @@ class CurrencyTest extends BaseTestCase
     /**
      * Should return FedaPay\Currency
      */
-    public function testShouldReturnCustomers()
+    public function testShouldReturnCurrencies()
     {
         $body = [
             'v1/currencies' => [[
