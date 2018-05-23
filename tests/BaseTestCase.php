@@ -53,14 +53,26 @@ abstract class BaseTestCase extends TestCase
         return $client;
     }
 
-    public function exceptRequest($path, $method)
+    public function exceptRequest($path, $method, $query = null, $body = null)
     {
         // Iterate over the requests and responses
         foreach ($this->container as $transaction) {
             $request = $transaction['request'];
 
+
             $this->assertEquals($request->getUri()->getPath(), $path);
             $this->assertEquals($request->getMethod(), $method);
+
+            if ($query) {
+                parse_str($request->getUri()->getQuery(), $request_query);
+
+                $this->assertArraySubset($query, $request_query);
+            }
+
+            if ($body) {
+                $request_body = json_decode($request->getBody()->getContents(), true);
+                $this->assertArraySubset($body, $request_body);
+            }
         }
     }
 }

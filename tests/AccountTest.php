@@ -48,6 +48,7 @@ class AccountTest extends BaseTestCase
      */
     public function testAccountCreationShouldFailed()
     {
+        $data = ['firstname' => 'Myfirstname'];
         $body = [
             'message' => 'Account creation failed',
             'errors' => [
@@ -59,9 +60,9 @@ class AccountTest extends BaseTestCase
         \FedaPay\Requestor::setHttpClient($client);
 
         try {
-            \FedaPay\Account::create(['firstname' => 'Myfirstname']);
+            \FedaPay\Account::create($data);
         } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/accounts', 'POST');
+            $this->exceptRequest('/v1/accounts', 'POST', null, $data);
 
             $this->assertTrue($e->hasErrors());
             $this->assertNotNull($e->getErrorMessage());
@@ -96,7 +97,7 @@ class AccountTest extends BaseTestCase
 
         $account = \FedaPay\Account::create($data);
 
-        $this->exceptRequest('/v1/accounts', 'POST');
+        $this->exceptRequest('/v1/accounts', 'POST', null, $data);
         $this->assertInstanceOf(\FedaPay\Account::class, $account);
         $this->assertEquals($account->name, $data['name']);
     }
@@ -157,7 +158,7 @@ class AccountTest extends BaseTestCase
 
         $account = \FedaPay\Account::update(1, $data);
 
-        $this->exceptRequest('/v1/accounts/1', 'PUT');
+        $this->exceptRequest('/v1/accounts/1', 'PUT', null, $data);
         $this->assertInstanceOf(\FedaPay\Account::class, $account);
         $this->assertEquals($account->name, $data['name']);
         $this->assertEquals($account->id, 1);
@@ -197,7 +198,9 @@ class AccountTest extends BaseTestCase
         \FedaPay\Requestor::setHttpClient($client);
         $account->save();
 
-        $this->exceptRequest('/v1/accounts/1', 'PUT');
+        $this->exceptRequest('/v1/accounts/1', 'PUT', null, [
+            'name' => 'Updated Name'
+        ]);
     }
 
     /**

@@ -46,6 +46,7 @@ class CustomerTest extends BaseTestCase
      */
     public function testCustomerCreationShouldFailed()
     {
+        $data = ['firstname' => 'Myfirstname'];
         $body = [
             'message' => 'Account creation failed',
             'errors' => [
@@ -57,9 +58,9 @@ class CustomerTest extends BaseTestCase
         \FedaPay\Requestor::setHttpClient($client);
 
         try {
-            \FedaPay\Customer::create(['firstname' => 'Myfirstname']);
+            \FedaPay\Customer::create($data);
         } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/customers', 'POST');
+            $this->exceptRequest('/v1/customers', 'POST', null, $data);
 
             $this->assertTrue($e->hasErrors());
             $this->assertNotNull($e->getErrorMessage());
@@ -99,7 +100,7 @@ class CustomerTest extends BaseTestCase
 
         $customer = \FedaPay\Customer::create($data);
 
-        $this->exceptRequest('/v1/customers', 'POST');
+        $this->exceptRequest('/v1/customers', 'POST', null, $data);
         $this->assertInstanceOf(\FedaPay\Customer::class, $customer);
         $this->assertEquals($customer->firstname, $data['firstname']);
         $this->assertEquals($customer->lastname, $data['lastname']);
@@ -179,7 +180,7 @@ class CustomerTest extends BaseTestCase
 
         $customer = \FedaPay\Customer::update(1, $data);
 
-        $this->exceptRequest('/v1/customers/1', 'PUT');
+        $this->exceptRequest('/v1/customers/1', 'PUT', null, $data);
         $this->assertInstanceOf(\FedaPay\Customer::class, $customer);
         $this->assertEquals($customer->firstname, $data['firstname']);
         $this->assertEquals($customer->lastname, $data['lastname']);
@@ -226,7 +227,9 @@ class CustomerTest extends BaseTestCase
 
         $customer->save();
 
-        $this->exceptRequest('/v1/customers/1', 'PUT');
+        $this->exceptRequest('/v1/customers/1', 'PUT', null, [
+            'firstname' => 'First name'
+        ]);
     }
 
     /**

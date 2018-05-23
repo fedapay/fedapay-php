@@ -58,6 +58,8 @@ class TransactionTest extends BaseTestCase
      */
     public function testTransactionCreationShouldFailed()
     {
+        $data = ['firstname' => 'Myfirstname'];
+
         $body = [
             'message' => 'Account creation failed',
             'errors' => [
@@ -72,7 +74,7 @@ class TransactionTest extends BaseTestCase
         try {
             \FedaPay\Transaction::create(['firstname' => 'Myfirstname']);
         } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/transactions', 'POST');
+            $this->exceptRequest('/v1/transactions', 'POST', null, $data);
 
             $this->assertTrue($e->hasErrors());
             $this->assertNotNull($e->getErrorMessage());
@@ -128,7 +130,7 @@ class TransactionTest extends BaseTestCase
 
         $transaction = \FedaPay\Transaction::create($data);
 
-        $this->exceptRequest('/v1/transactions', 'POST');
+        $this->exceptRequest('/v1/transactions', 'POST', null, $data);
         $this->assertInstanceOf(\FedaPay\Transaction::class, $transaction);
         $this->assertEquals(1, $transaction->id);
         $this->assertEquals('0KJAU01', $transaction->transaction_key);
@@ -241,7 +243,7 @@ class TransactionTest extends BaseTestCase
 
         $transaction = \FedaPay\Transaction::update(1, $data);
 
-        $this->exceptRequest('/v1/transactions/1', 'PUT');
+        $this->exceptRequest('/v1/transactions/1', 'PUT', null, $data);
         $this->assertInstanceOf(\FedaPay\Transaction::class, $transaction);
         $this->assertEquals(1, $transaction->id);
         $this->assertEquals('0KJAU01', $transaction->transaction_key);
@@ -310,7 +312,9 @@ class TransactionTest extends BaseTestCase
 
         $transaction->save();
 
-        $this->exceptRequest('/v1/transactions/1', 'PUT');
+        $this->exceptRequest('/v1/transactions/1', 'PUT', null, [
+            'description' => 'Update description'
+        ]);
     }
 
     /**
