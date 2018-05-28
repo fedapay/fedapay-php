@@ -13,9 +13,9 @@ use GuzzleHttp\Psr7\Request;
 */
 class Requestor
 {
-    const SANDBOX_BASE = 'https://sdx-api.fedapay.com';
+    const SANDBOX_BASE = 'https://sandbox-api.fedapay.com';
 
-    const PRODUCTION_BASE = 'https://api.fedapay.com';
+    const PRODUCTION_BASE = 'https://live-api.fedapay.com';
 
     /**
     * Api key
