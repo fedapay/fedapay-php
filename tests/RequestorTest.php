@@ -56,7 +56,7 @@ class RequestorTest extends BaseTestCase
             $this->assertNotNull($httpResponse);
             $this->assertNotNull($httpRequest);
             $uri = $httpRequest->getUri() . '';
-            $this->assertEquals($uri, 'https://live-api.fedapay.com/v3/path?foo=2');
+            $this->assertEquals($uri, 'https://api.fedapay.com/v3/path?foo=2');
             $this->assertEquals($httpRequest->getMethod(), 'GET');
             $this->assertContains('Bearer mytoken', $httpRequest->getHeader('Authorization'));
             $this->assertContains(\FedaPay\FedaPay::VERSION, $httpRequest->getHeader('X-Version'));

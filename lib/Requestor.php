@@ -15,7 +15,7 @@ class Requestor
 {
     const SANDBOX_BASE = 'https://sandbox-api.fedapay.com';
 
-    const PRODUCTION_BASE = 'https://live-api.fedapay.com';
+    const PRODUCTION_BASE = 'https://api.fedapay.com';
 
     /**
     * Api key
