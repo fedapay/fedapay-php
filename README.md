@@ -32,7 +32,7 @@ require_once('/path/to/fedapay-php/init.php');
 
 The bindings require the following extension in order to work properly:
 
-- [`curl`](https://secure.php.net/manual/en/book.curl.php), although you can use your own non-cURL client if you prefer
+- [`guzzlehttp/guzzle`](https://github.com/guzzle/guzzle)
 - [`json`](https://secure.php.net/manual/en/book.json.php)
 - [`mbstring`](https://secure.php.net/manual/en/book.mbstring.php) (Multibyte String)
 
@@ -65,4 +65,5 @@ Install dependencies as mentioned above (which will resolve [PHPUnit](http://pac
 Or to run an individual test file:
 
 ```bash
-./vendor/bin/phpunit tests/UtilTest.php```
+./vendor/bin/phpunit tests/UtilTest.php
+```
