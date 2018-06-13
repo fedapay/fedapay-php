@@ -65,4 +65,22 @@ class RequestorTest extends BaseTestCase
             $this->assertContains(898, $httpRequest->getHeader('FedaPay-Account'));
         }
     }
+
+    public function testRequestApiBaseParams()
+    {
+        \FedaPay\FedaPay::setApiVersion('v1');
+        \FedaPay\FedaPay::setApiBase('https://test.fedapay.com');
+
+        $client = $this->createMockClient(500);
+        \FedaPay\Requestor::setHttpClient($client);
+        $requestor = new \FedaPay\Requestor;
+
+        try {
+            $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo']);
+        } catch (\FedaPay\Error\ApiConnection $e) {
+            $httpRequest = $e->getHttpRequest();
+            $uri = $httpRequest->getUri() . '';
+            $this->assertEquals($uri, 'https://test.fedapay.com/v1/path?foo=2');
+        }
+    }
 }

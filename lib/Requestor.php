@@ -24,6 +24,12 @@ class Requestor
     protected $apiKey;
 
     /**
+    * Api base
+    * @var string
+    */
+    protected $apiBase;
+
+    /**
     * Token
     * @var string
     */
@@ -56,6 +62,7 @@ class Requestor
     public function __construct()
     {
         $this->apiKey = FedaPay::getApiKey();
+        $this->apiBase = FedaPay::getApiBase();
         $this->token = FedaPay::getToken();
         $this->environment = FedaPay::getEnvironment();
         $this->apiVersion = FedaPay::getApiVersion();
@@ -178,6 +185,10 @@ class Requestor
      */
     protected function baseUrl()
     {
+        if ($this->apiBase) {
+            return $this->apiBase;
+        }
+
         switch ($this->environment) {
             case 'development':
             case 'sandbox':

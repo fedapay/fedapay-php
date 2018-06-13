@@ -14,6 +14,9 @@ class FedaPay
     // @var string The FedaPay API key to be used for requests.
     protected static $apiKey = null;
 
+    // @var string The FedaPay API base to be used for requests.
+    protected static $apiBase = null;
+
     // @var string|null The FedaPay token to be used for oauth requests.
     protected static $token = null;
 
@@ -50,6 +53,25 @@ class FedaPay
     {
         self::$apiKey = $apiKey;
         self::$token = null;
+    }
+
+    /**
+     * @return string The API base used for requests.
+     */
+    public static function getApiBase()
+    {
+        return self::$apiBase;
+    }
+
+    /**
+     * Sets the API base to be used for requests.
+     *
+     * @param string $apiBase
+     * @return void
+     */
+    public static function setApiBase($apiBase)
+    {
+        self::$apiBase = $apiBase;
     }
 
     /**
