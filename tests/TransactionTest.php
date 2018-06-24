@@ -416,8 +416,6 @@ class TransactionTest extends BaseTestCase
 
         $transaction = \FedaPay\Transaction::create($data);
 
-        $transaction->description = 'Update description';
-
         $body = [
             'token' => 'PAYEMENT_TOKEN',
             'url' => 'https://process.fedapay.com/PAYEMENT_TOKEN',
