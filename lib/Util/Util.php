@@ -10,6 +10,9 @@ use FedaPay\FedaPayObject;
  */
 abstract class Util
 {
+    private static $isMbstringAvailable = null;
+    private static $isHashEqualsAvailable = null;
+
     /**
      * Whether the provided array (or other) is a list rather than a dictionary.
      *
@@ -86,4 +89,64 @@ abstract class Util
 
         return str_replace($apiPart, '', $key);
     }
+
+    /**
+     * @param string|mixed $value A string to UTF8-encode.
+     *
+     * @return string|mixed The UTF8-encoded string, or the object passed in if
+     *    it wasn't a string.
+     */
+    public static function utf8($value)
+    {
+        if (self::$isMbstringAvailable === null) {
+            self::$isMbstringAvailable = function_exists('mb_detect_encoding');
+            if (!self::$isMbstringAvailable) {
+                trigger_error("It looks like the mbstring extension is not enabled. " .
+                    "UTF-8 strings will not properly be encoded. Ask your system " .
+                    "administrator to enable the mbstring extension, or write to " .
+                    "support@fedapay.com if you have any questions.", E_USER_WARNING);
+            }
+        }
+        if (is_string($value) && self::$isMbstringAvailable && mb_detect_encoding($value, "UTF-8", true) != "UTF-8") {
+            return utf8_encode($value);
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * @param array $arr A map of param keys to values.
+     * @param string|null $prefix
+     *
+     * @return string A querystring, essentially.
+     */
+    public static function urlEncode($arr, $prefix = null)
+    {
+        if (!is_array($arr)) {
+            return $arr;
+        }
+        $r = [];
+        foreach ($arr as $k => $v) {
+            if (is_null($v)) {
+                continue;
+            }
+            if ($prefix) {
+                if ($k !== null && (!is_int($k) || is_array($v))) {
+                    $k = $prefix."[".$k."]";
+                } else {
+                    $k = $prefix."[]";
+                }
+            }
+            if (is_array($v)) {
+                $enc = self::urlEncode($v, $k);
+                if ($enc) {
+                    $r[] = $enc;
+                }
+            } else {
+                $r[] = urlencode($k)."=".urlencode($v);
+            }
+        }
+        return implode("&", $r);
+    }
+
 }
