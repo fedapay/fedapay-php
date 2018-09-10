@@ -113,40 +113,20 @@ class CurlClient implements ClientInterface
 
     // END OF USER DEFINED TIMEOUTS
 
-    public function request($method, $absUrl, $headers, $params, $hasFile)
+    public function request($method, $absUrl, $headers, $params)
     {
         $method = strtolower($method);
 
         $opts = [];
-        if (is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
-            $opts = call_user_func_array($this->defaultOptions, func_get_args());
-            if (!is_array($opts)) {
-                throw new Error\InvalidRequest("Non-array value returned by defaultOptions CurlClient callback");
-            }
-        } elseif (is_array($this->defaultOptions)) { // set default curlopts from array
-            $opts = $this->defaultOptions;
-        }
 
         if ($method == 'get') {
-            if ($hasFile) {
-                throw new Error\InvalidRequest(
-                    "Issuing a GET request with a file parameter"
-                );
-            }
             $opts[CURLOPT_HTTPGET] = 1;
-            if (count($params) > 0) {
-                $encoded = Util\Util::urlEncode($params);
-                $absUrl = "$absUrl?$encoded";
-            }
+
         } elseif ($method == 'post') {
             $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $hasFile ? $params : Util\Util::urlEncode($params);
+            $opts[CURLOPT_POSTFIELDS] = Util\Util::urlEncode($params);
         } elseif ($method == 'delete') {
             $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
-            if (count($params) > 0) {
-                $encoded = Util\Util::urlEncode($params);
-                $absUrl = "$absUrl?$encoded";
-            }
         } else {
             throw new Error\InvalidRequest("Unrecognized method $method");
         }
@@ -185,7 +165,6 @@ class CurlClient implements ClientInterface
         // sending an empty `Expect:` header.
         array_push($headers, 'Expect: ');
 
-        $absUrl = Util\Util::utf8($absUrl);
         $opts[CURLOPT_URL] = $absUrl;
         $opts[CURLOPT_RETURNTRANSFER] = true;
         $opts[CURLOPT_CONNECTTIMEOUT] = $this->connectTimeout;
@@ -196,7 +175,6 @@ class CurlClient implements ClientInterface
         if (!FedaPay::getVerifySslCerts()) {
             $opts[CURLOPT_SSL_VERIFYPEER] = false;
         }
-
         // For HTTPS requests, enable HTTP/2, if supported
         $opts[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2TLS;
 
@@ -218,6 +196,7 @@ class CurlClient implements ClientInterface
 
             $curl = curl_init();
             curl_setopt_array($curl, $opts);
+
             $rbody = curl_exec($curl);
 
             if ($rbody === false) {

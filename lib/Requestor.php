@@ -98,6 +98,32 @@ class Requestor
     }
 
     /**
+     * @static
+     *
+     * @param Resource|bool|array|mixed $d
+     *
+     * @return Resource|array|string|mixed
+     */
+    private static function encodeObjects($d)
+    {
+        if ($d instanceof Resource) {
+            return Util\Util::utf8($d->id);
+        } elseif ($d === true) {
+            return 'true';
+        } elseif ($d === false) {
+            return 'false';
+        } elseif (is_array($d)) {
+            $res = [];
+            foreach ($d as $k => $v) {
+                $res[$k] = self::encodeObjects($v);
+            }
+            return $res;
+        } else {
+            return Util\Util::utf8($d);
+        }
+    }
+
+    /**
     * @param string     $method
     * @param string     $url
     * @param array|null $params
@@ -120,24 +146,23 @@ class Requestor
             $url = $this->url($path);
             $method = strtoupper($method);
             $options = [ 'headers' => $headers ];
-            list($rbody, $rcode, $rheaders, $myApiKey) =
-            $this->_requestRaw($method, $url, $params, $headers);
+
+            switch ($method) {
+                case 'GET':
+                case 'HEAD':
+                case 'DELETE':
+                    $options['query'] = $params;
+                    break;
+                default:
+                    $options['json'] = $params;
+                    break;
+            }
+
+            list($rbody, $rcode, $rheaders)  = $this->httpClient()->request($method, $url, $headers, $options);
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
             $resp = new Response($rbody, $rcode, $rheaders, $json);
-            return [$resp, $myApiKey];
-            // switch ($method) {
-            //     case 'GET':
-            //     case 'HEAD':
-            //     case 'DELETE':
-            //         $options['query'] = $params;
-            //         break;
-            //     default:
-            //         $options['json'] = $params;
-            //         break;
-            // }
-            // $response = $this->httpClient()->request($method, $url, $options);
 
-            // return json_decode($response->getBody()->getContents(), true);
+            return $resp->json;
         } catch (Exception $e) {
             $this->handleRequestException($e);
         }
@@ -173,7 +198,7 @@ class Requestor
         $default = [
             'X-Version' => FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
-            'Authorization' => 'Bearer '. ($this->apiKey ?: $this->token)
+            'Authorization: Bearer '. ($this->apiKey ?: $this->token)
         ];
 
         if ($this->accountId) {
@@ -212,103 +237,6 @@ class Requestor
     protected function url($path)
     {
         return $this->baseUrl() . '/' . $this->apiVersion . $path;
-    }
-
-    /**
-     * @param string $method
-     * @param string $url
-     * @param array  $params
-     * @param array  $headers
-     *
-     * @return array
-     * @throws Error\InvalidRequest
-     * @throws Error\ApiConnection
-     */
-    private function _requestRaw($method, $url, $params, $headers)
-    {
-        $myApiKey = $this->apiKey;
-        if (!$myApiKey) {
-            $myApiKey = FedaPay::$apiKey;
-        }
-        if (!$myApiKey) {
-            $msg = 'No API key provided.  (HINT: set your API key using '
-              . '"FedaPay::setApiKey(<API-KEY>)".  You can generate API keys from '
-              . 'the FedaPay web interface.  See https://api.fedapay.com/ for '
-              . 'details, or email support@fedapay.com if you have any questions.';
-            throw new Error\ApiConnection($msg);
-        }
-        // Clients can supply arbitrary additional keys to be included in the
-        // X-FedaPay-Client-User-Agent header via the optional getUserAgentInfo()
-        // method
-        $clientUAInfo = null;
-        if (method_exists($this->httpClient(), 'getUserAgentInfo')) {
-            $clientUAInfo = $this->httpClient()->getUserAgentInfo();
-        }
-        $absUrl = $this->_apiBase.$url;
-        $params = self::_encodeObjects($params);
-        $defaultHeaders = $this->_defaultHeaders($myApiKey, $clientUAInfo);
-        if (FedaPay::$apiVersion) {
-            $defaultHeaders['FedaPay-Version'] = FedaPay::$apiVersion;
-        }
-        if (FedaPay::$accountId) {
-            $defaultHeaders['FedaPay-Account'] = FedaPay::$accountId;
-        }
-        $hasFile = false;
-        $hasCurlFile = class_exists('\CURLFile', false);
-        foreach ($params as $k => $v) {
-            if (is_resource($v)) {
-                $hasFile = true;
-                $params[$k] = self::_processResourceParam($v, $hasCurlFile);
-            } elseif ($hasCurlFile && $v instanceof \CURLFile) {
-                $hasFile = true;
-            }
-        }
-        if ($hasFile) {
-            $defaultHeaders['Content-Type'] = 'multipart/form-data';
-        } else {
-            $defaultHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
-        $combinedHeaders = array_merge($defaultHeaders, $headers);
-        $rawHeaders = [];
-        foreach ($combinedHeaders as $header => $value) {
-            $rawHeaders[] = $header . ': ' . $value;
-        }
-        list($rbody, $rcode, $rheaders) = $this->httpClient()->request(
-            $method,
-            $absUrl,
-            $rawHeaders,
-            $params,
-            $hasFile
-        );
-        return [$rbody, $rcode, $rheaders, $myApiKey];
-    }
-
-    /**
-     * @param resource $resource
-     * @param bool     $hasCurlFile
-     *
-     * @return \CURLFile|string
-     * @throws Error\InvalidRequest
-     */
-    private function _processResourceParam($resource, $hasCurlFile)
-    {
-        if (get_resource_type($resource) !== 'stream') {
-            throw new Error\InvalidRequest(
-                'Attempted to upload a resource that is not a stream'
-            );
-        }
-        $metaData = stream_get_meta_data($resource);
-        if ($metaData['wrapper_type'] !== 'plainfile') {
-            throw new Error\InvalidRequest(
-                'Only plainfile resource streams are supported'
-            );
-        }
-        if ($hasCurlFile) {
-            // We don't have the filename or mimetype, but the API doesn't care
-            return new \CURLFile($metaData['uri']);
-        } else {
-            return '@'.$metaData['uri'];
-        }
     }
 
     /**
