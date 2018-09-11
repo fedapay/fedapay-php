@@ -26,12 +26,9 @@ class CurrencyTest extends BaseTestCase
             ]]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/currencies', null, $body);
 
         $object = \FedaPay\Currency::all();
-
-        $this->exceptRequest('/v1/currencies', 'GET');
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertTrue(is_array($object->currencies));
@@ -64,12 +61,9 @@ class CurrencyTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/currencies/1', null, $body);
 
         $currency = \FedaPay\Currency::retrieve(1);
-
-        $this->exceptRequest('/v1/currencies/1', 'GET');
 
         $this->assertInstanceOf(\FedaPay\Currency::class, $currency);
         $this->assertEquals('FCFA', $currency->name);

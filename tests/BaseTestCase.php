@@ -3,10 +3,14 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use FedaPay\HttpClient\CurlClient;
 
 abstract class BaseTestCase extends TestCase
 {
     protected $container;
+    protected $mock;
+    protected $call;
+    protected $clientMock;
 
     const API_KEY = 'sk_local_123';
     const OAUTH_TOKEN = 'oauth_test_token_123';
@@ -17,8 +21,11 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\FedaPay::setApiKey(self::API_KEY);
         \FedaPay\FedaPay::setApiBase(self::API_BASE);
 
+         \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
+        $this->mock = null;
+        $this->call = 0;
          // Set up the HTTP client mocker
-        $this->clientMock = $this->getMock('\FedaPay\HttpClient\ClientInterface');
+        // $this->clientMock = $this->getMock('\FedaPay\HttpClient\ClientInterface');
     }
 
     protected function tearDown()
@@ -74,110 +81,22 @@ abstract class BaseTestCase extends TestCase
         }
     } */
 
-     /**
-     * Sets up a request expectation with the provided parameters. The request
-     * will actually go through and be emitted.
-     *
-     * @param string $method HTTP method (e.g. 'post', 'get', etc.)
-     * @param string $path relative path (e.g. '/v1/transactions')
-     * @param array|null $params array of parameters. If null, parameters will
-     *   not be checked.
-     * @param string[]|null $headers array of headers. Does not need to be
-     *   exhaustive. If null, headers are not checked.
-     */
-    protected function expectsRequest(
-        $method,
-        $path,
-        $params = null,
-        $headers = null
-    ) {
-        $this->prepareRequestMock($method, $path, $params, $headers)
-            ->will($this->returnCallback(
-                function ($method, $absUrl, $headers, $params) {
-                    $curlClient = \FedaPay\HttpClient\CurlClient::instance();;
-                    \FedaPay\Requestor::setHttpClient($curlClient);
-                    return $curlClient->request($method, $absUrl, $headers, $params);
-                }
-            ));
-    }
-
-    /**
-     * Sets up a request expectation with the provided parameters. The request
-     * will not actually be emitted, instead the provided response parameters
-     * will be returned.
-     *
-     * @param string $method HTTP method (e.g. 'post', 'get', etc.)
-     * @param string $path relative path (e.g. '/v1/transactions')
-     * @param array|null $params array of parameters. If null, parameters will
-     *   not be checked.
-     * @param string[]|null $headers array of headers. Does not need to be
-     *   exhaustive. If null, headers are not checked.
-     * @param array $response
-     * @param integer $rcode
-     * @param string|null $base
-     *
-     * @return array
-     */
-    protected function stubRequest(
-        $method,
-        $path,
-        $params = null,
-        $headers = null,
-        $response = [],
-        $rcode = 200,
-        $base = null
-    ) {
-        $this->prepareRequestMock($method, $path, $params, $headers, $base)
-            ->willReturn([json_encode($response), $rcode, []]);
-    }
-
-    /**
-     * Prepares the client mocker for an invocation of the `request` method.
-     * This helper method is used by both `expectsRequest` and `stubRequest` to
-     * prepare the client mocker to expect an invocation of the `request` method
-     * with the provided arguments.
-     *
-     * @param string $method HTTP method (e.g. 'post', 'get', etc.)
-     * @param string $path relative path (e.g. '/v1/transactions')
-     * @param array|null $params array of parameters. If null, parameters will
-     *   not be checked.
-     * @param string[]|null $headers array of headers. Does not need to be
-     *   exhaustive. If null, headers are not checked.
-     * @param string|null $base base URL (e.g. 'https://api.fedapay.com')
-     *
-     * @return PHPUnit_Framework_MockObject_Builder_InvocationMocker
-     */
-    private function prepareRequestMock(
-        $method,
-        $path,
-        $params = null,
-        $headers = null,
-        $base = null
-    ) {
-        \FedaPay\Requestor::setHttpClient($this->clientMock);
-
-        if ($base === null) {
-            $base = \FedaPay\FedaPay::getApiBase();
-        }
+    protected function mockRequest($method, $path, $params = array(), $response = array(), $rcode = 200)
+    {
+        $mock = $this->setUpMockRequest();
+        $base = \FedaPay\FedaPay::getApiBase();
         $absUrl = $base.$path;
-
-        return $this->clientMock
-            ->expects($this->once())
-            ->method('request')
-            ->with(
-                strtolower($method),
-                $absUrl,
-                // for headers, we only check that all of the headers provided in $headers are
-                // present in the list of headers of the actual request
-                $headers === null ? $this->anything() : $this->callback(function ($array) use ($headers) {
-                    foreach ($headers as $header) {
-                        if (!in_array($header, $array)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }),
-                $params === null ? $this->anything() : $params
-            );
+        $mock->expects($this->at($this->call++))
+             ->method('request')
+            // ->with(strtolower($method), $absUrl, $this->anything(), $params)
+             ->willReturn(array(json_encode($response), $rcode));
+    }
+    private function setUpMockRequest()
+    {
+        if (!$this->mock) {
+            $this->mock = $this->getMock('\FedaPay\HttpClient\ClientInterface');
+            \FedaPay\Requestor::setHttpClient($this->mock);
+        }
+        return $this->mock;
     }
 }

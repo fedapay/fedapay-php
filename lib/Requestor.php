@@ -2,10 +2,6 @@
 
 namespace FedaPay;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-
 /**
 * Class Requestor
 *
@@ -98,32 +94,6 @@ class Requestor
     }
 
     /**
-     * @static
-     *
-     * @param Resource|bool|array|mixed $d
-     *
-     * @return Resource|array|string|mixed
-     */
-    private static function encodeObjects($d)
-    {
-        if ($d instanceof Resource) {
-            return Util\Util::utf8($d->id);
-        } elseif ($d === true) {
-            return 'true';
-        } elseif ($d === false) {
-            return 'false';
-        } elseif (is_array($d)) {
-            $res = [];
-            foreach ($d as $k => $v) {
-                $res[$k] = self::encodeObjects($v);
-            }
-            return $res;
-        } else {
-            return Util\Util::utf8($d);
-        }
-    }
-
-    /**
     * @param string     $method
     * @param string     $url
     * @param array|null $params
@@ -160,9 +130,9 @@ class Requestor
 
             list($rbody, $rcode, $rheaders)  = $this->httpClient()->request($method, $url, $headers, $options);
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
-            $resp = new Response($rbody, $rcode, $rheaders, $json);
-
-            return $resp->json;
+            // $resp = new Response($rbody, $rcode, $rheaders, $json);
+            //var_dump($json);
+            return $json;
         } catch (Exception $e) {
             $this->handleRequestException($e);
         }
