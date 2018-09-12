@@ -94,7 +94,10 @@ abstract class BaseTestCase extends TestCase
     private function setUpMockRequest()
     {
         if (!$this->mock) {
-            $this->mock = $this->getMock('\FedaPay\HttpClient\ClientInterface');
+            $this->mock = $this->getMockBuilder('\FedaPay\HttpClient\ClientInterface')
+                                            ->setMethods(['request'])
+                                            ->getMock();
+
             \FedaPay\Requestor::setHttpClient($this->mock);
         }
         return $this->mock;

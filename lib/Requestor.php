@@ -103,7 +103,6 @@ class Requestor
     */
     public function request($method, $path, $params = [], $headers = [])
     {
-        try {
             if (is_null($headers)) {
                 $headers = [];
             }
@@ -133,9 +132,6 @@ class Requestor
             // $resp = new Response($rbody, $rcode, $rheaders, $json);
             //var_dump($json);
             return $json;
-        } catch (Exception $e) {
-            $this->handleRequestException($e);
-        }
     }
 
     /**
