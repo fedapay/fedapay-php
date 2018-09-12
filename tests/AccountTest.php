@@ -6,12 +6,6 @@ use Faker\Factory;
 
 class AccountTest extends BaseTestCase
 {
-    // protected function setUp()
-    // {
-    //     \FedaPay\FedaPay::setApiKey(null);
-    //     \FedaPay\FedaPay::setToken(self::OAUTH_TOKEN);
-    // }
-
     /**
      * Should return array of FedaPay\Account
      */
@@ -29,7 +23,7 @@ class AccountTest extends BaseTestCase
             ]]
         ];
 
-        $this->mockRequest('get', '/v1/accounts', null, $body);
+        $this->mockRequest('get', '/v1/accounts', [], $body);
 
         $object = \FedaPay\Account::all();
 
@@ -44,30 +38,30 @@ class AccountTest extends BaseTestCase
     /**
      * Should return array of FedaPay\Account
      */
-    // public function testAccountCreationShouldFailed()
-    // {
-    //     $data = ['firstname' => 'Myfirstname'];
-    //     $body = [
-    //         'message' => 'Account creation failed',
-    //         'errors' => [
-    //             'name' => ['name field required']
-    //         ]
-    //     ];
+    /*public function testAccountCreationShouldFailed()
+    {
+        $data = ['firstname' => 'Myfirstname'];
+        $body = [
+            'message' => 'Account creation failed',
+            'errors' => [
+                'name' => ['name field required']
+            ]
+        ];
 
-    //     $client = $this->createMockClient(500, $body);
-    //     \FedaPay\Requestor::setHttpClient($client);
+        $client = $this->createMockClient(500, $body);
+        \FedaPay\Requestor::setHttpClient($client);
 
-    //     try {
-    //         \FedaPay\Account::create($data);
-    //     } catch (\FedaPay\Error\ApiConnection $e) {
-    //         $this->exceptRequest('/v1/accounts', 'POST', null, $data);
+        try {
+            \FedaPay\Account::create($data);
+        } catch (\FedaPay\Error\ApiConnection $e) {
+            $this->exceptRequest('/v1/accounts', 'POST', null, $data);
 
-    //         $this->assertTrue($e->hasErrors());
-    //         $this->assertNotNull($e->getErrorMessage());
-    //         $errors = $e->getErrors();
-    //         $this->assertArrayHasKey('name', $errors);
-    //     }
-    // }
+            $this->assertTrue($e->hasErrors());
+            $this->assertNotNull($e->getErrorMessage());
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('name', $errors);
+        }
+    }*/
 
     /**
      * Should return array of FedaPay\Account
@@ -90,7 +84,7 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('post', '/v1/accounts', null, $body);
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
 
         $account = \FedaPay\Account::create($data);
 
@@ -115,7 +109,7 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('get', '/v1/accounts/1', null, $body);
+        $this->mockRequest('get', '/v1/accounts/1', [], $body);
 
         $account = \FedaPay\Account::retrieve(1);
 
@@ -147,7 +141,7 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('put', '/v1/accounts/1', null, $body);
+        $this->mockRequest('put', '/v1/accounts/1', $data, $body);
 
         $account = \FedaPay\Account::update(1, $data);
 
@@ -198,7 +192,7 @@ class AccountTest extends BaseTestCase
     /**
      * Should delete a account
      */
-    public function testShouldDeleteAccount()
+    /*public function testShouldDeleteAccount()
     {
         $data = [
             'name' => 'My account',
@@ -216,11 +210,11 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        //$this->mockRequest('post', '/v1/accounts', null, $body);
+        $this->mockRequest('post', '/v1/accounts', null, $body);
 
-        // $account = \FedaPay\Account::create($data);
+        $account = \FedaPay\Account::create($data);
 
-        //$this->mockRequest('delete', '/v1/accounts/1', null, null);
-        //$account->delete();
-    }
+        $this->mockRequest('delete', '/v1/accounts/1', null, null);
+        $account->delete();
+    }*/
 }

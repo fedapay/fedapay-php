@@ -25,7 +25,7 @@ class CustomerTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $this->mockRequest('get', '/v1/customers', null, $body);
+        $this->mockRequest('get', '/v1/customers', [], $body);
 
         $object = \FedaPay\Customer::all();
 
@@ -42,30 +42,30 @@ class CustomerTest extends BaseTestCase
     /**
      * Should return array of FedaPay\Customer
      */
-    // public function testCustomerCreationShouldFailed()
-    // {
-    //     $data = ['firstname' => 'Myfirstname'];
-    //     $body = [
-    //         'message' => 'Account creation failed',
-    //         'errors' => [
-    //             'lastname' => ['lastname field required']
-    //         ]
-    //     ];
+    /*public function testCustomerCreationShouldFailed()
+    {
+        $data = ['firstname' => 'Myfirstname'];
+        $body = [
+            'message' => 'Account creation failed',
+            'errors' => [
+                'lastname' => ['lastname field required']
+            ]
+        ];
 
-    //     $client = $this->createMockClient(500, $body);
-    //     \FedaPay\Requestor::setHttpClient($client);
+        $client = $this->createMockClient(500, $body);
+        \FedaPay\Requestor::setHttpClient($client);
 
-    //     try {
-    //         \FedaPay\Customer::create($data);
-    //     } catch (\FedaPay\Error\ApiConnection $e) {
-    //         $this->exceptRequest('/v1/customers', 'POST', null, $data);
+        try {
+            \FedaPay\Customer::create($data);
+        } catch (\FedaPay\Error\ApiConnection $e) {
+            $this->exceptRequest('/v1/customers', 'POST', null, $data);
 
-    //         $this->assertTrue($e->hasErrors());
-    //         $this->assertNotNull($e->getErrorMessage());
-    //         $errors = $e->getErrors();
-    //         $this->assertArrayHasKey('lastname', $errors);
-    //     }
-    // }
+            $this->assertTrue($e->hasErrors());
+            $this->assertNotNull($e->getErrorMessage());
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('lastname', $errors);
+        }
+    }*/
 
     /**
      * Should return array of FedaPay\Customer
@@ -93,7 +93,7 @@ class CustomerTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('post', '/v1/customers', null, $body);
+        $this->mockRequest('post', '/v1/customers', $data, $body);
 
         $customer = \FedaPay\Customer::create($data);
 
@@ -131,7 +131,7 @@ class CustomerTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('get', '/v1/customers/1', null, $body);
+        $this->mockRequest('get', '/v1/customers/1', [], $body);
 
         $customer = \FedaPay\Customer::retrieve(1);
 
@@ -169,7 +169,7 @@ class CustomerTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('put', '/v1/customers/1', null, $body);
+        $this->mockRequest('put', '/v1/customers/1', $data, $body);
 
         $customer = \FedaPay\Customer::update(1, $data);
 
@@ -184,46 +184,7 @@ class CustomerTest extends BaseTestCase
     /**
      * Should update a customer with save
      */
-    // public function testShouldUpdateACustomerWithSave()
-    // {
-    //     $faker = Factory::create();
-    //     $data = [
-    //         'firstname' => $faker->firstName,
-    //         'lastname' => $faker->lastName,
-    //         'email' => $faker->unique()->email,
-    //         'phone' => $faker->phoneNumber
-    //     ];
-
-    //     $body = [
-    //         'v1/customer' => [
-    //             'id' => 1,
-    //             'klass' => 'v1/customer',
-    //             'firstname' => $data['firstname'],
-    //             'lastname' => $data['lastname'],
-    //             'email' => $data['email'],
-    //             'phone' => $data['phone'],
-    //             'created_at' => '2018-03-12T09:09:03.969Z',
-    //             'updated_at' => '2018-03-12T09:09:03.969Z'
-    //         ]
-    //     ];
-
-    //     $this->mockRequest('put', '/v1/customers/1', null, $body);
-
-    //     $customer = \FedaPay\Customer::create($data);
-
-    //     $customer->firstname = 'First name';
-
-    //     $customer->save();
-
-        // $this->mockRequest('put', '/v1/customers/1', null, [
-        //     'firstname' => 'First name'
-        // ]);
-    //}
-
-    /**
-     * Should delete a customer
-     */
-    public function testShouldDeleteACustomer()
+    /*public function testShouldUpdateACustomerWithSave()
     {
         $faker = Factory::create();
         $data = [
@@ -246,8 +207,47 @@ class CustomerTest extends BaseTestCase
             ]
         ];
 
-        // $this->mockRequest('post', '/v1/customers', null, $body);
+        $this->mockRequest('put', '/v1/customers/1', null, $body);
+
+        $customer = \FedaPay\Customer::create($data);
+
+        $customer->firstname = 'First name';
+
+        $customer->save();
+
+        $this->mockRequest('put', '/v1/customers/1', null, [
+            'firstname' => 'First name'
+        ]);
+    }*/
+
+    /**
+     * Should delete a customer
+     */
+    /*public function testShouldDeleteACustomer()
+    {
+        $faker = Factory::create();
+        $data = [
+            'firstname' => $faker->firstName,
+            'lastname' => $faker->lastName,
+            'email' => $faker->unique()->email,
+            'phone' => $faker->phoneNumber
+        ];
+
+        $body = [
+            'v1/customer' => [
+                'id' => 1,
+                'klass' => 'v1/customer',
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/customers', null, $body);
         $customer = \FedaPay\Customer::create($data);
         $customer->delete();
-    }
+    }*/
 }

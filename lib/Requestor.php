@@ -101,7 +101,7 @@ class Requestor
     *
     * @return array An API response.
     */
-    public function request($method, $path, $params = [], $headers = [])
+    public function request($method, $path, $headers = [], $params = [])
     {
             if (is_null($headers)) {
                 $headers = [];
@@ -113,24 +113,12 @@ class Requestor
 
             $headers = array_merge($headers, $this->defaultHeaders());
             $url = $this->url($path);
-            $method = strtoupper($method);
+            $method = strtolower($method);
             $options = [ 'headers' => $headers ];
 
-            switch ($method) {
-                case 'GET':
-                case 'HEAD':
-                case 'DELETE':
-                    $options['query'] = $params;
-                    break;
-                default:
-                    $options['json'] = $params;
-                    break;
-            }
-
-            list($rbody, $rcode, $rheaders)  = $this->httpClient()->request($method, $url, $headers, $options);
+            list($rbody, $rcode, $rheaders)  = $this->httpClient()->request($method, $url, $headers, $params);
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
-            // $resp = new Response($rbody, $rcode, $rheaders, $json);
-            //var_dump($json);
+
             return $json;
     }
 

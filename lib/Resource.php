@@ -110,7 +110,7 @@ abstract class Resource extends FedaPayObject
     protected static function _staticRequest($method, $url, $params = [], $headers = [])
     {
         $requestor = self::getRequestor();
-        $response = $requestor->request($method, $url, $params, $headers);
+        $response = $requestor->request($method, $url, $headers, $params);
 
         $options = [
             'apiVersion' => FedaPay::getApiVersion(),

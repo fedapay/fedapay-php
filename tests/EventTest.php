@@ -23,7 +23,7 @@ class EventTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $this->mockRequest('get', '/v1/events', null, $body);
+        $this->mockRequest('get', '/v1/events', [], $body);
 
         $object = \FedaPay\Event::all();
 
@@ -55,7 +55,7 @@ class EventTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('get', '/v1/events/1', null, $body);
+        $this->mockRequest('get', '/v1/events/1', [], $body);
 
         $event = \FedaPay\Event::retrieve(1);
 

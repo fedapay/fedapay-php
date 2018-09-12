@@ -29,7 +29,7 @@ class LogTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $this->mockRequest('get', '/v1/logs', null, $body);
+        $this->mockRequest('get', '/v1/logs', [], $body);
 
         $object = \FedaPay\Log::all();
 
@@ -74,7 +74,7 @@ class LogTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('get', '/v1/logs/1', null, $body);
+        $this->mockRequest('get', '/v1/logs/1', [], $body);
 
         $log = \FedaPay\Log::retrieve(1);
 

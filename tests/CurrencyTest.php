@@ -26,7 +26,7 @@ class CurrencyTest extends BaseTestCase
             ]]
         ];
 
-        $this->mockRequest('get', '/v1/currencies', null, $body);
+        $this->mockRequest('get', '/v1/currencies', [], $body);
 
         $object = \FedaPay\Currency::all();
 
@@ -61,7 +61,7 @@ class CurrencyTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('get', '/v1/currencies/1', null, $body);
+        $this->mockRequest('get', '/v1/currencies/1', [], $body);
 
         $currency = \FedaPay\Currency::retrieve(1);
 

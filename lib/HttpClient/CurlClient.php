@@ -116,14 +116,13 @@ class CurlClient implements ClientInterface
     public function request($method, $absUrl, $headers, $params)
     {
         $method = strtolower($method);
-
         $opts = [];
 
         if ($method == 'get') {
             $opts[CURLOPT_HTTPGET] = 1;
         } elseif ($method == 'post') {
             $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $params['json'];
+            $opts[CURLOPT_POSTFIELDS] = $params;
         } elseif ($method == 'delete') {
             $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
         } else {
