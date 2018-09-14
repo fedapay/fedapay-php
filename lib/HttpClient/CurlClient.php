@@ -118,15 +118,34 @@ class CurlClient implements ClientInterface
         $method = strtolower($method);
         $opts = [];
 
-        if ($method == 'get') {
-            $opts[CURLOPT_HTTPGET] = 1;
-        } elseif ($method == 'post') {
-            $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $params;
-        } elseif ($method == 'delete') {
-            $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
-        } else {
-            throw new Error\InvalidRequest("Unrecognized method $method");
+         if (is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
+            $opts = call_user_func_array($this->defaultOptions, func_get_args());
+            if (!is_array($opts)) {
+                throw new Error\Api("Non-array value returned by defaultOptions CurlClient callback");
+            }
+        } elseif (is_array($this->defaultOptions)) { // set default curlopts from array
+            $opts = $this->defaultOptions;
+        }
+
+        switch ($method){
+            case "post":
+                $opts[CURLOPT_POST] = 1;
+                if ($params)
+                    $opts[CURLOPT_POSTFIELDS] = $params;
+                break;
+            case "put":
+                    $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
+                if ($params)
+                    $opts[CURLOPT_POSTFIELDS] = $params;
+                break;
+            case "get":
+                $opts[CURLOPT_HTTPGET] = 1;
+                break;
+            case "delete":
+                    $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+                break;
+            default:
+                throw new Error\InvalidRequest("Unrecognized method $method");
         }
 
         // It is only safe to retry network failures on POST requests if we

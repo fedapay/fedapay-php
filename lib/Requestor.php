@@ -101,25 +101,20 @@ class Requestor
     *
     * @return array An API response.
     */
-    public function request($method, $path, $headers = [], $params = [])
+    public function request($method, $path, $headers = null, $params = null)
     {
-            if (is_null($headers)) {
-                $headers = [];
-            }
-
-            if (is_null($params)) {
-                $params = [];
-            }
+            $params = $params ?: [];
+            $headers = $headers ?: [];
 
             $headers = array_merge($headers, $this->defaultHeaders());
             $url = $this->url($path);
             $method = strtolower($method);
-            $options = [ 'headers' => $headers ];
 
-            list($rbody, $rcode, $rheaders)  = $this->httpClient()->request($method, $url, $headers, $params);
+            list($rbody, $rcode, $rheaders)   = $this->httpClient()->request($method, $url, $headers, $params);
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+            $resp = new Response($rbody, $rcode, $rheaders, $json);
 
-            return $json;
+            return $resp->json;
     }
 
     /**
@@ -202,16 +197,17 @@ class Requestor
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
-        $resp = json_decode($rbody, true);
-        $jsonError = json_last_error();
-        if ($resp === null && $jsonError !== JSON_ERROR_NONE) {
+        try {
+            $resp = json_decode($rbody, true);
+        } catch (Exception $e) {
             $msg = "Invalid response body from API: $rbody "
-              . "(HTTP response code was $rcode, json_last_error() was $jsonError)";
-            throw new Error\InvalidRequest($msg, $rcode, $rbody);
+              . "(HTTP response code was $rcode)";
+            throw new Error\ApiConnection($msg, $rcode, $rbody);
         }
-        if ($rcode < 200 || $rcode >= 300) {
+        if ($rcode != null && $rcode != '200') {
             $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
         }
+
         return $resp;
     }
 
@@ -225,12 +221,7 @@ class Requestor
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
-        if (!is_array($resp) || !isset($resp['error'])) {
-            $msg = "Invalid response object from API: $rbody "
-              . "(HTTP response code was $rcode)";
-            throw new Error\InvalidRequest($msg, $rcode, $rbody, $resp, $rheaders);
-        }
-        $errorData = $resp['error'];
-        throw $error;
+        $msg = isset($resp['message']) ? $resp['message'] : $resp['errors'] ;
+        throw new Error\ApiConnection($msg, $rcode, $rbody, $resp, $rheaders);
     }
 }

@@ -189,7 +189,8 @@ abstract class Resource extends FedaPayObject
         $className = static::className();
         $url = $this->instanceUrl();
 
-        list($response, $opts) = static::_staticRequest('PUT', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+
         $klass = $opts['apiVersion'] . '/' . $className;
 
         $json = $response[$klass];

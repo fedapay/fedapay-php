@@ -38,34 +38,6 @@ class AccountTest extends BaseTestCase
     /**
      * Should return array of FedaPay\Account
      */
-    /*public function testAccountCreationShouldFailed()
-    {
-        $data = ['firstname' => 'Myfirstname'];
-        $body = [
-            'message' => 'Account creation failed',
-            'errors' => [
-                'name' => ['name field required']
-            ]
-        ];
-
-        $client = $this->createMockClient(500, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
-        try {
-            \FedaPay\Account::create($data);
-        } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/accounts', 'POST', null, $data);
-
-            $this->assertTrue($e->hasErrors());
-            $this->assertNotNull($e->getErrorMessage());
-            $errors = $e->getErrors();
-            $this->assertArrayHasKey('name', $errors);
-        }
-    }*/
-
-    /**
-     * Should return array of FedaPay\Account
-     */
     public function testShouldCreateAccount()
     {
         $data = [
@@ -155,44 +127,34 @@ class AccountTest extends BaseTestCase
     /**
      * Should update a account with save
      */
-    // public function testShouldUpdateAccountWithSave()
-    // {
-    //     $data = [
-    //         'name' => 'Updated Name',
-    //     ];
+    public function testShouldUpdateAccountWithSave()
+    {
+        $data = [
+            'name' => 'Updated Name',
+        ];
 
-    //     $body = [
-    //         'v1/account' => [
-    //             'country' => 'BJ',
-    //             'created_at' => '2018-03-12T09:09:03.969Z',
-    //             'id' => 1,
-    //             'klass' => 'v1/account',
-    //             'name' => 'Name',
-    //             'timezone' => 'UTC',
-    //             'updated_at' => '2018-03-12T09:09:03.969Z'
-    //         ]
-    //     ];
+        $body = [
+            'v1/account' => [
+                'country' => 'BJ',
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'id' => 1,
+                'klass' => 'v1/account',
+                'name' => 'Name',
+                'timezone' => 'UTC',
+                'updated_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
 
-    //     $client = $this->createMockClient(200, $body);
-    //     \FedaPay\Requestor::setHttpClient($client);
-
-    //     $account = \FedaPay\Account::create($data);
-
-    //     $account->name = 'Updated Name';
-
-    //     $client = $this->createMockClient(200, $body);
-    //     \FedaPay\Requestor::setHttpClient($client);
-    //     $account->save();
-
-    //     $this->exceptRequest('/v1/accounts/1', 'PUT', null, [
-    //         'name' => 'Updated Name'
-    //     ]);
-    // }
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
+        $account = \FedaPay\Account::create($data);
+        $account->name = 'Updated Name';
+        $account->save();
+    }
 
     /**
      * Should delete a account
      */
-    /*public function testShouldDeleteAccount()
+    public function testShouldDeleteAccount()
     {
         $data = [
             'name' => 'My account',
@@ -210,11 +172,9 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('post', '/v1/accounts', null, $body);
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
 
         $account = \FedaPay\Account::create($data);
-
-        $this->mockRequest('delete', '/v1/accounts/1', null, null);
         $account->delete();
-    }*/
+    }
 }
