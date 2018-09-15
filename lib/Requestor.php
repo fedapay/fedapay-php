@@ -2,10 +2,6 @@
 
 namespace FedaPay;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-
 /**
 * Class Requestor
 *
@@ -70,28 +66,28 @@ class Requestor
     }
 
     /**
-    * @param GuzzleHttp\ClientInterface $client The requestor http client.
-    * @return void
-    */
+     * @static
+     *
+     * @param HttpClient\ClientInterface $client
+     */
     public static function setHttpClient($client)
     {
         self::$httpClient = $client;
     }
 
     /**
-     * The http client
-     * @return GuzzleHttp\ClientInterface
+     * @return HttpClient\ClientInterface
      */
     private function httpClient()
     {
-        if (!self::$httpClient) {
+           if (!self::$httpClient) {
             $options = [];
 
             if (FedaPay::getVerifySslCerts()) {
                 $options['verify'] = FedaPay::getCaBundlePath();
             }
 
-            self::$httpClient = new \GuzzleHttp\Client($options);
+            self::$httpClient = HttpClient\CurlClient::instance();
         }
 
         return self::$httpClient;
@@ -105,38 +101,20 @@ class Requestor
     *
     * @return array An API response.
     */
-    public function request($method, $path, $params = [], $headers = [])
+    public function request($method, $path, $headers = null, $params = null)
     {
-        try {
-            if (is_null($headers)) {
-                $headers = [];
-            }
-
-            if (is_null($params)) {
-                $params = [];
-            }
+            $params = $params ?: [];
+            $headers = $headers ?: [];
 
             $headers = array_merge($headers, $this->defaultHeaders());
             $url = $this->url($path);
-            $method = strtoupper($method);
-            $options = [ 'headers' => $headers ];
+            $method = strtolower($method);
 
-            switch ($method) {
-                case 'GET':
-                case 'HEAD':
-                case 'DELETE':
-                    $options['query'] = $params;
-                    break;
-                default:
-                    $options['json'] = $params;
-                    break;
-            }
-            $response = $this->httpClient()->request($method, $url, $options);
+            list($rbody, $rcode, $rheaders)   = $this->httpClient()->request($method, $url, $headers, $params);
+            $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+            $resp = new Response($rbody, $rcode, $rheaders, $json);
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            $this->handleRequestException($e);
-        }
+            return $resp->json;
     }
 
     /**
@@ -169,7 +147,7 @@ class Requestor
         $default = [
             'X-Version' => FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
-            'Authorization' => 'Bearer '. ($this->apiKey ?: $this->token)
+            'Authorization: Bearer '. ($this->apiKey ?: $this->token)
         ];
 
         if ($this->accountId) {
@@ -208,5 +186,42 @@ class Requestor
     protected function url($path)
     {
         return $this->baseUrl() . '/' . $this->apiVersion . $path;
+    }
+
+    /**
+     * @param string $rbody
+     * @param int    $rcode
+     * @param array  $rheaders
+     *
+     * @return mixed
+     */
+    private function _interpretResponse($rbody, $rcode, $rheaders)
+    {
+        try {
+            $resp = json_decode($rbody, true);
+        } catch (Exception $e) {
+            $msg = "Invalid response body from API: $rbody "
+              . "(HTTP response code was $rcode)";
+            throw new Error\ApiConnection($msg, $rcode, $rbody);
+        }
+        if ($rcode != null && $rcode != '200') {
+            $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+        }
+
+        return $resp;
+    }
+
+    /**
+     * @param string $rbody A JSON string.
+     * @param int $rcode
+     * @param array $rheaders
+     * @param array $resp
+     *
+     * @throws Error\InvalidRequest if the error is caused by the user.
+     */
+    public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
+    {
+        $msg = isset($resp['message']) ? $resp['message'] : $resp['errors'] ;
+        throw new Error\ApiConnection($msg, $rcode, $rbody, $resp, $rheaders);
     }
 }

@@ -29,12 +29,9 @@ class LogTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/logs', [], $body);
 
         $object = \FedaPay\Log::all();
-
-        $this->exceptRequest('/v1/logs', 'GET');
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object->meta);
@@ -77,12 +74,9 @@ class LogTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/logs/1', [], $body);
 
         $log = \FedaPay\Log::retrieve(1);
-
-        $this->exceptRequest('/v1/logs/1', 'GET');
 
         $this->assertInstanceOf(\FedaPay\Log::class, $log);
         $this->assertEquals(1, $log->id);

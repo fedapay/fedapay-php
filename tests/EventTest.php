@@ -23,12 +23,9 @@ class EventTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/events', [], $body);
 
         $object = \FedaPay\Event::all();
-
-        $this->exceptRequest('/v1/events', 'GET');
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object->meta);
@@ -58,12 +55,9 @@ class EventTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/events/1', [], $body);
 
         $event = \FedaPay\Event::retrieve(1);
-
-        $this->exceptRequest('/v1/events/1', 'GET');
 
         $this->assertInstanceOf(\FedaPay\Event::class, $event);
         $this->assertEquals(1, $event->id);

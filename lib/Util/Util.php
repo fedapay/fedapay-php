@@ -10,6 +10,9 @@ use FedaPay\FedaPayObject;
  */
 abstract class Util
 {
+    private static $isMbstringAvailable = null;
+    private static $isHashEqualsAvailable = null;
+
     /**
      * Whether the provided array (or other) is a list rather than a dictionary.
      *

@@ -31,12 +31,9 @@ class TransactionTest extends BaseTestCase
             'meta' => ['page' => 1]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/transactions', [], $body);
 
         $object = \FedaPay\Transaction::all();
-
-        $this->exceptRequest('/v1/transactions', 'GET');
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object->meta);
@@ -51,37 +48,6 @@ class TransactionTest extends BaseTestCase
         $this->assertEquals(1, $object->transactions[0]->customer_id);
         $this->assertEquals(1, $object->transactions[0]->currency_id);
         $this->assertEquals('mtn', $object->transactions[0]->mode);
-    }
-
-    /**
-     * Should return array of FedaPay\Transaction
-     */
-    public function testTransactionCreationShouldFailed()
-    {
-        $data = ['firstname' => 'Myfirstname'];
-
-        $body = [
-            'message' => 'Account creation failed',
-            'errors' => [
-                'description' => ['description field required'],
-                'amount' => ['amount field required']
-            ]
-        ];
-
-        $client = $this->createMockClient(500, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
-        try {
-            \FedaPay\Transaction::create(['firstname' => 'Myfirstname']);
-        } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/transactions', 'POST', null, $data);
-
-            $this->assertTrue($e->hasErrors());
-            $this->assertNotNull($e->getErrorMessage());
-            $errors = $e->getErrors();
-            $this->assertArrayHasKey('description', $errors);
-            $this->assertArrayHasKey('amount', $errors);
-        }
     }
 
     /**
@@ -125,12 +91,10 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
 
         $transaction = \FedaPay\Transaction::create($data);
 
-        $this->exceptRequest('/v1/transactions', 'POST', null, $data);
         $this->assertInstanceOf(\FedaPay\Transaction::class, $transaction);
         $this->assertEquals(1, $transaction->id);
         $this->assertEquals('0KJAU01', $transaction->transaction_key);
@@ -177,12 +141,10 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+         $this->mockRequest('get', '/v1/transactions/1', [], $body);
 
         $transaction = \FedaPay\Transaction::retrieve(1);
 
-        $this->exceptRequest('/v1/transactions/1', 'GET');
         $this->assertInstanceOf(\FedaPay\Transaction::class, $transaction);
         $this->assertEquals(1, $transaction->id);
         $this->assertEquals('0KJAU01', $transaction->transaction_key);
@@ -238,12 +200,10 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('put', '/v1/transactions/1', $data, $body);
 
         $transaction = \FedaPay\Transaction::update(1, $data);
 
-        $this->exceptRequest('/v1/transactions/1', 'PUT', null, $data);
         $this->assertInstanceOf(\FedaPay\Transaction::class, $transaction);
         $this->assertEquals(1, $transaction->id);
         $this->assertEquals('0KJAU01', $transaction->transaction_key);
@@ -300,21 +260,11 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
 
         $transaction = \FedaPay\Transaction::create($data);
-
         $transaction->description = 'Update description';
-
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
         $transaction->save();
-
-        $this->exceptRequest('/v1/transactions/1', 'PUT', null, [
-            'description' => 'Update description'
-        ]);
     }
 
     /**
@@ -358,22 +308,16 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
         $transaction = \FedaPay\Transaction::create($data);
-
-        $client = $this->createMockClient(200);
-        \FedaPay\Requestor::setHttpClient($client);
         $transaction->delete();
 
-        $this->exceptRequest('/v1/transactions/1', 'DELETE');
     }
 
     /**
      * Should update a transaction with save
      */
-    public function testShouldGenerateTransactionToken()
+    /*public function testShouldGenerateTransactionToken()
     {
         $faker = Factory::create();
         $data = [
@@ -411,8 +355,7 @@ class TransactionTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
 
         $transaction = \FedaPay\Transaction::create($data);
 
@@ -421,14 +364,11 @@ class TransactionTest extends BaseTestCase
             'url' => 'https://process.fedapay.com/PAYEMENT_TOKEN',
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/transactions/1/token', [], $body);
 
         $tokenObject = $transaction->generateToken();
-
-        $this->exceptRequest('/v1/transactions/1/token', 'POST');
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $tokenObject);
         $this->assertEquals('PAYEMENT_TOKEN', $tokenObject->token);
         $this->assertEquals('https://process.fedapay.com/PAYEMENT_TOKEN', $tokenObject->url);
-    }
+    }*/
 }

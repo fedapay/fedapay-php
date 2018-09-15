@@ -110,13 +110,12 @@ abstract class Resource extends FedaPayObject
     protected static function _staticRequest($method, $url, $params = [], $headers = [])
     {
         $requestor = self::getRequestor();
-        $response = $requestor->request($method, $url, $params, $headers);
+        $response = $requestor->request($method, $url, $headers, $params);
 
         $options = [
             'apiVersion' => FedaPay::getApiVersion(),
             'environment' => FedaPay::getEnvironment()
         ];
-
         return [$response, $options];
     }
 
@@ -137,7 +136,7 @@ abstract class Resource extends FedaPayObject
         $path = static::classPath();
         list($response, $opts) = static::_staticRequest('get', $path, $params, $headers);
 
-        return Util::arrayToFedaPayObject($response, $opts);
+       return Util::arrayToFedaPayObject($response, $opts);
     }
 
     protected static function _create($params = [], $headers = [])
@@ -190,7 +189,8 @@ abstract class Resource extends FedaPayObject
         $className = static::className();
         $url = $this->instanceUrl();
 
-        list($response, $opts) = static::_staticRequest('PUT', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+
         $klass = $opts['apiVersion'] . '/' . $className;
 
         $json = $response[$klass];

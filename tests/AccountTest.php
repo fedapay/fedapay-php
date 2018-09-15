@@ -6,12 +6,6 @@ use Faker\Factory;
 
 class AccountTest extends BaseTestCase
 {
-    protected function setUp()
-    {
-        \FedaPay\FedaPay::setApiKey(null);
-        \FedaPay\FedaPay::setToken(self::OAUTH_TOKEN);
-    }
-
     /**
      * Should return array of FedaPay\Account
      */
@@ -29,11 +23,9 @@ class AccountTest extends BaseTestCase
             ]]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-        $object = \FedaPay\Account::all();
+        $this->mockRequest('get', '/v1/accounts', [], $body);
 
-        $this->exceptRequest('/v1/accounts', 'GET');
+        $object = \FedaPay\Account::all();
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertTrue(is_array($object->accounts));
@@ -41,34 +33,6 @@ class AccountTest extends BaseTestCase
         $this->assertEquals('Test account', $object->accounts[0]->name);
         $this->assertEquals(1, $object->accounts[0]->id);
         $this->assertEquals('UTC', $object->accounts[0]->timezone);
-    }
-
-    /**
-     * Should return array of FedaPay\Account
-     */
-    public function testAccountCreationShouldFailed()
-    {
-        $data = ['firstname' => 'Myfirstname'];
-        $body = [
-            'message' => 'Account creation failed',
-            'errors' => [
-                'name' => ['name field required']
-            ]
-        ];
-
-        $client = $this->createMockClient(500, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
-        try {
-            \FedaPay\Account::create($data);
-        } catch (\FedaPay\Error\ApiConnection $e) {
-            $this->exceptRequest('/v1/accounts', 'POST', null, $data);
-
-            $this->assertTrue($e->hasErrors());
-            $this->assertNotNull($e->getErrorMessage());
-            $errors = $e->getErrors();
-            $this->assertArrayHasKey('name', $errors);
-        }
     }
 
     /**
@@ -92,12 +56,10 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
 
         $account = \FedaPay\Account::create($data);
 
-        $this->exceptRequest('/v1/accounts', 'POST', null, $data);
         $this->assertInstanceOf(\FedaPay\Account::class, $account);
         $this->assertEquals($account->name, $data['name']);
     }
@@ -119,12 +81,10 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('get', '/v1/accounts/1', [], $body);
 
         $account = \FedaPay\Account::retrieve(1);
 
-        $this->exceptRequest('/v1/accounts/1', 'GET');
         $this->assertInstanceOf(\FedaPay\Account::class, $account);
         $this->assertEquals($account->id, 1);
         $this->assertEquals($account->name, 'My account');
@@ -153,12 +113,10 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('put', '/v1/accounts/1', $data, $body);
 
         $account = \FedaPay\Account::update(1, $data);
 
-        $this->exceptRequest('/v1/accounts/1', 'PUT', null, $data);
         $this->assertInstanceOf(\FedaPay\Account::class, $account);
         $this->assertEquals($account->name, $data['name']);
         $this->assertEquals($account->id, 1);
@@ -187,20 +145,10 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
-
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
         $account = \FedaPay\Account::create($data);
-
         $account->name = 'Updated Name';
-
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
         $account->save();
-
-        $this->exceptRequest('/v1/accounts/1', 'PUT', null, [
-            'name' => 'Updated Name'
-        ]);
     }
 
     /**
@@ -224,16 +172,9 @@ class AccountTest extends BaseTestCase
             ]
         ];
 
-        $client = $this->createMockClient(200, $body);
-        \FedaPay\Requestor::setHttpClient($client);
+        $this->mockRequest('post', '/v1/accounts', $data, $body);
 
         $account = \FedaPay\Account::create($data);
-
-        $client = $this->createMockClient(200);
-        \FedaPay\Requestor::setHttpClient($client);
-
         $account->delete();
-
-        $this->exceptRequest('/v1/accounts/1', 'DELETE');
     }
 }

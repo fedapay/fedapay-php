@@ -3,24 +3,31 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Middleware;
+use FedaPay\HttpClient\CurlClient;
 
 abstract class BaseTestCase extends TestCase
 {
-    protected $container;
+    protected $mock;
+    protected $call;
 
-    const API_KEY = 'sk_test_123';
+    const API_KEY = 'sk_local_123';
     const OAUTH_TOKEN = 'oauth_test_token_123';
+    const API_BASE = 'https://dev-api.fedapay.com';
+    protected   $headers = [];
 
     protected function setUp()
     {
         \FedaPay\FedaPay::setApiKey(self::API_KEY);
+        \FedaPay\FedaPay::setApiBase(self::API_BASE);
+
+         \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
+        $this->mock = null;
+        $this->call = 0;
+        $this->headers = [
+            'X-Version' => \FedaPay\FedaPay::VERSION,
+            'X-Source' => 'FedaPay PhpLib',
+            'Authorization: Bearer '. (self::API_KEY ?: self::OAUTH_TOKEN)
+        ];
     }
 
     protected function tearDown()
@@ -35,44 +42,25 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\Requestor::setHttpClient(null);
     }
 
-    public function createMockClient($status, $body = null, $headers = [])
+    protected function mockRequest($method, $path, $params = [], $response = [], $rcode = 200)
     {
-        $this->container = [];
-        $history = Middleware::history($this->container);
-
-        $body = json_encode($body);
-        $response = new Response($status, $headers, $body);
-
-        $mock = new MockHandler([$response]);
-        $stack = HandlerStack::create($mock);
-        // Add the history middleware to the handler stack.
-        $stack->push($history);
-
-        $client = new Client(['handler' => $stack]);
-
-        return $client;
+        $mock = $this->setUpMockRequest();
+        $base = \FedaPay\FedaPay::getApiBase();
+        $absUrl = $base.$path;
+        $mock->expects($this->at($this->call++))
+             ->method('request')
+            ->with(strtolower($method), $absUrl, $this->headers, $params)
+             ->willReturn(array(json_encode($response), $rcode));
     }
-
-    public function exceptRequest($path, $method, $query = null, $body = null)
+    private function setUpMockRequest()
     {
-        // Iterate over the requests and responses
-        foreach ($this->container as $transaction) {
-            $request = $transaction['request'];
+        if (!$this->mock) {
+            $this->mock = $this->getMockBuilder('\FedaPay\HttpClient\ClientInterface')
+                                            ->setMethods(['request'])
+                                            ->getMock();
 
-
-            $this->assertEquals($request->getUri()->getPath(), $path);
-            $this->assertEquals($request->getMethod(), $method);
-
-            if ($query) {
-                parse_str($request->getUri()->getQuery(), $request_query);
-
-                $this->assertArraySubset($query, $request_query);
-            }
-
-            if ($body) {
-                $request_body = json_decode($request->getBody()->getContents(), true);
-                $this->assertArraySubset($body, $request_body);
-            }
+            \FedaPay\Requestor::setHttpClient($this->mock);
         }
+        return $this->mock;
     }
 }
