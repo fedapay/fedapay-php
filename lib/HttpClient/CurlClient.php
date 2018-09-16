@@ -26,6 +26,9 @@ if (!defined('CURL_HTTP_VERSION_2TLS')) {
     define('CURL_HTTP_VERSION_2TLS', 4);
 }
 
+/**
+ * CurlClient from https://github.com/stripe/stripe-php
+ */
 class CurlClient implements ClientInterface
 {
     private static $instance;
