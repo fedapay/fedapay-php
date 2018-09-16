@@ -45,6 +45,7 @@ abstract class Util
             'v1/event_type' => 'FedaPay\\EventType',
             'v1/invitation' => 'FedaPay\\Invitation',
             'v1/log' => 'FedaPay\\Log',
+            'v1/phone_number' => 'FedaPay\\PhoneNumber',
             'v1/role' => 'FedaPay\\Role',
             'v1/setting' => 'FedaPay\\Setting',
             'v1/transaction' => 'FedaPay\\Transaction',
