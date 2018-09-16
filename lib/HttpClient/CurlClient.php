@@ -121,7 +121,7 @@ class CurlClient implements ClientInterface
         $method = strtolower($method);
         $opts = [];
 
-         if (is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
+        if (is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
             $opts = call_user_func_array($this->defaultOptions, func_get_args());
             if (!is_array($opts)) {
                 throw new Error\ApiConnection("Non-array value returned by defaultOptions CurlClient callback");
@@ -130,21 +130,23 @@ class CurlClient implements ClientInterface
             $opts = $this->defaultOptions;
         }
 
-        switch ($method){
-            case "post":
+        switch ($method) {
+            case 'post':
                 $opts[CURLOPT_POST] = 1;
-                if ($params)
+                if ($params) {
                     $opts[CURLOPT_POSTFIELDS] = $params;
+                }
                 break;
-            case "put":
+            case 'put':
                     $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
-                if ($params)
+                if ($params) {
                     $opts[CURLOPT_POSTFIELDS] = $params;
+                }
                 break;
-            case "get":
+            case 'get':
                 $opts[CURLOPT_HTTPGET] = 1;
                 break;
-            case "delete":
+            case 'delete':
                     $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
                 break;
             default:

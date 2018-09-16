@@ -54,7 +54,7 @@ class Base extends Exception
         $this->errors = isset($jsonBody["errors"]) ? $jsonBody["errors"]: null;
     }
 
-     public function getHttpStatus()
+    public function getHttpStatus()
     {
         return $this->httpStatus;
     }
@@ -88,5 +88,4 @@ class Base extends Exception
     {
         return !empty($this->errors);
     }
-
 }

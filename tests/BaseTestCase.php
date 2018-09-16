@@ -45,8 +45,7 @@ abstract class BaseTestCase extends TestCase
         $response = [],
         $rcode = 200,
         $headers = []
-    )
-    {
+    ) {
         $mock = $this->setUpMockRequest();
         $base = \FedaPay\FedaPay::getApiBase();
         $absUrl = $base . $path;

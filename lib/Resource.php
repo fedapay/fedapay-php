@@ -163,7 +163,7 @@ abstract class Resource extends FedaPayObject
         $path = static::classPath();
         list($response, $opts) = static::_staticRequest('get', $path, $params, $headers);
 
-       return Util::arrayToFedaPayObject($response, $opts);
+        return Util::arrayToFedaPayObject($response, $opts);
     }
 
     /**

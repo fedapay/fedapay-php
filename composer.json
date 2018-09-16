@@ -1,17 +1,19 @@
 {
-    "name": "fedapay/fedapay-php",
-    "description": "PHP library for FedaPay https://fedapay.com",
+    "name": "fedapay\/fedapay-php",
+    "description": "PHP library for FedaPay https:\/\/fedapay.com",
     "keywords": [
         "fedapay",
         "payment processing",
         "api"
     ],
-    "homepage": "https://fedapay.com/",
+    "homepage": "https:\/\/fedapay.com\/",
     "license": "MIT",
-    "authors": [{
-        "name": "FedaPay and contributors",
-        "homepage": "https://github.com/fedapay/fedapay-php/contributors"
-    }],
+    "authors": [
+        {
+            "name": "FedaPay and contributors",
+            "homepage": "https:\/\/github.com\/fedapay\/fedapay-php\/contributors"
+        }
+    ],
     "require": {
         "php": ">=5.5",
         "ext-curl": "*",
@@ -19,18 +21,12 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "~2.0",
-        "fzaninotto/faker": "^1.7",
-        "phpunit/phpunit": "^4"
-    },
-    "autoload": {
-        "psr-4": {
-            "FedaPay\\": "lib/"
-        }
+        "fzaninotto\/faker": "^1.7",
+        "phpunit\/phpunit": "^4"
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests\/"
         }
     }
 }
