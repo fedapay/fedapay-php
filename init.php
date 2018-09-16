@@ -18,15 +18,16 @@ require(dirname(__FILE__) . '/lib/Error/ApiConnection.php');
 require(dirname(__FILE__) . '/lib/Error/InvalidRequest.php');
 
 // Plumbing
-require(dirname(__FILE__) . '/lib/Response.php');
 require(dirname(__FILE__) . '/lib/Requestor.php');
 require(dirname(__FILE__) . '/lib/FedaPayObject.php');
 require(dirname(__FILE__) . '/lib/Resource.php');
 
 // FedaPay API Resources
 require(dirname(__FILE__) . '/lib/Account.php');
+require(dirname(__FILE__) . '/lib/ApiKey.php');
 require(dirname(__FILE__) . '/lib/Currency.php');
 require(dirname(__FILE__) . '/lib/Customer.php');
 require(dirname(__FILE__) . '/lib/Event.php');
 require(dirname(__FILE__) . '/lib/Log.php');
+require(dirname(__FILE__) . '/lib/PhoneNumber.php');
 require(dirname(__FILE__) . '/lib/Transaction.php');
