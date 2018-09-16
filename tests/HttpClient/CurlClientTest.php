@@ -2,12 +2,10 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
-
 use FedaPay\HttpClient\CurlClient;
-use FedaPay\Fedapay;
+use FedaPay\FedaPay;
 
-class CurlClientTest extends TestCase
+class CurlClientTest extends BaseTestCase
 {
     /**
      * @before
@@ -24,12 +22,12 @@ class CurlClientTest extends TestCase
      */
     public function setUpReflectors()
     {
-        $fedapayReflector = new \ReflectionClass('\FedaPay\FedaPay');
+        $stripeReflector = new \ReflectionClass('\FedaPay\FedaPay');
 
-        $this->maxNetworkRetryDelayProperty = $fedapayReflector->getProperty('maxNetworkRetryDelay');
+        $this->maxNetworkRetryDelayProperty = $stripeReflector->getProperty('maxNetworkRetryDelay');
         $this->maxNetworkRetryDelayProperty->setAccessible(true);
 
-        $this->initialNetworkRetryDelayProperty = $fedapayReflector->getProperty('initialNetworkRetryDelay');
+        $this->initialNetworkRetryDelayProperty = $stripeReflector->getProperty('initialNetworkRetryDelay');
         $this->initialNetworkRetryDelayProperty->setAccessible(true);
 
         $curlClientReflector = new \ReflectionClass('FedaPay\HttpClient\CurlClient');
@@ -94,6 +92,24 @@ class CurlClientTest extends TestCase
         $this->assertNotNull($uaInfo['ssllib']);
     }
 
+    public function testDefaultOptions()
+    {
+        $withClosure = new CurlClient(function ($method, $absUrl, $headers, $params, $hasFile) use (&$ref) {
+            $ref = func_get_args();
+            return [];
+        });
+
+        $withClosure->request('get', 'https://httpbin.org/status/200', [], [], false);
+        $this->assertSame($ref, ['get', 'https://httpbin.org/status/200', [], [], false]);
+
+        // this is the last test case that will run, since it'll throw an exception at the end
+        $withBadClosure = new CurlClient(function () {
+            return 'thisShouldNotWork';
+        });
+        $this->setExpectedException('FedaPay\Error\ApiConnection', "Non-array value returned by defaultOptions CurlClient callback");
+        $withBadClosure->request('get', 'https://httpbin.org/status/200', [], [], false);
+    }
+
     public function testSslOption()
     {
         // make sure options array loads/saves properly
@@ -129,6 +145,15 @@ class CurlClientTest extends TestCase
         $this->assertTrue($this->shouldRetryMethod->invoke($curlClient, 0, 409, 0));
     }
 
+    public function testShouldNotRetryAtMaximumCount()
+    {
+        FedaPay::setMaxNetworkRetries(2);
+
+        $curlClient = new CurlClient();
+
+        $this->assertFalse($this->shouldRetryMethod->invoke($curlClient, 0, 0, FedaPay::getMaxNetworkRetries()));
+    }
+
     public function testShouldNotRetryOnCertValidationError()
     {
         FedaPay::setMaxNetworkRetries(2);
@@ -136,5 +161,62 @@ class CurlClientTest extends TestCase
         $curlClient = new CurlClient();
 
         $this->assertFalse($this->shouldRetryMethod->invoke($curlClient, CURLE_SSL_PEER_CERTIFICATE, -1, 0));
+    }
+
+    public function testSleepTimeShouldGrowExponentially()
+    {
+        $this->setMaxNetworkRetryDelay(999);
+
+        $curlClient = new CurlClient(null, $this->createFakeRandomGenerator());
+
+        $this->assertEquals(
+            FedaPay::getInitialNetworkRetryDelay() * 1,
+            $this->sleepTimeMethod->invoke($curlClient, 1)
+        );
+        $this->assertEquals(
+            FedaPay::getInitialNetworkRetryDelay() * 2,
+            $this->sleepTimeMethod->invoke($curlClient, 2)
+        );
+        $this->assertEquals(
+            FedaPay::getInitialNetworkRetryDelay() * 4,
+            $this->sleepTimeMethod->invoke($curlClient, 3)
+        );
+        $this->assertEquals(
+            FedaPay::getInitialNetworkRetryDelay() * 8,
+            $this->sleepTimeMethod->invoke($curlClient, 4)
+        );
+    }
+
+    public function testSleepTimeShouldEnforceMaxNetworkRetryDelay()
+    {
+        $this->setInitialNetworkRetryDelay(1);
+        $this->setMaxNetworkRetryDelay(2);
+
+        $curlClient = new CurlClient(null, $this->createFakeRandomGenerator());
+
+        $this->assertEquals(1, $this->sleepTimeMethod->invoke($curlClient, 1));
+        $this->assertEquals(2, $this->sleepTimeMethod->invoke($curlClient, 2));
+        $this->assertEquals(2, $this->sleepTimeMethod->invoke($curlClient, 3));
+        $this->assertEquals(2, $this->sleepTimeMethod->invoke($curlClient, 4));
+    }
+
+    public function testSleepTimeShouldAddSomeRandomness()
+    {
+        $randomValue = 0.8;
+        $this->setInitialNetworkRetryDelay(1);
+        $this->setMaxNetworkRetryDelay(8);
+
+        $curlClient = new CurlClient(null, $this->createFakeRandomGenerator($randomValue));
+
+        $baseValue = FedaPay::getInitialNetworkRetryDelay() * (0.5 * (1 + $randomValue));
+
+        // the initial value cannot be smaller than the base,
+        // so the randomness is ignored
+        $this->assertEquals(FedaPay::getInitialNetworkRetryDelay(), $this->sleepTimeMethod->invoke($curlClient, 1));
+
+        // after the first one, the randomness is applied
+        $this->assertEquals($baseValue * 2, $this->sleepTimeMethod->invoke($curlClient, 2));
+        $this->assertEquals($baseValue * 4, $this->sleepTimeMethod->invoke($curlClient, 3));
+        $this->assertEquals($baseValue * 8, $this->sleepTimeMethod->invoke($curlClient, 4));
     }
 }

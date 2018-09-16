@@ -37,7 +37,7 @@ class Base extends Exception
     private $errors;
 
     public function __construct(
-         $message,
+        $message,
         $httpStatus = null,
         $httpBody = null,
         $jsonBody = null,

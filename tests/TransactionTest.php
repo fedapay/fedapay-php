@@ -264,6 +264,29 @@ class TransactionTest extends BaseTestCase
 
         $transaction = \FedaPay\Transaction::create($data);
         $transaction->description = 'Update description';
+
+        $updateData = [
+            'klass' => 'v1/transaction',
+            'transaction_key' => '0KJAU01',
+            'reference' => '109329828',
+            'amount' => 100,
+            'description' => 'Update description',
+            'callback_url' => 'http://e-shop.com',
+            'status' => 'pending',
+            'customer' => [
+                'klass' => 'v1/customer',
+            ],
+            'currency' => [
+                'klass' => 'v1/currency',
+                'iso' => 'XOF'
+            ],
+            'mode' => null,
+            'created_at' => '2018-03-12T09:09:03.969Z',
+            'updated_at' => '2018-03-12T09:09:03.969Z',
+            'paid_at' => '2018-03-12T09:09:03.969Z'
+        ];
+
+        $this->mockRequest('put', '/v1/transactions/1', $updateData, $body);
         $transaction->save();
     }
 
@@ -310,14 +333,15 @@ class TransactionTest extends BaseTestCase
 
         $this->mockRequest('post', '/v1/transactions', $data, $body);
         $transaction = \FedaPay\Transaction::create($data);
-        $transaction->delete();
 
+        $this->mockRequest('delete', '/v1/transactions/1');
+        $transaction->delete();
     }
 
     /**
      * Should update a transaction with save
      */
-    /*public function testShouldGenerateTransactionToken()
+    public function testShouldGenerateTransactionToken()
     {
         $faker = Factory::create();
         $data = [
@@ -370,5 +394,5 @@ class TransactionTest extends BaseTestCase
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $tokenObject);
         $this->assertEquals('PAYEMENT_TOKEN', $tokenObject->token);
         $this->assertEquals('https://process.fedapay.com/PAYEMENT_TOKEN', $tokenObject->url);
-    }*/
+    }
 }

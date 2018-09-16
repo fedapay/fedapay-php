@@ -52,7 +52,7 @@ class CustomerTest extends BaseTestCase
             ]
         ];
 
-        $this->mockRequest('post', '/v1/customers', $data, []);
+        $this->mockRequest('post', '/v1/customers', $data, $body, 500);
 
         try {
             \FedaPay\Customer::create($data);
@@ -206,8 +206,18 @@ class CustomerTest extends BaseTestCase
         $this->mockRequest('post', '/v1/customers', $data, $body);
         $customer = \FedaPay\Customer::create($data);
         $customer->firstname = 'First name';
-        $customer->save();
+        $updateData = [
+            'klass' => 'v1/customer',
+            'firstname' => 'First name',
+            'lastname' => $data['lastname'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'created_at' => '2018-03-12T09:09:03.969Z',
+            'updated_at' => '2018-03-12T09:09:03.969Z'
+        ];
 
+        $this->mockRequest('put', '/v1/customers/1', $updateData, $body);
+        $customer->save();
     }
 
     /**
@@ -238,6 +248,9 @@ class CustomerTest extends BaseTestCase
 
         $this->mockRequest('post', '/v1/customers', $data, $body);
         $customer = \FedaPay\Customer::create($data);
+
+        $this->mockRequest('delete', '/v1/customers/1');
+
         $customer->delete();
     }
 }

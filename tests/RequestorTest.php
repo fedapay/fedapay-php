@@ -9,21 +9,22 @@ namespace Tests;
  */
 class RequestorTest extends BaseTestCase
 {
-    public function testHttpClientInjection()
-    {
-        $reflector = new \ReflectionClass('FedaPay\\Requestor');
-        $method = $reflector->getMethod('httpClient');
-        $method->setAccessible(true);
-        $curl = new \FedaPay\HttpClient\CurlClient();
-        $curl->setTimeout(10);
-        \FedaPay\Requestor::setHttpClient($curl);
-        $injectedCurl = $method->invoke(new \FedaPay\Requestor());
-        $this->assertSame($injectedCurl, $curl);
-    }
+    // public function testHttpClientInjection()
+    // {
+    //     $reflector = new \ReflectionClass('FedaPay\\Requestor');
+    //     $method = $reflector->getMethod('httpClient');
+    //     $method->setAccessible(true);
+    //     $curl = new \FedaPay\HttpClient\CurlClient();
+    //     $curl->setTimeout(10);
+    //     \FedaPay\Requestor::setHttpClient($curl);
+    //     $injectedCurl = $method->invoke(new \FedaPay\Requestor());
+    //     $this->assertSame($injectedCurl, $curl);
+    // }
+
     // public function testRequestDefaultParams()
     // {
 
-    //     // $this->mockRequest('', '', null, null, 500);
+    //     $this->mockRequest('', '', null, null, 500);
     //     $requestor = new \FedaPay\Requestor;
 
     //     try {
@@ -53,7 +54,7 @@ class RequestorTest extends BaseTestCase
     //     \FedaPay\FedaPay::setToken('mytoken');
     //     \FedaPay\FedaPay::setAccountId(898);
 
-    //     //$this->mockRequest('', '', null, null, 500);
+    //     $this->mockRequest('', '', null, null, 500);
     //     $requestor = new \FedaPay\Requestor;
 
     //     try {
@@ -76,20 +77,20 @@ class RequestorTest extends BaseTestCase
     //     }
     // }
 
-    // public function testRequestApiBaseParams()
-    // {
-    //     \FedaPay\FedaPay::setApiVersion('v1');
-    //     \FedaPay\FedaPay::setApiBase('https://test.fedapay.com');
+    public function testRequestApiBaseParams()
+    {
+        \FedaPay\FedaPay::setApiVersion('v1');
+        \FedaPay\FedaPay::setApiBase('https://test.fedapay.com');
 
-    //     // $this->mockRequest('', '', null, null, 500);
-    //     $requestor = new \FedaPay\Requestor;
+        $this->mockRequest('get', '/v1/path', ['foo' => '2'], [], 500, ['X-Custom' => 'foo']);
+        $requestor = new \FedaPay\Requestor;
 
-    //     try {
-    //         $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo']);
-    //     } catch (\FedaPay\Error\ApiConnection $e) {
-    //         $httpRequest = $e->getHttpRequest();
-    //         $uri = $httpRequest->getUri() . '';
-    //         $this->assertEquals($uri, 'https://test.fedapay.com/v1/path?foo=2');
-    //     }
-    // }
+        try {
+            $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo']);
+        } catch (\FedaPay\Error\ApiConnection $e) {
+            $httpRequest = $e->getHttpRequest();
+            $uri = $httpRequest->getUri() . '';
+            $this->assertEquals($uri, 'https://test.fedapay.com/v1/path?foo=2');
+        }
+    }
 }

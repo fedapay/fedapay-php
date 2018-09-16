@@ -80,7 +80,7 @@ class Requestor
      */
     private function httpClient()
     {
-           if (!self::$httpClient) {
+        if (!self::$httpClient) {
             $options = [];
 
             if (FedaPay::getVerifySslCerts()) {
@@ -101,20 +101,20 @@ class Requestor
     *
     * @return array An API response.
     */
-    public function request($method, $path, $headers = null, $params = null)
+    public function request($method, $path, $params = null, $headers = null)
     {
-            $params = $params ?: [];
-            $headers = $headers ?: [];
+        $params = $params ?: [];
+        $headers = $headers ?: [];
 
-            $headers = array_merge($headers, $this->defaultHeaders());
-            $url = $this->url($path);
-            $method = strtolower($method);
+        $headers = array_merge($headers, $this->defaultHeaders());
+        $url = $this->url($path);
+        $method = strtolower($method);
 
-            list($rbody, $rcode, $rheaders)   = $this->httpClient()->request($method, $url, $headers, $params);
-            $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
-            $resp = new Response($rbody, $rcode, $rheaders, $json);
+        list($rbody, $rcode, $rheaders) = $this->httpClient()->request($method, $url, $params, $headers);
 
-            return $resp->json;
+        $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+
+        return $json;
     }
 
     /**
@@ -204,7 +204,8 @@ class Requestor
               . "(HTTP response code was $rcode)";
             throw new Error\ApiConnection($msg, $rcode, $rbody);
         }
-        if ($rcode != null && $rcode != '200') {
+
+        if ($rcode < 200 || $rcode >= 300) {
             $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
         }
 

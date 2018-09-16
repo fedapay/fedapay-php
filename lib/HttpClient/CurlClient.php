@@ -113,7 +113,7 @@ class CurlClient implements ClientInterface
 
     // END OF USER DEFINED TIMEOUTS
 
-    public function request($method, $absUrl, $headers, $params)
+    public function request($method, $absUrl, $params, $headers)
     {
         $method = strtolower($method);
         $opts = [];
@@ -121,7 +121,7 @@ class CurlClient implements ClientInterface
          if (is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
             $opts = call_user_func_array($this->defaultOptions, func_get_args());
             if (!is_array($opts)) {
-                throw new Error\Api("Non-array value returned by defaultOptions CurlClient callback");
+                throw new Error\ApiConnection("Non-array value returned by defaultOptions CurlClient callback");
             }
         } elseif (is_array($this->defaultOptions)) { // set default curlopts from array
             $opts = $this->defaultOptions;

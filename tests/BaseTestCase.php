@@ -7,22 +7,18 @@ use FedaPay\HttpClient\CurlClient;
 
 abstract class BaseTestCase extends TestCase
 {
-    protected $mock;
-    protected $call;
+    protected $headers = [];
 
     const API_KEY = 'sk_local_123';
     const OAUTH_TOKEN = 'oauth_test_token_123';
     const API_BASE = 'https://dev-api.fedapay.com';
-    protected   $headers = [];
 
     protected function setUp()
     {
         \FedaPay\FedaPay::setApiKey(self::API_KEY);
         \FedaPay\FedaPay::setApiBase(self::API_BASE);
 
-         \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
-        $this->mock = null;
-        $this->call = 0;
+        \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
         $this->headers = [
             'X-Version' => \FedaPay\FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
@@ -42,25 +38,38 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\Requestor::setHttpClient(null);
     }
 
-    protected function mockRequest($method, $path, $params = [], $response = [], $rcode = 200)
+    protected function mockRequest(
+        $method,
+        $path,
+        $params = [],
+        $response = [],
+        $rcode = 200,
+        $headers = []
+    )
     {
         $mock = $this->setUpMockRequest();
         $base = \FedaPay\FedaPay::getApiBase();
-        $absUrl = $base.$path;
-        $mock->expects($this->at($this->call++))
+        $absUrl = $base . $path;
+
+        $mock->expects($this->once())
              ->method('request')
-            ->with(strtolower($method), $absUrl, $this->headers, $params)
-             ->willReturn(array(json_encode($response), $rcode));
+             ->with(
+                 strtolower($method),
+                 $absUrl,
+                 $params,
+                 array_merge($headers, $this->headers)
+             )
+             ->willReturn([json_encode($response), $rcode, []]);
     }
+
     private function setUpMockRequest()
     {
-        if (!$this->mock) {
-            $this->mock = $this->getMockBuilder('\FedaPay\HttpClient\ClientInterface')
-                                            ->setMethods(['request'])
-                                            ->getMock();
+        $mock = $this->getMockBuilder('\FedaPay\HttpClient\ClientInterface')
+                            ->setMethods(['request'])
+                            ->getMock();
 
-            \FedaPay\Requestor::setHttpClient($this->mock);
-        }
-        return $this->mock;
+        \FedaPay\Requestor::setHttpClient($mock);
+
+        return $mock;
     }
 }

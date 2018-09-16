@@ -148,6 +148,18 @@ class AccountTest extends BaseTestCase
         $this->mockRequest('post', '/v1/accounts', $data, $body);
         $account = \FedaPay\Account::create($data);
         $account->name = 'Updated Name';
+
+        $updateData = [
+            'country' => 'BJ',
+            'created_at' => '2018-03-12T09:09:03.969Z',
+            'klass' => 'v1/account',
+            'name' => 'Updated Name',
+            'timezone' => 'UTC',
+            'updated_at' => '2018-03-12T09:09:03.969Z'
+        ];
+
+        $this->mockRequest('put', '/v1/accounts/1', $updateData, $body);
+
         $account->save();
     }
 
@@ -175,6 +187,9 @@ class AccountTest extends BaseTestCase
         $this->mockRequest('post', '/v1/accounts', $data, $body);
 
         $account = \FedaPay\Account::create($data);
+
+        $this->mockRequest('delete', '/v1/accounts/1');
+
         $account->delete();
     }
 }
