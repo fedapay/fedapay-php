@@ -22,7 +22,7 @@ abstract class BaseTestCase extends TestCase
         $this->headers = [
             'X-Version' => \FedaPay\FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
-            'Authorization: Bearer '. (self::API_KEY ?: self::OAUTH_TOKEN)
+            'Authorization' => 'Bearer '. (self::API_KEY ?: self::OAUTH_TOKEN)
         ];
     }
 
@@ -57,7 +57,7 @@ abstract class BaseTestCase extends TestCase
                  strtolower($method),
                  $absUrl,
                  $params,
-                 array_merge($headers, $this->headers)
+                 array_merge($this->headers, $headers)
              )
              ->willReturn([json_encode($response), $rcode, []]);
     }

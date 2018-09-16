@@ -147,7 +147,7 @@ class Requestor
         $default = [
             'X-Version' => FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
-            'Authorization: Bearer '. ($this->apiKey ?: $this->token)
+            'Authorization' => 'Bearer '. ($this->apiKey ?: $this->token)
         ];
 
         if ($this->accountId) {
@@ -206,23 +206,15 @@ class Requestor
         }
 
         if ($rcode < 200 || $rcode >= 300) {
-            $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+            throw new Error\ApiConnection(
+                'ApiConnection Error',
+                $rcode,
+                $rbody,
+                $resp,
+                $rheaders
+            );
         }
 
         return $resp;
-    }
-
-    /**
-     * @param string $rbody A JSON string.
-     * @param int $rcode
-     * @param array $rheaders
-     * @param array $resp
-     *
-     * @throws Error\InvalidRequest if the error is caused by the user.
-     */
-    public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
-    {
-        $msg = isset($resp['message']) ? $resp['message'] : $resp['errors'] ;
-        throw new Error\ApiConnection($msg, $rcode, $rbody, $resp, $rheaders);
     }
 }
