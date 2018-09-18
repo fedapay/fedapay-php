@@ -108,9 +108,13 @@ class Requestor
 
         $headers = array_merge($headers, $this->defaultHeaders());
         $url = $this->url($path);
-        $method = strtolower($method);
+        $rawHeaders = [];
 
-        list($rbody, $rcode, $rheaders) = $this->httpClient()->request($method, $url, $params, $headers);
+        foreach ($headers as $header => $value) {
+            $rawHeaders[] = $header . ': ' . $value;
+        }
+
+        list($rbody, $rcode, $rheaders) = $this->httpClient()->request($method, $url, $params, $rawHeaders);
 
         $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
 
