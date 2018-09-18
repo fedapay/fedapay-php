@@ -134,13 +134,13 @@ class CurlClient implements ClientInterface
             case 'post':
                 $opts[CURLOPT_POST] = 1;
                 if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = $params;
+                    $opts[CURLOPT_POSTFIELDS] = http_build_query($params);
                 }
                 break;
             case 'put':
                     $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
                 if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = $params;
+                    $opts[CURLOPT_POSTFIELDS] = http_build_query($params);
                 }
                 break;
             case 'get':
