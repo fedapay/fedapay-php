@@ -32,7 +32,7 @@ require_once('/path/to/fedapay-php/init.php');
 
 The bindings require the following extension in order to work properly:
 
-- [`guzzlehttp/guzzle`](https://github.com/guzzle/guzzle)
+- [`curl`](https://secure.php.net/manual/en/book.curl.php), although you can use your own non-cURL client if you prefer
 - [`json`](https://secure.php.net/manual/en/book.json.php)
 - [`mbstring`](https://secure.php.net/manual/en/book.mbstring.php) (Multibyte String)
 
@@ -44,7 +44,7 @@ Simple usage looks like:
 
 ## Documentation
 
-Please see https://fedapay.com/docs/api for up-to-date documentation.
+Please see https://docs.fedapay.com/development/api for up-to-date documentation.
 
 ## Development
 

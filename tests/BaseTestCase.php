@@ -7,7 +7,7 @@ use FedaPay\HttpClient\CurlClient;
 
 abstract class BaseTestCase extends TestCase
 {
-    protected $headers = [];
+    protected $defaultHeaders = [];
 
     const API_KEY = 'sk_local_123';
     const OAUTH_TOKEN = 'oauth_test_token_123';
@@ -19,7 +19,7 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\FedaPay::setApiBase(self::API_BASE);
 
         \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
-        $this->headers = [
+        $this->defaultHeaders = [
             'X-Version' => \FedaPay\FedaPay::VERSION,
             'X-Source' => 'FedaPay PhpLib',
             'Authorization' => 'Bearer '. (self::API_KEY ?: self::OAUTH_TOKEN)
@@ -49,6 +49,12 @@ abstract class BaseTestCase extends TestCase
         $mock = $this->setUpMockRequest();
         $base = \FedaPay\FedaPay::getApiBase();
         $absUrl = $base . $path;
+        $this->defaultHeaders = array_merge($headers, $this->defaultHeaders);
+        $rawHeaders = [];
+
+        foreach ($this->defaultHeaders as $header => $value) {
+            $rawHeaders[] = $header . ': ' . $value;
+        }
 
         $mock->expects($this->once())
              ->method('request')
@@ -56,7 +62,7 @@ abstract class BaseTestCase extends TestCase
                  strtolower($method),
                  $absUrl,
                  $params,
-                 array_merge($this->headers, $headers)
+                 $rawHeaders
              )
              ->willReturn([json_encode($response), $rcode, []]);
     }

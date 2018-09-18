@@ -6,7 +6,7 @@ $autoload = (int) $argv[1];
 $returnStatus = null;
 
 if (!$autoload) {
-    // Modify composer to not autoload Stripe
+    // Modify composer to not autoload FedaPay
     $composer = json_decode(file_get_contents('composer.json'), true);
     unset($composer['autoload']);
     unset($composer['require-dev']['squizlabs/php_codesniffer']);
