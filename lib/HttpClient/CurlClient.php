@@ -146,16 +146,16 @@ class CurlClient implements ClientInterface
             case 'get':
                 $opts[CURLOPT_HTTPGET] = 1;
                 if (count($params) > 0) {
-                $encoded = http_build_query($params);
-                $absUrl = "$absUrl?$encoded";
+                    $encoded = http_build_query($params);
+                    $absUrl = "$absUrl?$encoded";
                 }
                 break;
             case 'delete':
-                    $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
-                    if (count($params) > 0) {
+                $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+                if (count($params) > 0) {
                     $encoded = http_build_query($params);
                     $absUrl = "$absUrl?$encoded";
-                    }
+                }
                 break;
             default:
                 throw new Error\InvalidRequest("Unrecognized method $method");

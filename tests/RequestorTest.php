@@ -60,11 +60,6 @@ class RequestorTest extends BaseTestCase
         $requestor = new \FedaPay\Requestor;
 
         $this->setExpectedException('\FedaPay\Error\ApiConnection');
-        $requestor->request('get', '/path', ['foo' => '2'], [
-             'X-Custom' => 'foo',
-             'Authorization' => 'Bearer mytoken',
-            'FedaPay-Account' => 898
-        ]
-    );
+        $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo', 'Authorization' => 'Bearer mytoken', 'FedaPay-Account' => 898]);
     }
 }
