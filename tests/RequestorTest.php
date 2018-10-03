@@ -41,8 +41,10 @@ class RequestorTest extends BaseTestCase
 
     public function testRequestSetParams()
     {
+        \FedaPay\FedaPay::setApiKey(null);
         \FedaPay\FedaPay::setApiVersion('v3');
         \FedaPay\FedaPay::setEnvironment('production');
+        \FedaPay\FedaPay::setToken('mytoken');
         \FedaPay\FedaPay::setAccountId(898);
 
         $this->mockRequest(
@@ -52,14 +54,16 @@ class RequestorTest extends BaseTestCase
             [],
             500,
             [
-                'X-Custom' => 'foo',
                 'Authorization' => 'Bearer mytoken',
                 'FedaPay-Account' => 898,
+                'X-Custom' => 'foo'
             ]
         );
         $requestor = new \FedaPay\Requestor;
 
         $this->setExpectedException('\FedaPay\Error\ApiConnection');
-        $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo', 'Authorization' => 'Bearer mytoken', 'FedaPay-Account' => 898]);
+        $requestor->request('get', '/path', ['foo' => '2'], [
+            'X-Custom' => 'foo'
+        ]);
     }
 }

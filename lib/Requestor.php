@@ -106,12 +106,12 @@ class Requestor
         $params = $params ?: [];
         $headers = $headers ?: [];
 
-        $headers = array_merge($headers, $this->defaultHeaders());
+        $headers = array_merge($this->defaultHeaders(), $headers);
         $url = $this->url($path);
         $rawHeaders = [];
 
-        foreach ($headers as $header => $value) {
-            $rawHeaders[] = $header . ': ' . $value;
+        foreach ($headers as $h => $v) {
+            $rawHeaders[] = $h . ': ' . $v;
         }
 
         list($rbody, $rcode, $rheaders) = $this->httpClient()->request($method, $url, $params, $rawHeaders);

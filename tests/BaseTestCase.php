@@ -49,11 +49,12 @@ abstract class BaseTestCase extends TestCase
         $mock = $this->setUpMockRequest();
         $base = \FedaPay\FedaPay::getApiBase();
         $absUrl = $base . $path;
-        $this->defaultHeaders = array_merge($headers, $this->defaultHeaders);
+        $headers = array_merge($this->defaultHeaders, $headers);
+
         $rawHeaders = [];
 
-        foreach ($this->defaultHeaders as $header => $value) {
-            $rawHeaders[] = $header . ': ' . $value;
+        foreach ($headers as $k => $v) {
+            $rawHeaders[] = $k . ': ' . $v;
         }
 
         $mock->expects($this->once())
