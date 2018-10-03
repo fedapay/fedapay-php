@@ -57,6 +57,10 @@ abstract class BaseTestCase extends TestCase
             $rawHeaders[] = $k . ': ' . $v;
         }
 
+        if(is_array($response)) {
+            $response = json_encode($response);
+        }
+
         $mock->expects($this->once())
              ->method('request')
              ->with(
@@ -65,7 +69,7 @@ abstract class BaseTestCase extends TestCase
                  $params,
                  $rawHeaders
              )
-             ->willReturn([json_encode($response), $rcode, []]);
+             ->willReturn([$response, $rcode, []]);
     }
 
     private function setUpMockRequest()

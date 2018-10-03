@@ -66,4 +66,34 @@ class RequestorTest extends BaseTestCase
             'X-Custom' => 'foo'
         ]);
     }
+
+    public function testShouldFaildParsingResponse()
+    {
+        $this->mockRequest(
+            'get',
+            '/v1/path',
+            [],
+            'unable to parse',
+            200
+        );
+        $requestor = new \FedaPay\Requestor;
+
+        $this->setExpectedException('\FedaPay\Error\ApiConnection', 'unable to parse');
+        $requestor->request('get', '/path');
+    }
+
+    public function testShouldParseApiErrors()
+    {
+        $this->mockRequest(
+            'get',
+            '/v1/path',
+            [],
+            ['message' => 'Error Message'],
+            400
+        );
+        $requestor = new \FedaPay\Requestor;
+
+        $this->setExpectedException('\FedaPay\Error\ApiConnection', 'Error Message');
+        $requestor->request('get', '/path');
+    }
 }

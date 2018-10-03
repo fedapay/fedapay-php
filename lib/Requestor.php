@@ -201,24 +201,33 @@ class Requestor
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
-        try {
-            $resp = json_decode($rbody, true);
-        } catch (Exception $e) {
+        $resp = json_decode($rbody, true);
+        $jsonError = json_last_error();
+
+        if ($resp === null && $jsonError !== JSON_ERROR_NONE) {
             $msg = "Invalid response body from API: $rbody "
-              . "(HTTP response code was $rcode)";
+              . "(HTTP response code was $rcode, json_last_error() was $jsonError)";
             throw new Error\ApiConnection($msg, $rcode, $rbody);
         }
 
         if ($rcode < 200 || $rcode >= 300) {
-            throw new Error\ApiConnection(
-                'ApiConnection Error',
-                $rcode,
-                $rbody,
-                $resp,
-                $rheaders
-            );
+            $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
         }
 
         return $resp;
+    }
+
+    /**
+     * @param string $rbody A JSON string.
+     * @param int $rcode
+     * @param array $rheaders
+     * @param array $resp
+     *
+     * @throws Error\InvalidRequest if the error is caused by the user.
+     */
+    public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
+    {
+        $msg = isset($resp['message']) ? $resp['message'] : 'ApiConnection Error' ;
+        throw new Error\ApiConnection($msg, $rcode, $rbody, $resp, $rheaders);
     }
 }
