@@ -57,7 +57,7 @@ abstract class BaseTestCase extends TestCase
             $rawHeaders[] = $k . ': ' . $v;
         }
 
-        if(is_array($response)) {
+        if (is_array($response)) {
             $response = json_encode($response);
         }
 
