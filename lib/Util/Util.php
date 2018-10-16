@@ -50,6 +50,7 @@ abstract class Util
             'v1/setting' => 'FedaPay\\Setting',
             'v1/transaction' => 'FedaPay\\Transaction',
             'v1/user' => 'FedaPay\\User',
+            'v1/payout' => 'FedaPay\\Payout',
         ];
         $class = FedaPayObject::class;
 
