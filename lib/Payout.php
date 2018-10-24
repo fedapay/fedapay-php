@@ -108,15 +108,23 @@ class Payout extends Resource
     public static function start($payouts = [], $scheduled_at = null, $headers = [])
     {
         $url = static::resourcePath('start');
-        $params = [
-            'payouts' => $payouts
-        ];
+        $items = [];
 
-        if ($scheduled_at === null) {
-            $params['send_now'] = true;
-        } else {
-            $params['scheduled_at'] = $scheduled_at;
+        foreach ($payouts as $id) {
+            $item = ['id' => $id];
+
+            if ($scheduled_at === null) {
+                $item['send_now'] = true;
+            } else {
+                $item['scheduled_at'] = $scheduled_at;
+            }
+
+            $items[] = $item;
         }
+
+        $params = [
+            'payouts' => $items
+        ];
 
         list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
         return Util::arrayToFedaPayObject($response, $opts);
