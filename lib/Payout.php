@@ -93,14 +93,32 @@ class Payout extends Resource
     }
 
     /**
-     * Generate a payment token and url
+     * Start a scheduled payout
      * @return FedaPay\FedaPayObject
      */
-    public function generateToken($params = [], $headers = [])
-    {
-        $url = $this->instanceUrl() . '/token';
 
-        list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
+    /**
+     * Start a scheduled payout
+     *
+     * @param array $payouts list of payouts id to start. One at least
+     * @param null|DateTime $scheduled_at If null, payouts should be send now.
+     * @param array $headers
+     * @return FedaPay\FedaPayObject
+     */
+    public static function start($payouts = [], $scheduled_at = null, $headers = [])
+    {
+        $url = static::resourcePath('start');
+        $params = [
+            'payouts' => $payouts
+        ];
+
+        if ($scheduled_at === null) {
+            $params['send_now'] = true;
+        } else {
+            $params['scheduled_at'] = $scheduled_at;
+        }
+
+        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
         return Util::arrayToFedaPayObject($response, $opts);
     }
 }

@@ -31,3 +31,4 @@ require(dirname(__FILE__) . '/lib/Event.php');
 require(dirname(__FILE__) . '/lib/Log.php');
 require(dirname(__FILE__) . '/lib/PhoneNumber.php');
 require(dirname(__FILE__) . '/lib/Transaction.php');
+require(dirname(__FILE__) . '/lib/Payout.php');
