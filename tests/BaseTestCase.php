@@ -21,6 +21,7 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\Requestor::setHttpClient(\FedaPay\HttpClient\CurlClient::instance());
         $this->defaultHeaders = [
             'X-Version' => \FedaPay\FedaPay::VERSION,
+            'X-Api-Version' => \FedaPay\FedaPay::getApiVersion(),
             'X-Source' => 'FedaPay PhpLib',
             'Authorization' => 'Bearer '. (self::API_KEY ?: self::OAUTH_TOKEN)
         ];
