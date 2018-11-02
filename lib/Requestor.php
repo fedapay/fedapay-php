@@ -148,14 +148,19 @@ class Requestor
      */
     protected function defaultHeaders()
     {
+        $auth = FedaPay::getApiKey() ?: FedaPay::getToken();
+        $apiVersion = FedaPay::getApiVersion();
+        $accountId = FedaPay::getAccountId();
+
         $default = [
             'X-Version' => FedaPay::VERSION,
+            'X-Api-Version' => $apiVersion,
             'X-Source' => 'FedaPay PhpLib',
-            'Authorization' => 'Bearer '. ($this->apiKey ?: $this->token)
+            'Authorization' => "Bearer $auth"
         ];
 
-        if ($this->accountId) {
-            $default['FedaPay-Account'] = $this->accountId;
+        if ($accountId) {
+            $default['FedaPay-Account'] = $accountId;
         }
 
         return $default;
@@ -167,11 +172,14 @@ class Requestor
      */
     protected function baseUrl()
     {
-        if ($this->apiBase) {
-            return $this->apiBase;
+        $apiBase = FedaPay::getApiBase();
+        $environment = FedaPay::getEnvironment();
+
+        if ($apiBase) {
+            return $apiBase;
         }
 
-        switch ($this->environment) {
+        switch ($environment) {
             case 'development':
             case 'sandbox':
             case 'test':
@@ -189,7 +197,7 @@ class Requestor
      */
     protected function url($path)
     {
-        return $this->baseUrl() . '/' . $this->apiVersion . $path;
+        return $this->baseUrl() . '/' . FedaPay::getApiVersion() . $path;
     }
 
     /**
