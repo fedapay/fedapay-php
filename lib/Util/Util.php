@@ -68,6 +68,13 @@ abstract class Util
         return $object;
     }
 
+    /**
+     * Converts an array to FedaPay object.
+     *
+     * @param array $array The PHP array to convert.
+     * @param array $opts Additional options.
+     * @return FedaPayObject
+     */
     public static function arrayToFedaPayObject($array, $opts)
     {
         if (self::isList($array)) {
@@ -82,6 +89,29 @@ abstract class Util
         }
     }
 
+    /**
+     * Recursively converts the PHP FedaPay object to an array.
+     *
+     * @param array $values The PHP FedaPay object to convert.
+     * @return array
+     */
+    public static function convertFedaPayObjectToArray($values)
+    {
+        $results = [];
+
+        foreach ($values as $k => $v) {
+            if ($v instanceof FedaPayObject) {
+                $results[$k] = $v->__toArray(true);
+            } elseif (is_array($v)) {
+                $results[$k] = self::convertFedaPayObjectToArray($v);
+            } else {
+                $results[$k] = $v;
+            }
+        }
+
+        return $results;
+    }
+
     public static function stripApiVersion($key, $opts)
     {
         $apiPart = '';
@@ -90,5 +120,19 @@ abstract class Util
         }
 
         return str_replace($apiPart, '', $key);
+    }
+
+    public static function toDateString($date)
+    {
+        if ($date instanceof \DateTime) {
+            return $date->format('Y-m-d H:i:s');
+        } else if (is_string($date) || is_int($date)){
+            return $date;
+        } else {
+            throw new \InvalidArgumentException(
+                'Invalid datetime argument. Should be a date in string format, '
+                .' a timestamp  or an instance of \DateTime.'
+            );
+        }
     }
 }

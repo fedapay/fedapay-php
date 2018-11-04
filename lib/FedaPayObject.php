@@ -98,10 +98,24 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
         return $this->_values;
     }
 
+    public function __toJSON()
+    {
+        return json_encode($this->__toArray(true), JSON_PRETTY_PRINT);
+    }
+
     public function __toString()
     {
         $class = get_class($this);
         return $class . ' JSON: ' . $this->__toJSON();
+    }
+
+    public function __toArray($recursive = false)
+    {
+        if ($recursive) {
+            return Util::convertFedaPayObjectToArray($this->_values);
+        } else {
+            return $this->_values;
+        }
     }
 
     public function serializeParameters()
@@ -129,6 +143,10 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
     public function refreshFrom($values, $opts)
     {
         if (!is_null($values)) {
+            if ($values instanceof FedaPayObject) {
+                $values = $values->__toArray(true);
+            }
+
             foreach ($values as $k => $value) {
                 if (is_array($value)) {
                     $k = Util::stripApiVersion($k, $opts);

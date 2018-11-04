@@ -92,10 +92,65 @@ class Payout extends Resource
         return $this->_delete($headers);
     }
 
+    protected function _start($params, $headers)
+    {
+        $path = static::resourcePath('start');
+
+        list($response, $opts) = static::_staticRequest('put', $path, $params, $headers);
+
+        $object =  Util::arrayToFedaPayObject($response, $opts);
+        $this->refreshFrom($object->payouts[0], $opts);
+
+        return $this;
+    }
+
+    protected static function _startAll($params, $headers)
+    {
+        $path = static::resourcePath('start');
+
+        list($response, $opts) = static::_staticRequest('put', $path, $params, $headers);
+
+        return Util::arrayToFedaPayObject($response, $opts);
+    }
+
     /**
-     * Start a scheduled payout
+     * Start the payout
      * @return FedaPay\FedaPayObject
      */
+
+    public function schedule($scheduled_at, $params = [], $headers = [])
+    {
+        $scheduled_at = Util::toDateString($scheduled_at);
+
+        $_params = [
+            'payouts' => [
+                'id' => $this->id,
+                'scheduled_at' => $scheduled_at
+            ]
+        ];
+        $params = array_merge($_params, $params);
+
+        return $this->_start($params, $headers);
+    }
+
+    /**
+     * Send the payout now
+     * @return FedaPay\FedaPayObject
+     */
+
+    public function sendNow($params = [], $headers = [])
+    {
+        $_params = [
+            'payouts' => [
+                'id' => $this->id,
+                'send_now' => true
+            ]
+        ];
+
+        $params = array_merge($_params, $params);
+
+        return $this->_start($params, $headers);
+    }
 
     /**
      * Start a scheduled payout
@@ -105,28 +160,64 @@ class Payout extends Resource
      * @param array $headers
      * @return FedaPay\FedaPayObject
      */
-    public static function start($payouts = [], $scheduled_at = null, $headers = [])
+    public static function scheduleAll($payouts = [], $params = [], $headers = [])
     {
-        $url = static::resourcePath('start');
         $items = [];
 
-        foreach ($payouts as $id) {
-            $item = ['id' => $id];
+        foreach ($payouts as $payout) {
+            $item = [];
+            if (!array_key_exists('id', $payout)) {
+                throw new \InvalidArgumentException(
+                    'Invalid id argument. You must specify payout id.'
+                );
+            }
+            $item['id'] = $payout['id'];
 
-            if ($scheduled_at === null) {
-                $item['send_now'] = true;
-            } else {
-                $item['scheduled_at'] = $scheduled_at;
+            if (array_key_exists('scheduled_at', $payout)) {
+                $item['scheduled_at'] = Util::toDateString($payout['scheduled_at']);
             }
 
             $items[] = $item;
         }
 
-        $params = [
+        $_params = [
             'payouts' => $items
         ];
+        $params = array_merge($_params, $params);
 
-        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
-        return Util::arrayToFedaPayObject($response, $opts);
+        return self::_startAll($params, $headers);
+    }
+
+    /**
+     * Send all payouts now
+     *
+     * @param array $payouts list of payouts id to start. One at least
+     * @param array $params If null, payouts should be send now.
+     * @param array $headers
+     * @return FedaPay\FedaPayObject
+     */
+    public static function sendAllNow($payouts = [], $params = [], $headers = [])
+    {
+        $items = [];
+
+        foreach ($payouts as $payout) {
+            $item = [];
+            if (!array_key_exists('id', $payout)) {
+                throw new \InvalidArgumentException(
+                    'Invalid id argument. You must specify payout id.'
+                );
+            }
+            $item['id'] = $payout['id'];
+            $item['send_now'] = true;
+
+            $items[] = $item;
+        }
+
+        $_params = [
+            'payouts' => $items
+        ];
+        $params = array_merge($_params, $params);
+
+        return self::_startAll($params, $headers);
     }
 }

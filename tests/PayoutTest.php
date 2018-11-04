@@ -6,6 +6,37 @@ use Faker\Factory;
 
 class PayoutTest extends BaseTestCase
 {
+    private function createPayout()
+    {
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'amount' => 1000,
+        ];
+
+        $body = [
+            'v1/payout' => [
+                'id' => 1,
+                'klass' => 'v1/payout',
+                'reference' => '109329828',
+                'amount' => 1000,
+                'status' => 'pending',
+                'customer' => [
+                    'id' => 1,
+                    'klass' => 'v1/customer',
+                ],
+                'balance_id' => 1,
+                'mode' => 'mtn',
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/payouts', $data, $body);
+
+        return \FedaPay\Payout::create($data);
+    }
+
     /**
      * Should return array of FedaPay\Payout
      */
@@ -99,19 +130,6 @@ class PayoutTest extends BaseTestCase
                     'account_id' => 1,
                     'created_at' => '2018-10-17T16:03:24.061Z',
                     'updated_at' => '2018-10-17T16:03:24.061Z'
-                ],
-                'currency' => [
-                    'klass' => 'v1/currency',
-                    'id' => 1,
-                    'name' => 'FCFA',
-                    'iso' => 'XOF',
-                    'code' => 952,
-                    'prefix' => null,
-                    'suffix' => 'CFA',
-                    'div' => 1,
-                    'default' => true,
-                    'created_at' => '2018-10-17T15:36:39.006Z',
-                    'updated_at' => '2018-10-17T15:36:39.006Z'
                 ]
             ]
         ];
@@ -127,7 +145,6 @@ class PayoutTest extends BaseTestCase
         $this->assertEquals('pending', $payout->status);
         $this->assertInstanceOf(\FedaPay\Customer::class, $payout->customer);
         $this->assertEquals(1, $payout->customer->id);
-        $this->assertInstanceOf(\FedaPay\Currency::class, $payout->currency);
         $this->assertEquals('mtn', $payout->mode);
     }
 
@@ -172,13 +189,15 @@ class PayoutTest extends BaseTestCase
     /**
      * Should start a Payout
      */
-    public function testShouldStartAPayout()
+    public function testShouldScheduleAPayout()
     {
+        $payout = $this->createPayout();
+
         $body = [
             'v1/payouts' => [
                 [
                     'klass' => 'v1/payout',
-                    'id' => 13,
+                    'id' => 1,
                     'reference' => '1540316134325',
                     'amount' => 1000,
                     'status' => 'started',
@@ -189,8 +208,9 @@ class PayoutTest extends BaseTestCase
                     'last_error_message' => null,
                     'created_at' => '2018-10-23T17:35:34.325Z',
                     'updated_at' => '2018-10-23T17:36:40.086Z',
-                    'scheduled_at' => '2018-10-23T21:36:10.594Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
                     'sent_at' => null,
+                    'started_at' => '2018-11-01 18:30:22',
                     'failed_at' => null,
                     'deleted_at' => null
                 ]
@@ -199,21 +219,172 @@ class PayoutTest extends BaseTestCase
 
         $data = [
             'payouts' => [
-                'id' => 13,
-                'send_now' => 1
+                'id' => 1,
+                'scheduled_at' => '2018-11-01 18:30:22'
             ]
         ];
 
         $this->mockRequest('put', '/v1/payouts/start', $data, $body);
 
-        $object = \FedaPay\Payout::start([13]);
+        $payout->schedule('2018-11-01 18:30:22');
+
+        $this->assertEquals('2018-11-01 18:30:22', $payout->scheduled_at);
+        $this->assertEquals('2018-11-01 18:30:22', $payout->started_at);
+        $this->assertEquals('started', $payout->status);
+    }
+
+    /**
+     * Should fail schedule all payouts
+     */
+    public function testShouldFailScheduleAllPayouts()
+    {
+        $data = [[
+            'scheduled_at' => '2018-11-01 18:30:22'
+        ]];
+
+        $this->setExpectedException('\InvalidArgumentException', 'Invalid id argument. You must specify payout id.');
+
+        \FedaPay\Payout::scheduleAll($data);
+    }
+
+    /**
+     * Should schedule all Payouts
+     */
+    public function testShouldScheduleAllPayouts()
+    {
+        $body = [
+            'v1/payouts' => [
+                [
+                    'klass' => 'v1/payout',
+                    'id' => 1,
+                    'reference' => '1540316134325',
+                    'amount' => 1000,
+                    'status' => 'started',
+                    'customer_id' => 1,
+                    'currency_id' => 1,
+                    'mode' => 'mtn',
+                    'last_error_code' => null,
+                    'last_error_message' => null,
+                    'created_at' => '2018-10-23T17:35:34.325Z',
+                    'updated_at' => '2018-10-23T17:36:40.086Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
+                    'sent_at' => null,
+                    'started_at' => '2018-11-01 18:30:22',
+                    'failed_at' => null,
+                    'deleted_at' => null
+                ]
+            ]
+        ];
+
+        $data = [[
+            'id' => 1,
+            'scheduled_at' => '2018-11-01 18:30:22'
+        ]];
+
+        $this->mockRequest('put', '/v1/payouts/start', ['payouts' => $data], $body);
+
+        $object = \FedaPay\Payout::scheduleAll($data);
 
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertInstanceOf(\FedaPay\Payout::class, $object->payouts[0]);
-        $this->assertEquals(13, $object->payouts[0]->id);
+        $this->assertEquals(1, $object->payouts[0]->id);
         $this->assertEquals('1540316134325', $object->payouts[0]->reference);
         $this->assertEquals(1000, $object->payouts[0]->amount);
         $this->assertEquals('started', $object->payouts[0]->status);
+        $this->assertEquals('mtn', $object->payouts[0]->mode);
+    }
+
+    /**
+     * Should send a Payout now
+     */
+    public function testShouldSendAPayoutNow()
+    {
+        $payout = $this->createPayout();
+
+        $body = [
+            'v1/payouts' => [
+                [
+                    'klass' => 'v1/payout',
+                    'id' => 1,
+                    'reference' => '1540316134325',
+                    'amount' => 1000,
+                    'status' => 'sent',
+                    'customer_id' => 1,
+                    'currency_id' => 1,
+                    'mode' => 'mtn',
+                    'last_error_code' => null,
+                    'last_error_message' => null,
+                    'created_at' => '2018-10-23T17:35:34.325Z',
+                    'updated_at' => '2018-10-23T17:36:40.086Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
+                    'sent_at' => '2018-11-01 18:30:22',
+                    'started_at' => '2018-11-01 18:30:22',
+                    'failed_at' => null,
+                    'deleted_at' => null
+                ]
+            ]
+        ];
+
+        $data = [
+            'payouts' => [
+                'id' => 1,
+                'send_now' => true
+            ]
+        ];
+
+        $this->mockRequest('put', '/v1/payouts/start', $data, $body);
+
+        $payout->sendNow();
+
+        $this->assertEquals('2018-11-01 18:30:22', $payout->sent_at);
+        $this->assertEquals('sent', $payout->status);
+    }
+
+
+    /**
+     * Should send all payouts now
+     */
+    public function testShouldSendAllPayoutsNow()
+    {
+        $body = [
+            'v1/payouts' => [
+                [
+                    'klass' => 'v1/payout',
+                    'id' => 1,
+                    'reference' => '1540316134325',
+                    'amount' => 1000,
+                    'status' => 'sent',
+                    'customer_id' => 1,
+                    'currency_id' => 1,
+                    'mode' => 'mtn',
+                    'last_error_code' => null,
+                    'last_error_message' => null,
+                    'created_at' => '2018-10-23T17:35:34.325Z',
+                    'updated_at' => '2018-10-23T17:36:40.086Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
+                    'sent_at' => null,
+                    'started_at' => '2018-11-01 18:30:22',
+                    'failed_at' => null,
+                    'deleted_at' => null
+                ]
+            ]
+        ];
+
+        $data = [[
+            'id' => 1,
+            'send_now' => true
+        ]];
+
+        $this->mockRequest('put', '/v1/payouts/start', ['payouts' => $data], $body);
+
+        $object = \FedaPay\Payout::sendAllNow([['id' => 1]]);
+
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
+        $this->assertInstanceOf(\FedaPay\Payout::class, $object->payouts[0]);
+        $this->assertEquals(1, $object->payouts[0]->id);
+        $this->assertEquals('1540316134325', $object->payouts[0]->reference);
+        $this->assertEquals(1000, $object->payouts[0]->amount);
+        $this->assertEquals('sent', $object->payouts[0]->status);
         $this->assertEquals('mtn', $object->payouts[0]->mode);
     }
 
