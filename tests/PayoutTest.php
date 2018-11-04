@@ -218,10 +218,10 @@ class PayoutTest extends BaseTestCase
         ];
 
         $data = [
-            'payouts' => [
+            'payouts' => [[
                 'id' => 1,
                 'scheduled_at' => '2018-11-01 18:30:22'
-            ]
+            ]]
         ];
 
         $this->mockRequest('put', '/v1/payouts/start', $data, $body);
@@ -326,10 +326,10 @@ class PayoutTest extends BaseTestCase
         ];
 
         $data = [
-            'payouts' => [
+            'payouts' => [[
                 'id' => 1,
                 'send_now' => true
-            ]
+            ]]
         ];
 
         $this->mockRequest('put', '/v1/payouts/start', $data, $body);
