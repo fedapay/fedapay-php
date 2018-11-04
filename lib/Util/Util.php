@@ -145,7 +145,7 @@ abstract class Util
     {
         if ($date instanceof \DateTime) {
             return $date->format('Y-m-d H:i:s');
-        } else if (is_string($date) || is_int($date)){
+        } else if (is_string($date) || is_int($date)) {
             return $date;
         } else {
             throw new \InvalidArgumentException(
