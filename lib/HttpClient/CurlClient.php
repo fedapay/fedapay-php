@@ -134,26 +134,26 @@ class CurlClient implements ClientInterface
             case 'post':
                 $opts[CURLOPT_POST] = 1;
                 if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = Util::http_build_query_for_curl($params);
+                    $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
                 }
                 break;
             case 'put':
                 $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
                 if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = Util::http_build_query_for_curl($params);
+                    $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
                 }
                 break;
             case 'get':
                 $opts[CURLOPT_HTTPGET] = 1;
                 if (count($params) > 0) {
-                    $encoded = Util::http_build_query_for_curl($params);
+                    $encoded = Util\Util::encodeParameters($params);
                     $absUrl = "$absUrl?$encoded";
                 }
                 break;
             case 'delete':
                 $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
                 if (count($params) > 0) {
-                    $encoded = Util::http_build_query_for_curl($params);
+                    $encoded = Util\Util::encodeParameters($params);
                     $absUrl = "$absUrl?$encoded";
                 }
                 break;

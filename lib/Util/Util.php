@@ -156,13 +156,31 @@ abstract class Util
     }
 
     /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public static function encodeParameters($params)
+    {
+        $flattenedParams = [];
+        self::flattenParams($params, $flattenedParams);
+
+        $pieces = [];
+        foreach ($flattenedParams as $k => $v) {
+            array_push($pieces, self::urlEncode($k) . '=' . self::urlEncode($v));
+        }
+
+        return implode('&', $pieces);
+    }
+
+    /**
      * Flattens the array so that it can be used with curl.
      *
      * @param $arrays
      * @param array $new
      * @param null  $prefix
      */
-    private function http_build_query_for_curl($arrays, $new = array(), $prefix = null)
+    public static function flattenParams($arrays, &$new = array(), $prefix = null)
     {
         if (is_object($arrays)) {
             $arrays = get_object_vars($arrays);
@@ -171,12 +189,26 @@ abstract class Util
         foreach ($arrays as $key => $value) {
             $k = isset($prefix) ? $prefix.'['.$key.']' : $key;
             if (is_array($value)) {
-                $this->http_build_query_for_curl($value, $new, $k);
+                self::flattenParams($value, $new, $k);
             } else {
                 $new[$k] = $value;
             }
         }
+    }
 
-        return $new;
+    /**
+     * @param string $key A string to URL-encode.
+     *
+     * @return string The URL-encoded string.
+     */
+    public static function urlEncode($key)
+    {
+        $s = urlencode($key);
+        // Don't use strict form encoding by changing the square bracket control
+        // characters back to their literals. This is fine by the server, and
+        // makes these parameter strings easier to read.
+        $s = str_replace('%5B', '[', $s);
+        $s = str_replace('%5D', ']', $s);
+        return $s;
     }
 }
