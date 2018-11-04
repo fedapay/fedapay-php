@@ -123,10 +123,10 @@ class Payout extends Resource
         $scheduled_at = Util::toDateString($scheduled_at);
 
         $_params = [
-            'payouts' => [
+            'payouts' => [[
                 'id' => $this->id,
                 'scheduled_at' => $scheduled_at
-            ]
+            ]]
         ];
         $params = array_merge($_params, $params);
 
@@ -141,10 +141,10 @@ class Payout extends Resource
     public function sendNow($params = [], $headers = [])
     {
         $_params = [
-            'payouts' => [
+            'payouts' => [[
                 'id' => $this->id,
                 'send_now' => true
-            ]
+            ]]
         ];
 
         $params = array_merge($_params, $params);
