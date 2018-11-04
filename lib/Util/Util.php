@@ -33,7 +33,13 @@ abstract class Util
         return true;
     }
 
-
+    /**
+     * Convert a a response to fedapay object
+     * @param array $resp The response object
+     * @param array $opts Additional options.
+     *
+     * @return \FedaPay\FedaPayObject
+     */
     public static function convertToFedaPayObject($resp, $opts)
     {
         $types = [
@@ -73,7 +79,8 @@ abstract class Util
      *
      * @param array $array The PHP array to convert.
      * @param array $opts Additional options.
-     * @return FedaPayObject
+     *
+     * @return \FedaPay\FedaPayObject
      */
     public static function arrayToFedaPayObject($array, $opts)
     {
@@ -112,6 +119,13 @@ abstract class Util
         return $results;
     }
 
+    /**
+     * Strip api version from key
+     * @param string $key
+     * @param array $opts
+     *
+     * @return string
+     */
     public static function stripApiVersion($key, $opts)
     {
         $apiPart = '';
@@ -122,6 +136,11 @@ abstract class Util
         return str_replace($apiPart, '', $key);
     }
 
+    /**
+     * Check a date falue
+     * @param mixed $date
+     * @return mixed
+     */
     public static function toDateString($date)
     {
         if ($date instanceof \DateTime) {
