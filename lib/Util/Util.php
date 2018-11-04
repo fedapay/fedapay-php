@@ -154,4 +154,29 @@ abstract class Util
             );
         }
     }
+
+    /**
+     * Flattens the array so that it can be used with curl.
+     *
+     * @param $arrays
+     * @param array $new
+     * @param null  $prefix
+     */
+    private function http_build_query_for_curl($arrays, $new = array(), $prefix = null)
+    {
+        if (is_object($arrays)) {
+            $arrays = get_object_vars($arrays);
+        }
+
+        foreach ($arrays as $key => $value) {
+            $k = isset($prefix) ? $prefix.'['.$key.']' : $key;
+            if (is_array($value)) {
+                $this->http_build_query_for_curl($value, $new, $k);
+            } else {
+                $new[$k] = $value;
+            }
+        }
+
+        return $new;
+    }
 }
