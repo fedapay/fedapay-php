@@ -39,7 +39,7 @@ class UtilTest extends BaseTestCase
             'g' => [],
         ];
         $this->assertSame(
-            "a=3&b=%2Bfoo%3F&c=bar%26baz&d[a]=a&d[b]=b&e[0]=0&e[1]=1&f=",
+            "a=3&b=%2Bfoo%3F&c=bar%26baz&d[a]=a&d[b]=b&e[]=0&e[]=1&f=",
             Util\Util::encodeParameters($params)
         );
     }
@@ -70,17 +70,17 @@ class UtilTest extends BaseTestCase
 
         $this->assertSame(
             [
-                'a' => 3,
-                'b' => '+foo?',
-                'c' => 'bar&baz',
-                'd[a]' => 'a',
-                'd[b]' => 'b',
-                'e[0]' => 0,
-                'e[1]' => 1,
-                'f[0][foo]' => '1',
-                'f[0][ghi]' => '2',
-                'f[1][foo]' => '3',
-                'f[1][bar]' => '4'
+                ['a', 3],
+                ['b', '+foo?'],
+                ['c', 'bar&baz'],
+                ['d[a]', 'a'],
+                ['d[b]', 'b'],
+                ['e[]', 0],
+                ['e[]', 1],
+                ['f[][foo]', '1'],
+                ['f[][ghi]', '2'],
+                ['f[][foo]', '3'],
+                ['f[][bar]', '4'],
             ],
             $encoded
         );

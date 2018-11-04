@@ -25,11 +25,14 @@ abstract class Util
             return false;
         }
 
-        foreach (array_keys($array) as $k) {
-            if (!is_numeric($k)) {
-                return false;
-            }
+        if ($array === []) {
+            return true;
         }
+
+        if (array_keys($array) !== range(0, count($array) - 1)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -166,7 +169,8 @@ abstract class Util
         self::flattenParams($params, $flattenedParams);
 
         $pieces = [];
-        foreach ($flattenedParams as $k => $v) {
+        foreach ($flattenedParams as $param) {
+            list($k, $v) = $param;
             array_push($pieces, self::urlEncode($k) . '=' . self::urlEncode($v));
         }
 
@@ -182,16 +186,21 @@ abstract class Util
      */
     public static function flattenParams($arrays, &$new = array(), $prefix = null)
     {
-        if (is_object($arrays)) {
-            $arrays = get_object_vars($arrays);
-        }
+        $isList = self::isList($arrays);
 
         foreach ($arrays as $key => $value) {
-            $k = isset($prefix) ? $prefix.'['.$key.']' : $key;
+            if (isset($prefix) && $isList) {
+                $k = $prefix.'[]';
+            } elseif(isset($prefix)) {
+                $k = $prefix.'['.$key.']';
+            } else {
+                $k = $key;
+            }
+
             if (is_array($value)) {
                 self::flattenParams($value, $new, $k);
             } else {
-                $new[$k] = $value;
+                array_push($new, [$k, $value]);
             }
         }
     }
