@@ -9,7 +9,7 @@ namespace FedaPay;
  */
 class FedaPay
 {
-    const VERSION = '0.1.1';
+    const VERSION = '0.1.6';
 
     // @var string The FedaPay API key to be used for requests.
     protected static $apiKey = null;
