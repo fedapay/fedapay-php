@@ -51,14 +51,9 @@ abstract class Util
             'v1/currency' => 'FedaPay\\Currency',
             'v1/customer' => 'FedaPay\\Customer',
             'v1/event' => 'FedaPay\\Event',
-            'v1/event_type' => 'FedaPay\\EventType',
-            'v1/invitation' => 'FedaPay\\Invitation',
             'v1/log' => 'FedaPay\\Log',
             'v1/phone_number' => 'FedaPay\\PhoneNumber',
-            'v1/role' => 'FedaPay\\Role',
-            'v1/setting' => 'FedaPay\\Setting',
             'v1/transaction' => 'FedaPay\\Transaction',
-            'v1/user' => 'FedaPay\\User',
             'v1/payout' => 'FedaPay\\Payout',
         ];
         $class = FedaPayObject::class;
