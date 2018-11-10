@@ -191,7 +191,7 @@ abstract class Util
         foreach ($arrays as $key => $value) {
             if (isset($prefix) && $isList) {
                 $k = $prefix.'[]';
-            } elseif(isset($prefix)) {
+            } elseif (isset($prefix)) {
                 $k = $prefix.'['.$key.']';
             } else {
                 $k = $key;
