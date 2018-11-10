@@ -142,8 +142,7 @@ class Payout extends Resource
     {
         $_params = [
             'payouts' => [[
-                'id' => $this->id,
-                'send_now' => true
+                'id' => $this->id
             ]]
         ];
 
@@ -208,7 +207,6 @@ class Payout extends Resource
                 );
             }
             $item['id'] = $payout['id'];
-            $item['send_now'] = true;
 
             $items[] = $item;
         }

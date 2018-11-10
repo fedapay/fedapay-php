@@ -327,8 +327,7 @@ class PayoutTest extends BaseTestCase
 
         $data = [
             'payouts' => [[
-                'id' => 1,
-                'send_now' => true
+                'id' => 1
             ]]
         ];
 
@@ -371,8 +370,7 @@ class PayoutTest extends BaseTestCase
         ];
 
         $data = [[
-            'id' => 1,
-            'send_now' => true
+            'id' => 1
         ]];
 
         $this->mockRequest('put', '/v1/payouts/start', ['payouts' => $data], $body);
