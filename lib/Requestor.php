@@ -14,56 +14,10 @@ class Requestor
     const PRODUCTION_BASE = 'https://api.fedapay.com';
 
     /**
-    * Api key
-    * @var string
-    */
-    protected $apiKey;
-
-    /**
-    * Api base
-    * @var string
-    */
-    protected $apiBase;
-
-    /**
-    * Token
-    * @var string
-    */
-    protected $token;
-
-    /**
-    * Api environment
-    * @var string
-    */
-    protected $environment;
-
-    /**
-    * Api version
-    * @var string
-    */
-    protected $apiVersion;
-
-    /**
-    * Account id
-    * @var string
-    */
-    protected $accountId;
-
-    /**
     * Http Client
     * @var GuzzleHttp\ClientInterface
     */
     protected static $httpClient;
-
-    public function __construct()
-    {
-        $this->apiKey = FedaPay::getApiKey();
-        $this->apiBase = FedaPay::getApiBase();
-        $this->token = FedaPay::getToken();
-        $this->environment = FedaPay::getEnvironment();
-        $this->apiVersion = FedaPay::getApiVersion();
-        $this->accountId = FedaPay::getAccountId();
-    }
 
     /**
      * @static
