@@ -92,6 +92,12 @@ class Payout extends Resource
         return $this->_delete($headers);
     }
 
+    /**
+     * @param array|string|null $params
+     * @param array|string|null $headers
+     *
+     * @return Payout.
+     */
     protected function _start($params, $headers)
     {
         $path = static::resourcePath('start');
@@ -104,6 +110,12 @@ class Payout extends Resource
         return $this;
     }
 
+    /**
+     * @param array|string|null $params
+     * @param array|string|null $headers
+     *
+     * @return FedaPayObject.
+     */
     protected static function _startAll($params, $headers)
     {
         $path = static::resourcePath('start');
@@ -117,7 +129,6 @@ class Payout extends Resource
      * Start the payout
      * @return FedaPay\FedaPayObject
      */
-
     public function schedule($scheduled_at, $params = [], $headers = [])
     {
         $scheduled_at = Util::toDateString($scheduled_at);
@@ -137,7 +148,6 @@ class Payout extends Resource
      * Send the payout now
      * @return FedaPay\FedaPayObject
      */
-
     public function sendNow($params = [], $headers = [])
     {
         $_params = [
