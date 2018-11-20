@@ -133,15 +133,11 @@ class CurlClient implements ClientInterface
         switch ($method) {
             case 'post':
                 $opts[CURLOPT_POST] = 1;
-                if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
-                }
+                $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
                 break;
             case 'put':
                 $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
-                if ($params) {
-                    $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
-                }
+                $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
                 break;
             case 'get':
                 $opts[CURLOPT_HTTPGET] = 1;
