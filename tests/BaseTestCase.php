@@ -73,7 +73,44 @@ abstract class BaseTestCase extends TestCase
              ->willReturn([$response, $rcode, []]);
     }
 
-    private function setUpMockRequest()
+    protected function mockMultipleRequests($requests)
+    {
+        $mock = $this->setUpMockRequest();
+        $base = \FedaPay\FedaPay::getApiBase();
+        $withs = [];
+        $returns = [];
+
+        foreach($requests as $req) {
+            $req = array_merge(['params' => [], 'response' => [], 'rcode' => 200, 'headers' => []], $req);
+
+            $absUrl = $base . $req['path'];
+            $headers = array_merge($this->defaultHeaders, $req['headers']);
+
+            $rawHeaders = [];
+
+            foreach ($headers as $k => $v) {
+                $rawHeaders[] = $k . ': ' . $v;
+            }
+
+            if (is_array($req['response'])) {
+                $response = json_encode($req['response']);
+            }
+
+            $withs[] = [
+                strtolower($req['method']),
+                $absUrl,
+                $req['params'],
+                $rawHeaders,
+                [$response, $req['rcode'], []]
+            ];
+        }
+
+        $mock->expects($this->exactly(count($requests)))
+             ->method('request')
+             ->will($this->returnValueMap($withs));
+    }
+
+    protected function setUpMockRequest()
     {
         $mock = $this->getMockBuilder('\FedaPay\HttpClient\ClientInterface')
                             ->setMethods(['request'])

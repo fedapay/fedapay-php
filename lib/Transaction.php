@@ -21,6 +21,13 @@ use FedaPay\Util\Util;
  */
 class Transaction extends Resource
 {
+    const AVAILABLE_MOBILE_MONEY = ['mtn', 'moov', 'mtn_ci'];
+
+    protected function modeAvailable($mode)
+    {
+        return in_array($mode, self::AVAILABLE_MOBILE_MONEY);
+    }
+
     /**
      * @param array|string $id The ID of the transaction to retrieve
      * @param array|null $headers
@@ -96,5 +103,36 @@ class Transaction extends Resource
 
         list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
         return Util::arrayToFedaPayObject($response, $opts);
+    }
+
+    /**
+     * Send Mobile Money request with token
+     * @return FedaPay\FedaPayObject
+     */
+    public function sendNowWithToken($mode, $token, $headers = [])
+    {
+        if (!$this->modeAvailable($mode)) {
+            throw new \InvalidArgumentException(
+                'Invalid payment method \''.$mode.'\' supplied. '
+                .'You have to use one of the following payment methods '.
+                '['. implode(self::AVAILABLE_MOBILE_MONEY, ',') .']'
+            );
+        }
+
+        $url = $this->instanceUrl() . '/' . $mode;
+
+        list($response, $opts) = static::_staticRequest('post', $url, ['token' => $token], $headers);
+        return Util::arrayToFedaPayObject($response, $opts);
+    }
+
+    /**
+     * Send Mobile Money request
+     * @return FedaPay\FedaPayObject
+     */
+    public function sendNow($mode, $headers = [])
+    {
+        $tokenObject = $this->generateToken([], $headers);
+
+        return $this->sendNowWithToken($mode, $tokenObject->token, $headers);
     }
 }

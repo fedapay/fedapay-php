@@ -395,4 +395,168 @@ class TransactionTest extends BaseTestCase
         $this->assertEquals('PAYEMENT_TOKEN', $tokenObject->token);
         $this->assertEquals('https://process.fedapay.com/PAYEMENT_TOKEN', $tokenObject->url);
     }
+
+
+    /**
+     * Should fail to send Mobile Money
+     * @expectedException \InvalidArgumentException
+     */
+    public function testShouldFailToSendMobileMoneyRequestWithInvalidMode()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/transaction' => [
+                'id' => 1,
+                'klass' => 'v1/transaction',
+                'transaction_key' => '0KJAU01',
+                'reference' => '109329828',
+                'amount' => 100,
+                'description' => 'Description',
+                'callback_url' => 'http://e-shop.com',
+                'status' => 'pending',
+                'customer' => [
+                    'id' => 1,
+                    'klass' => 'v1/customer',
+                ],
+                'currency' => [
+                    'id' => 1,
+                    'klass' => 'v1/currency',
+                    'iso' => 'XOF'
+                ],
+                'mode' => null,
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z',
+                'paid_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
+
+        $transaction = \FedaPay\Transaction::create($data);
+
+        $transaction->sendNowWithToken('fake', 'PAYEMENT_TOKEN');
+    }
+
+    /**
+     * Should update a transaction with save
+     */
+    public function testShouldSendMtnRequestWithToken()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/transaction' => [
+                'id' => 1,
+                'klass' => 'v1/transaction',
+                'transaction_key' => '0KJAU01',
+                'reference' => '109329828',
+                'amount' => 100,
+                'description' => 'Description',
+                'callback_url' => 'http://e-shop.com',
+                'status' => 'pending',
+                'customer' => [
+                    'id' => 1,
+                    'klass' => 'v1/customer',
+                ],
+                'currency' => [
+                    'id' => 1,
+                    'klass' => 'v1/currency',
+                    'iso' => 'XOF'
+                ],
+                'mode' => null,
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z',
+                'paid_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
+
+        $transaction = \FedaPay\Transaction::create($data);
+
+        $this->mockRequest('post', '/v1/transactions/1/mtn', ['token' => 'PAYEMENT_TOKEN'], ['message' => 'success']);
+
+        $object = $transaction->sendNowWithToken('mtn', 'PAYEMENT_TOKEN');
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
+
+        $this->assertEquals('success', $object->message);
+    }
+
+    /**
+     * Should send mtn request
+     */
+    public function testShouldSendMtnRequest()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/transaction' => [
+                'id' => 1,
+                'klass' => 'v1/transaction',
+                'transaction_key' => '0KJAU01',
+                'reference' => '109329828',
+                'amount' => 100,
+                'description' => 'Description',
+                'callback_url' => 'http://e-shop.com',
+                'status' => 'pending',
+                'customer' => [
+                    'id' => 1,
+                    'klass' => 'v1/customer',
+                ],
+                'currency' => [
+                    'id' => 1,
+                    'klass' => 'v1/currency',
+                    'iso' => 'XOF'
+                ],
+                'mode' => null,
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z',
+                'paid_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
+
+        $transaction = \FedaPay\Transaction::create($data);
+
+        $body = [
+            'token' => 'PAYEMENT_TOKEN',
+            'url' => 'https://process.fedapay.com/PAYEMENT_TOKEN',
+        ];
+
+        $this->mockMultipleRequests([
+            ['method' => 'post', 'path' => '/v1/transactions/1/token', 'params' => [], 'response' => $body],
+            ['method' => 'post', 'path' => '/v1/transactions/1/mtn', 'params' => ['token' => 'PAYEMENT_TOKEN'], 'response' => ['message' => 'success']]
+        ]);
+
+        $object = $transaction->sendNow('mtn');
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
+
+        $this->assertEquals('success', $object->message);
+    }
 }
