@@ -80,7 +80,7 @@ abstract class BaseTestCase extends TestCase
         $withs = [];
         $returns = [];
 
-        foreach($requests as $req) {
+        foreach ($requests as $req) {
             $req = array_merge(['params' => [], 'response' => [], 'rcode' => 200, 'headers' => []], $req);
 
             $absUrl = $base . $req['path'];
