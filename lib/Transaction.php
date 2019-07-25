@@ -109,7 +109,7 @@ class Transaction extends Resource
      * Send Mobile Money request with token
      * @return FedaPay\FedaPayObject
      */
-    public function sendNowWithToken($mode, $token, $headers = [])
+    public function sendNowWithToken($mode, $token, $params = [], $headers = [])
     {
         if (!$this->modeAvailable($mode)) {
             throw new \InvalidArgumentException(
@@ -119,9 +119,10 @@ class Transaction extends Resource
             );
         }
 
-        $url = $this->instanceUrl() . '/' . $mode;
+        $url = '/' . $mode;
+        $params = array_merge(['token' => $token], $params);
 
-        list($response, $opts) = static::_staticRequest('post', $url, ['token' => $token], $headers);
+        list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
         return Util::arrayToFedaPayObject($response, $opts);
     }
 
@@ -129,10 +130,10 @@ class Transaction extends Resource
      * Send Mobile Money request
      * @return FedaPay\FedaPayObject
      */
-    public function sendNow($mode, $headers = [])
+    public function sendNow($mode, $params = [], $headers = [])
     {
         $tokenObject = $this->generateToken([], $headers);
 
-        return $this->sendNowWithToken($mode, $tokenObject->token, $headers);
+        return $this->sendNowWithToken($mode, $tokenObject->token, $params, $headers);
     }
 }

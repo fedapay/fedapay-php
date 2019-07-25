@@ -491,7 +491,7 @@ class TransactionTest extends BaseTestCase
 
         $transaction = \FedaPay\Transaction::create($data);
 
-        $this->mockRequest('post', '/v1/transactions/1/mtn', ['token' => 'PAYEMENT_TOKEN'], ['message' => 'success']);
+        $this->mockRequest('post', '/v1/mtn', ['token' => 'PAYEMENT_TOKEN'], ['message' => 'success']);
 
         $object = $transaction->sendNowWithToken('mtn', 'PAYEMENT_TOKEN');
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
@@ -551,7 +551,7 @@ class TransactionTest extends BaseTestCase
 
         $this->mockMultipleRequests([
             ['method' => 'post', 'path' => '/v1/transactions/1/token', 'params' => [], 'response' => $body],
-            ['method' => 'post', 'path' => '/v1/transactions/1/mtn', 'params' => ['token' => 'PAYEMENT_TOKEN'], 'response' => ['message' => 'success']]
+            ['method' => 'post', 'path' => '/v1/mtn', 'params' => ['token' => 'PAYEMENT_TOKEN'], 'response' => ['message' => 'success']]
         ]);
 
         $object = $transaction->sendNow('mtn');
