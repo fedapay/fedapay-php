@@ -21,11 +21,11 @@ use FedaPay\Util\Util;
  */
 class Transaction extends Resource
 {
-    const AVAILABLE_MOBILE_MONEY = ['mtn', 'moov', 'mtn_ci'];
+    private static $availableMobileMoney = ['mtn', 'moov', 'mtn_ci'];
 
     protected function modeAvailable($mode)
     {
-        return in_array($mode, self::AVAILABLE_MOBILE_MONEY);
+        return in_array($mode, self::$availableMobileMoney);
     }
 
     /**
@@ -115,7 +115,7 @@ class Transaction extends Resource
             throw new \InvalidArgumentException(
                 'Invalid payment method \''.$mode.'\' supplied. '
                 .'You have to use one of the following payment methods '.
-                '['. implode(self::AVAILABLE_MOBILE_MONEY, ',') .']'
+                '['. implode(self::$availableMobileMoney, ',') .']'
             );
         }
 
