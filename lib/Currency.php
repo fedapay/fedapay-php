@@ -19,25 +19,6 @@ namespace FedaPay;
  */
 class Currency extends Resource
 {
-    /**
-     * @param array|string $id The ID of the currency to retrieve.
-     * @param array|string|null $headers
-     *
-     * @return Currency
-     */
-    public static function retrieve($id, $headers = null)
-    {
-        return self::_retrieve($id, $headers);
-    }
-
-    /**
-     * @param array|null $params
-     * @param array|null $headers
-     *
-     * @return Collection of Currencys
-     */
-    public static function all($params = [], $headers = [])
-    {
-        return self::_all($params, $headers);
-    }
+    use ApiOperations\All;
+    use ApiOperations\Retrieve;
 }
