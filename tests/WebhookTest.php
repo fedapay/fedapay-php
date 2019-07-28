@@ -31,6 +31,7 @@ class WebhookTest extends BaseTestCase
     {
         $sigHeader = $this->generateHeader();
         $event = Webhook::constructEvent(self::EVENT_PAYLOAD, $sigHeader, self::SECRET);
+        $this->assertInstanceOf(\FedaPay\Event::class, $event);
         $this->assertEquals("evt_test_webhook", $event->id);
     }
 
