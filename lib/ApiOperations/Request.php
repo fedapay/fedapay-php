@@ -3,7 +3,7 @@
 namespace FedaPay\ApiOperations;
 
 /**
- * trait Retrieve
+ * trait Request
  */
 trait Request
 {

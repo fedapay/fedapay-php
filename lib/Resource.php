@@ -13,7 +13,7 @@ use FedaPay\Util\Inflector;
 abstract class Resource extends FedaPayObject
 {
     use ApiOperations\Request;
-    
+
     /**
      * @var FedaPay\Requestor
      */

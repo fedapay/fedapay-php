@@ -16,6 +16,16 @@ require(dirname(__FILE__) . '/lib/HttpClient/CurlClient.php');
 require(dirname(__FILE__) . '/lib/Error/Base.php');
 require(dirname(__FILE__) . '/lib/Error/ApiConnection.php');
 require(dirname(__FILE__) . '/lib/Error/InvalidRequest.php');
+require(dirname(__FILE__) . '/lib/Error/SignatureVerification.php');
+
+// API operations
+require(dirname(__FILE__) . '/lib/ApiOperations/All.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Create.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Delete.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Request.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Retrieve.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Save.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Update.php');
 
 // Plumbing
 require(dirname(__FILE__) . '/lib/Requestor.php');
@@ -32,3 +42,7 @@ require(dirname(__FILE__) . '/lib/Log.php');
 require(dirname(__FILE__) . '/lib/PhoneNumber.php');
 require(dirname(__FILE__) . '/lib/Transaction.php');
 require(dirname(__FILE__) . '/lib/Payout.php');
+
+// Webhooks
+require(dirname(__FILE__) . '/lib/Webhook.php');
+require(dirname(__FILE__) . '/lib/WebhookSignature.php');
