@@ -30,8 +30,6 @@
             "FedaPay\\": "lib/"
         }
     },
-    "autoload-dev": {
-    },
     "scripts": {
         "test": "vendor/bin/phpunit",
         "style": "vendor/bin/phpcs --standard=PSR2 -n lib tests *.php"
