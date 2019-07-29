@@ -9,7 +9,6 @@ if (!$autoload) {
     // Modify composer to not autoload FedaPay
     $composer = json_decode(file_get_contents('composer.json'), true);
     unset($composer['autoload']);
-    unset($composer['require-dev']['squizlabs/php_codesniffer']);
     file_put_contents('composer.json', json_encode($composer, JSON_PRETTY_PRINT));
 }
 
