@@ -17,9 +17,9 @@ trait Save
     {
         $params = $this->serializeParameters();
         $className = static::className();
-        $url = $this->instanceUrl();
+        $path = $this->instanceUrl();
 
-        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('put', $path, $params, $headers);
 
         $klass = $opts['apiVersion'] . '/' . $className;
 

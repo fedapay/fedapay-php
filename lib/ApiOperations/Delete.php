@@ -13,8 +13,8 @@ trait Delete
      */
     public function delete($headers = [])
     {
-        $url = $this->instanceUrl();
-        static::_staticRequest('delete', $url, [], $headers);
+        $path = $this->instanceUrl();
+        static::_staticRequest('delete', $path, [], $headers);
 
         return $this;
     }

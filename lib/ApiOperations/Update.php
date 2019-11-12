@@ -18,10 +18,10 @@ trait Update
     public static function update($id, $params = [], $headers = [])
     {
         self::_validateParams($params);
-        $url = static::resourcePath($id);
+        $path = static::resourcePath($id);
         $className = static::className();
 
-        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('put', $path, $params, $headers);
         $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
 
         return $object->$className;

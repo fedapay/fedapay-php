@@ -26,16 +26,16 @@ trait Request
     /**
      * Static method to send request
      * @param string $method
-     * @param string $url
+     * @param string $path
      * @param array $params
      * @param array $headers
      *
      * @return array
      */
-    protected static function _staticRequest($method, $url, $params = [], $headers = [])
+    protected static function _staticRequest($method, $path, $params = [], $headers = [])
     {
         $requestor = self::getRequestor();
-        $response = $requestor->request($method, $url, $params, $headers);
+        $response = $requestor->request($method, $path, $params, $headers);
 
         $options = [
             'apiVersion' => \FedaPay\FedaPay::getApiVersion(),

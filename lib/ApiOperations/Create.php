@@ -17,10 +17,10 @@ trait Create
     public static function create($params = [], $headers = [])
     {
         self::_validateParams($params);
-        $url = static::classPath();
+        $path = static::classPath();
         $className = static::className();
 
-        list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('post', $path, $params, $headers);
 
         $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
 
