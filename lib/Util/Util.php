@@ -56,20 +56,25 @@ abstract class Util
             'v1/transaction' => 'FedaPay\\Transaction',
             'v1/payout' => 'FedaPay\\Payout',
         ];
-        $class = FedaPayObject::class;
 
-        if (isset($resp['klass'])) {
-            $klass = $resp['klass'];
-
-            if (isset($types[$klass])) {
-                $class = $types[$klass];
+        if (self::isList($resp)) {
+            $mapped = [];
+            foreach ($resp as $i) {
+                array_push($mapped, self::arrayToFedaPayObject($i, $opts));
             }
+            return $mapped;
+        } elseif (is_array($resp)) {
+            if (isset($resp['klass']) && is_string($resp['klass']) && isset($types[$resp['klass']])) {
+                $class = $types[$resp['klass']];
+            } else {
+                $class = FedaPayObject::class;
+            }
+            $object = new $class;
+            $object->refreshFrom($resp, $opts);
+            return $object;
+        } else {
+            return $resp;
         }
-
-        $object = new $class;
-        $object->refreshFrom($resp, $opts);
-
-        return $object;
     }
 
     /**
@@ -236,7 +241,7 @@ abstract class Util
             if (strlen($a) != strlen($b)) {
                 return false;
             }
-            
+
             $result = 0;
             for ($i = 0; $i < strlen($a); $i++) {
                 $result |= ord($a[$i]) ^ ord($b[$i]);

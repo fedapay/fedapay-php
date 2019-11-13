@@ -22,12 +22,12 @@ class CurlClientTest extends BaseTestCase
      */
     public function setUpReflectors()
     {
-        $stripeReflector = new \ReflectionClass('\FedaPay\FedaPay');
+        $fedaPayReflector = new \ReflectionClass('\FedaPay\FedaPay');
 
-        $this->maxNetworkRetryDelayProperty = $stripeReflector->getProperty('maxNetworkRetryDelay');
+        $this->maxNetworkRetryDelayProperty = $fedaPayReflector->getProperty('maxNetworkRetryDelay');
         $this->maxNetworkRetryDelayProperty->setAccessible(true);
 
-        $this->initialNetworkRetryDelayProperty = $stripeReflector->getProperty('initialNetworkRetryDelay');
+        $this->initialNetworkRetryDelayProperty = $fedaPayReflector->getProperty('initialNetworkRetryDelay');
         $this->initialNetworkRetryDelayProperty->setAccessible(true);
 
         $curlClientReflector = new \ReflectionClass('FedaPay\HttpClient\CurlClient');

@@ -14,16 +14,20 @@ class UtilTest extends BaseTestCase
         $this->assertFalse(Util\Util::isList($notlist));
     }
 
-    public function testConvertStripeObjectToArrayIncludesId()
+    public function testConvertFedaPayObjectToArrayIncludesId()
     {
         $customer = Util\Util::convertToFedaPayObject(
             [
                 'id' => '123',
                 'object' => 'v1/customer',
+                'value' => ['a', 'b']
             ],
             []
         );
-        $this->assertTrue(array_key_exists('id', $customer->__toArray(true)));
+        $array = $customer->__toArray(true);
+        $this->assertTrue(array_key_exists('id', $array));
+        $this->assertEquals($array['id'], '123');
+        $this->assertEquals(['a', 'b'], $array['value']);
     }
 
     public function testEncodeParameters()
