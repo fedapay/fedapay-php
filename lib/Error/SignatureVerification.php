@@ -9,6 +9,8 @@ namespace FedaPay\Error;
  */
 class SignatureVerification extends Base
 {
+    private $sigHeader;
+
     public function __construct(
         $message,
         $sigHeader,

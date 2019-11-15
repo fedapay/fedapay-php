@@ -21,7 +21,7 @@ class RequestorTest extends BaseTestCase
         $this->assertSame($injectedCurl, $curl);
     }
 
-    public function testRequestDefaultParams()
+    public function testRequestParams()
     {
         $this->mockRequest(
             'get',
@@ -46,11 +46,12 @@ class RequestorTest extends BaseTestCase
         \FedaPay\FedaPay::setEnvironment('production');
         \FedaPay\FedaPay::setToken('mytoken');
         \FedaPay\FedaPay::setAccountId(898);
+        \FedaPay\FedaPay::setLocale('en');
 
         $this->mockRequest(
             'get',
             '/v3/path',
-            ['foo' => '2'],
+            ['foo' => '2', 'locale' => 'en'],
             [],
             500,
             [

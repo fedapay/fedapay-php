@@ -26,6 +26,9 @@ class FedaPay
     // @var string The environment for the FedaPay API.
     protected static $environment = 'sandbox';
 
+    // @var string The environment for the FedaPay API.
+    protected static $locale = null;
+
     // @var string The api version.
     protected static $apiVersion = 'v1';
 
@@ -192,6 +195,23 @@ class FedaPay
     public static function setEnvironment($environment)
     {
         self::$environment = $environment;
+    }
+
+    /**
+     * @return string | null The FedaPay locale
+     */
+    public static function getLocale()
+    {
+        return self::$locale;
+    }
+
+    /**
+     * @param string $locale The API locale.
+     * @return void
+     */
+    public static function setLocale($locale)
+    {
+        self::$locale = $locale;
     }
 
     /**

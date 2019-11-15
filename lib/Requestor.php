@@ -60,6 +60,7 @@ class Requestor
         $params = $params ?: [];
         $headers = $headers ?: [];
 
+        $params = array_merge($this->defaultParams(), $params);
         $headers = array_merge($this->defaultHeaders(), $headers);
         $url = $this->url($path);
         $rawHeaders = [];
@@ -94,6 +95,21 @@ class Requestor
             $httpRequest,
             $httpResponse
         );
+    }
+
+    /**
+     * Return the default request params
+     * @return array
+     */
+    protected function defaultParams()
+    {
+        $params = [];
+
+        if (FedaPay::getLocale()) {
+            $params['locale'] = FedaPay::getLocale();
+        }
+
+        return $params;
     }
 
     /**

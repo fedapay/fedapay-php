@@ -36,6 +36,7 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\FedaPay::setToken(null);
         \FedaPay\FedaPay::setAccountId(null);
         \FedaPay\FedaPay::setVerifySslCerts(true);
+        \FedaPay\FedaPay::setLocale(null);
         \FedaPay\Requestor::setHttpClient(null);
     }
 
