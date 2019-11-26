@@ -35,6 +35,7 @@ trait Request
     protected static function _staticRequest($method, $path, $params = [], $headers = [])
     {
         $requestor = self::getRequestor();
+
         $response = $requestor->request($method, $path, $params, $headers);
 
         $options = [
