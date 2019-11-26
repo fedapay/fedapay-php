@@ -62,9 +62,8 @@ class PageTest extends BaseTestCase
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object->pages[0]->currency);
     }
 
-
     /**
-     *
+     * Should faild creating the page
      */
     public function testPageCreationShouldFailed()
     {
@@ -92,9 +91,8 @@ class PageTest extends BaseTestCase
         }
     }
 
-
     /**
-     *
+     * Should create a page
      */
     public function testShouldCreateAPage()
     {
@@ -164,8 +162,8 @@ class PageTest extends BaseTestCase
     }
 
      /**
-     * Should update a page
-     */
+      * Should update a page
+      */
     public function testShouldUpdateAPage()
     {
         $faker = Factory::create();
@@ -299,12 +297,23 @@ class PageTest extends BaseTestCase
         $this->mockRequest('post', '/v1/pages', $data, $body);
         $page = \FedaPay\Page::create($data);
 
-        $this->mockRequest('get', '/v1/pages/'.$data['reference'].'/verify');
-        $page->verify($data['reference']);
+        $body = [
+            'v1/page_verify' => [
+                'page' => [
+                    'id' => 1,
+                    'klass' => 'v1/page',
+                    'name' => $data['name'],
+                    'reference' => $data['reference'],
+                    'description' => $data['description'],
+                    'created_at' => '2019-11-19T10:19:03.969Z',
+                    'updated_at' => '2019-11-19T10:19:03.969Z'
+                ],
+                'sesstings' => []
+            ]
+        ];
 
-        //print_r($page);
-
+        $this->mockRequest('get', '/v1/pages/' . $data['reference'] . '/verify', [], $body);
+        $object = $page->verify($data['reference']);
+        $this->assertInstanceOf(\FedaPay\Page::class, $object->page);
     }
-
-
 }
