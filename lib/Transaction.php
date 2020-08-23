@@ -28,11 +28,60 @@ class Transaction extends Resource
     use ApiOperations\Save;
     use ApiOperations\Delete;
 
-    private static $availableMobileMoney = ['mtn', 'moov', 'mtn_ci'];
+    /**
+     * Available Mobile Money mode
+     * @var array
+     */
+    private static $availableMobileMoney = ['mtn', 'moov', 'mtn_ci', 'moov_tg'];
 
+    /**
+     * Paid status list
+     * @var array
+     */
+    private static $paidStatus = [
+        'approved', 'transferred', 'refunded',
+        'approved_partially_refunded', 'transferred_partially_refunded'
+    ];
+
+    /**
+     * Check the transaction mode for send now request
+     *
+     * @param string $mode
+     * @return boolean
+     */
     protected function modeAvailable($mode)
     {
         return in_array($mode, self::$availableMobileMoney);
+    }
+
+    /**
+     * Check if the transaction was paid
+     *
+     * @return boolean
+     */
+    public function wasPaid()
+    {
+        return in_array($this->status, self::$paidStatus);
+    }
+
+    /**
+     * Check if the transacton was refunded. Status must include refunded.
+     *
+     * @return boolean
+     */
+    public function wasRefunded()
+    {
+        return strpos($this->status, 'refunded') !== false;
+    }
+
+    /**
+     * Check if the transacton was partially refunded. Status must include partially_refunded.
+     *
+     * @return boolean
+     */
+    public function wasPartiallyRefunded()
+    {
+        return strpos($this->status, 'partially_refunded') !== false;
     }
 
     /**
@@ -57,7 +106,7 @@ class Transaction extends Resource
             throw new \InvalidArgumentException(
                 'Invalid payment method \''.$mode.'\' supplied. '
                 .'You have to use one of the following payment methods '.
-                '['. implode(self::$availableMobileMoney, ',') .']'
+                '['. implode(',', self::$availableMobileMoney) .']'
             );
         }
 
