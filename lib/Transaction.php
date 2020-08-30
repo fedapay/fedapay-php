@@ -32,13 +32,13 @@ class Transaction extends Resource
      * Available Mobile Money mode
      * @var array
      */
-    private static $availableMobileMoney = ['mtn', 'moov', 'mtn_ci', 'moov_tg'];
+    private static $AVAILABLE_MOBILE_MONEY = ['mtn', 'moov', 'mtn_ci', 'moov_tg'];
 
     /**
      * Paid status list
      * @var array
      */
-    private static $paidStatus = [
+    private static $PAID_STATUS = [
         'approved', 'transferred', 'refunded',
         'approved_partially_refunded', 'transferred_partially_refunded'
     ];
@@ -49,9 +49,9 @@ class Transaction extends Resource
      * @param string $mode
      * @return boolean
      */
-    protected function modeAvailable($mode)
+    protected function mobileMoneyModeAvailable($mode)
     {
-        return in_array($mode, self::$availableMobileMoney);
+        return in_array($mode, self::$AVAILABLE_MOBILE_MONEY);
     }
 
     /**
@@ -61,7 +61,7 @@ class Transaction extends Resource
      */
     public function wasPaid()
     {
-        return in_array($this->status, self::$paidStatus);
+        return in_array($this->status, self::$PAID_STATUS);
     }
 
     /**
@@ -98,15 +98,20 @@ class Transaction extends Resource
 
     /**
      * Send Mobile Money request with token
+     * @param string $mode
+     * @param string $token
+     * @param array $params
+     * @param array $headers
+     *
      * @return FedaPay\FedaPayObject
      */
     public function sendNowWithToken($mode, $token, $params = [], $headers = [])
     {
-        if (!$this->modeAvailable($mode)) {
+        if (!$this->mobileMoneyModeAvailable($mode)) {
             throw new \InvalidArgumentException(
                 'Invalid payment method \''.$mode.'\' supplied. '
                 .'You have to use one of the following payment methods '.
-                '['. implode(',', self::$availableMobileMoney) .']'
+                '['. implode(',', self::$AVAILABLE_MOBILE_MONEY) .']'
             );
         }
 
@@ -119,6 +124,10 @@ class Transaction extends Resource
 
     /**
      * Send Mobile Money request
+     * @param string $mode
+     * @param array $params
+     * @param array $headers
+     *
      * @return FedaPay\FedaPayObject
      */
     public function sendNow($mode, $params = [], $headers = [])
