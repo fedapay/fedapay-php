@@ -13,6 +13,8 @@ class Requestor
 
     const PRODUCTION_BASE = 'https://api.fedapay.com';
 
+    const DEVELOPMENT_BASE = 'https://dev-api.fedapay.com';
+
     /**
     * Http Client
     * @var GuzzleHttp\ClientInterface
@@ -151,6 +153,8 @@ class Requestor
 
         switch ($environment) {
             case 'development':
+            case 'dev':
+                return self::DEVELOPMENT_BASE;
             case 'sandbox':
             case 'test':
             case null:
