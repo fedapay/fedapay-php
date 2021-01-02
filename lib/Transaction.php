@@ -123,18 +123,26 @@ class Transaction extends Resource
     }
 
     /**
-     * Send Mobile Money request
-     * @param string $mode
+     * Return transaction receipt URL
      * @param array $params
      * @param array $headers
      *
-     * @return FedaPay\FedaPayObject
+     * @return string
      */
-    public function sendNow($mode, $params = [], $headers = [])
+    public function getReceiptURL($params = [], $headers = [])
     {
-        $tokenObject = $this->generateToken([], $headers);
+        $receipt_url = $this->receipt_url;
 
-        return $this->sendNowWithToken($mode, $tokenObject->token, $params, $headers);
+        if (is_null($receipt_url)) {
+            $url = $this->instanceUrl() . '/receipt_url';
+
+            list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
+            $urlObject = Util::arrayToFedaPayObject($response, $opts);
+
+            $receipt_url = $urlObject->url;
+        }
+
+        return $receipt_url;
     }
 
     /**
