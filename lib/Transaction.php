@@ -136,4 +136,20 @@ class Transaction extends Resource
 
         return $this->sendNowWithToken($mode, $tokenObject->token, $params, $headers);
     }
+
+    /**
+     * Send Request for CMS
+     * @param string $mode
+     * @param array $params
+     * @param array $headers
+     *
+     * @return FedaPay\FedaPayObject
+     */
+    public function updateCms($mode, $params = [], $headers = [])
+    {
+        $url = $this->instanceUrl() . '/cms';
+
+        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
+        return Util::arrayToFedaPayObject($response, $opts);
+    }
 }
