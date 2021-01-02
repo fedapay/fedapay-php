@@ -139,13 +139,12 @@ class Transaction extends Resource
 
     /**
      * Send Request for CMS
-     * @param string $mode
      * @param array $params
      * @param array $headers
      *
      * @return FedaPay\FedaPayObject
      */
-    public function updateCms($mode, $params = [], $headers = [])
+    public function updateCms($params = [], $headers = [])
     {
         $url = $this->instanceUrl() . '/cms';
 
