@@ -133,7 +133,7 @@ class Transaction extends Resource
     {
         $receipt_url = $this->receipt_url;
 
-        if (is_null($receipt_url)) {
+        if (is_null($receipt_url) || !empty($params) || !empty($headers)) {
             $url = $this->instanceUrl() . '/receipt_url';
 
             list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
