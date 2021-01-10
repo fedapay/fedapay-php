@@ -124,16 +124,17 @@ class Transaction extends Resource
 
     /**
      * Return transaction receipt URL
+     * @param array $forceGenerate
      * @param array $params
      * @param array $headers
      *
      * @return string
      */
-    public function getReceiptURL($params = [], $headers = [])
+    public function getReceiptURL($forceGenerate = false, $params = [], $headers = [])
     {
         $receipt_url = $this->receipt_url;
 
-        if (is_null($receipt_url) || !empty($params) || !empty($headers)) {
+        if (is_null($receipt_url) || $forceGenerate) {
             $url = $this->instanceUrl() . '/receipt_url';
 
             list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
