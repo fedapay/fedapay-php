@@ -124,18 +124,22 @@ class Transaction extends Resource
 
     /**
      * Return transaction receipt URL
-     * @param array $forceGenerate
+     * @param array $force
      * @param array $params
      * @param array $headers
      *
      * @return string
      */
-    public function getReceiptURL($forceGenerate = false, $params = [], $headers = [])
+    public function getReceiptURL($force = false, $params = [], $headers = [])
     {
         $receipt_url = $this->receipt_url;
 
-        if (is_null($receipt_url) || $forceGenerate) {
+        if (is_null($receipt_url) || $force) {
             $url = $this->instanceUrl() . '/receipt_url';
+            // Force Api to generate url
+            if ($force) {
+                $params['force'] = true;
+            }
 
             list($response, $opts) = static::_staticRequest('post', $url, $params, $headers);
             $urlObject = Util::arrayToFedaPayObject($response, $opts);
