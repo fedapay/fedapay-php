@@ -32,7 +32,7 @@ class Transaction extends Resource
      * Available Mobile Money mode
      * @var array
      */
-    private static $AVAILABLE_MOBILE_MONEY = ['mtn', 'moov', 'mtn_ci', 'moov_tg'];
+    private static $AVAILABLE_MOBILE_MONEY = ['mtn', 'moov', 'mtn_ci', 'moov_tg', 'mtn_open'];
 
     /**
      * Paid status list
