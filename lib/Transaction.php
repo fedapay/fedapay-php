@@ -151,6 +151,21 @@ class Transaction extends Resource
     }
 
     /**
+     * Send Mobile Money request
+     * @param string $mode
+     * @param array $params
+     * @param array $headers
+     *
+     * @return FedaPay\FedaPayObject
+     */
+    public function sendNow($mode, $params = [], $headers = [])
+    {
+        $tokenObject = $this->generateToken([], $headers);
+
+        return $this->sendNowWithToken($mode, $tokenObject->token, $params, $headers);
+    }
+
+    /**
      * Send Request for CMS
      * @param array $params
      * @param array $headers
