@@ -179,4 +179,23 @@ class Transaction extends Resource
         list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
         return Util::arrayToFedaPayObject($response, $opts);
     }
+
+    /**
+     * Get transactions fees details
+     * @param string $token
+     * @param string $mode
+     * @param array $params
+     * @param array $headers
+     *
+     * @return FedaPay\FedaPayObject
+     */
+    public function getFees($token, $mode, $params = [], $headers = [])
+    {
+        $url = static::classPath() . '/fees';
+
+        $params = array_merge(['token' => $token, 'mode' => $mode], $params);
+
+        list($response, $opts) = static::_staticRequest('get', $url, $params, $headers);
+        return Util::arrayToFedaPayObject($response, $opts);
+    }
 }

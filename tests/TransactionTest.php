@@ -559,4 +559,69 @@ class TransactionTest extends BaseTestCase
 
         $this->assertEquals('success', $object->message);
     }
+
+    /**
+     * Should send fees request
+     */
+    public function testShouldSendFeesRequest()
+    {
+        $faker = Factory::create();
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'description' => 'Description',
+            'callback_url' => $faker->url,
+            'amount' => 1000,
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/transaction' => [
+                'id' => 1,
+                'klass' => 'v1/transaction',
+                'transaction_key' => '0KJAU01',
+                'reference' => '109329828',
+                'amount' => 100,
+                'description' => 'Description',
+                'callback_url' => 'http://e-shop.com',
+                'status' => 'pending',
+                'customer' => [
+                    'id' => 1,
+                    'klass' => 'v1/customer',
+                ],
+                'currency' => [
+                    'id' => 1,
+                    'klass' => 'v1/currency',
+                    'iso' => 'XOF'
+                ],
+                'mode' => null,
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'updated_at' => '2018-03-12T09:09:03.969Z',
+                'paid_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/transactions', $data, $body);
+
+        $transaction = \FedaPay\Transaction::create($data);
+
+        $body = [
+            'amount_debited' => 51020,
+            'amount_transferred' => 50000,
+            'apply_fees_to_merchant' => false,
+            'commission' => 0.02,
+            'fees' => 1020,
+            'fixed_commission' => 0,
+            'message' => '{fees} de frais supplémentaires sont appliqués sur votre paiement.',
+        ];
+
+        $this->mockRequest('get', '/v1/transactions/fees', ['token' => 'TOKEN', 'mode' => 'mtn'], $body);
+
+        $object = $transaction->getFees('TOKEN', 'mtn');
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
+
+        $this->assertEquals(51020, $object->amount_debited);
+        $this->assertEquals(50000, $object->amount_transferred);
+        $this->assertEquals(false, $object->apply_fees_to_merchant);
+    }
 }
