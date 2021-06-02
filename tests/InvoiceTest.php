@@ -57,12 +57,12 @@ class InvoiceTest extends BaseTestCase
 
         $this->mockRequest('get', '/v1/invoices', [], $body);
 
-        $object = \FedaPay\Page::all();
+        $object = \FedaPay\Invoice::all();
 
-        $this->assertTrue(is_array($object->invoice));
+        $this->assertTrue(is_array($object->invoices));
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
         $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object->meta);
-        $this->assertInstanceOf(\FedaPay\Invoice::class, $object->Invoice[0]);
+        $this->assertInstanceOf(\FedaPay\Invoice::class, $object->invoices[0]);
         $this->assertEquals(2, $object->invoices[0]->number);
         $this->assertEquals('v_hZUvFT', $object->invoices[0]->reference);
         $this->assertEquals('hi just a test', $object->invoices[0]->notes);
@@ -80,9 +80,9 @@ class InvoiceTest extends BaseTestCase
         ];
 
         $body = [
-            'message' => 'Page creation failed',
+            'message' => 'Invoice creation failed',
             'errors' => [
-                'description' => ['notes field required']
+                'notes' => ['notes field required']
             ]
         ];
 
@@ -128,9 +128,9 @@ class InvoiceTest extends BaseTestCase
 
         $invoice = \FedaPay\Invoice::create($data);
         $this->assertInstanceOf(\FedaPay\Invoice::class, $invoice);
-        $this->assertEquals($invoice->name, $data['name']);
+        $this->assertEquals($invoice->number, $data['number']);
         $this->assertEquals($invoice->reference, $data['reference']);
-        $this->assertEquals($invoice->description, $data['notes']);
+        $this->assertEquals($invoice->notes, $data['notes']);
         $this->assertEquals($invoice->id, 1);
     }
 
@@ -217,7 +217,7 @@ class InvoiceTest extends BaseTestCase
     {
         $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
+            'number' => 1,
             'reference' => $faker->word,
             'notes' => $faker->text(100),
             'currency_id' => 1,
@@ -243,7 +243,10 @@ class InvoiceTest extends BaseTestCase
         $invoice->number = 1;
         $updateData = [
             'klass' => 'v1/invoice',
+            'number' => $data['number'],
             'notes' => $data['notes'],
+            'reference' => $data['reference'],
+            'due_at' => '2018-03-12T09:09:03.969Z',
             'created_at' => '2019-11-19T10:19:03.969Z',
             'updated_at' => '2019-11-19T10:19:03.969Z'
         ];
@@ -287,7 +290,7 @@ class InvoiceTest extends BaseTestCase
         $invoice->delete();
     }
 
-    public function testShouldVerifyPage()
+    public function testShouldVerifyInvoice()
     {
         $faker = Factory::create();
         $data = [
