@@ -43,6 +43,7 @@ require(dirname(__FILE__) . '/lib/PhoneNumber.php');
 require(dirname(__FILE__) . '/lib/Transaction.php');
 require(dirname(__FILE__) . '/lib/Payout.php');
 require(dirname(__FILE__) . '/lib/Page.php');
+require(dirname(__FILE__) . '/lib/Invoice.php');
 
 // Webhooks
 require(dirname(__FILE__) . '/lib/Webhook.php');
