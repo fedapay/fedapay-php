@@ -57,6 +57,7 @@ abstract class Util
             'v1/payout' => 'FedaPay\\Payout',
             'v1/page' => 'FedaPay\\Page',
             'v1/invoice' => 'FedaPay\\Invoice',
+            'v1/balance' => 'FedaPay\\Balance',
         ];
 
         if (self::isList($resp)) {
