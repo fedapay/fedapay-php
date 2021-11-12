@@ -36,6 +36,7 @@ require(dirname(__FILE__) . '/lib/Resource.php');
 require(dirname(__FILE__) . '/lib/Account.php');
 require(dirname(__FILE__) . '/lib/ApiKey.php');
 require(dirname(__FILE__) . '/lib/Currency.php');
+require(dirname(__FILE__) . '/lib/Balance.php');
 require(dirname(__FILE__) . '/lib/Customer.php');
 require(dirname(__FILE__) . '/lib/Event.php');
 require(dirname(__FILE__) . '/lib/Log.php');
