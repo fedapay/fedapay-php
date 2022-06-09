@@ -22,6 +22,7 @@ use FedaPay\Util\Util;
 class Transaction extends Resource
 {
     use ApiOperations\All;
+    use ApiOperations\Search;
     use ApiOperations\Retrieve;
     use ApiOperations\Create;
     use ApiOperations\Update;
@@ -33,7 +34,8 @@ class Transaction extends Resource
      * @var array
      */
     private static $AVAILABLE_MOBILE_MONEY = [
-        'mtn', 'moov', 'mtn_ci', 'moov_tg', 'mtn_open', 'airtel_ne', 'free_sn'
+        'mtn', 'moov', 'mtn_ci', 'moov_tg', 'mtn_open', 'airtel_ne', 'free_sn',
+        'togocel'
     ];
 
     /**

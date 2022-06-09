@@ -28,6 +28,7 @@ use FedaPay\Util\Util;
 class Payout extends Resource
 {
     use ApiOperations\All;
+    use ApiOperations\Search;
     use ApiOperations\Retrieve;
     use ApiOperations\Create;
     use ApiOperations\Update;
