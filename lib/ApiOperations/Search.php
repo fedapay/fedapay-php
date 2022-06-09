@@ -18,7 +18,7 @@ trait Search
     {
         $params['search'] = $q;
         self::_validateParams($params);
-        $path = static::resourcePath() . '/search';
+        $path = static::resourcePath('search');
         list($response, $opts) = static::_staticRequest('get', $path, $params, $headers);
 
         return \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);

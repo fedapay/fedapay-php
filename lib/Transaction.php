@@ -30,7 +30,7 @@ class Transaction extends Resource
     use ApiOperations\Delete;
 
     /**
-     * Available Mobile Money mode
+     * Available Mobile Money modes for send now
      * @var array
      */
     private static $AVAILABLE_MOBILE_MONEY = [
@@ -52,10 +52,19 @@ class Transaction extends Resource
      *
      * @param string $mode
      * @return boolean
+     * @throw \InvalidArgumentException
      */
-    protected function mobileMoneyModeAvailable($mode)
+    protected static function mobileMoneyModeAvailable($mode)
     {
-        return in_array($mode, self::$AVAILABLE_MOBILE_MONEY);
+        if (!in_array($mode, self::$AVAILABLE_MOBILE_MONEY)) {
+            throw new \InvalidArgumentException(
+                'Invalid payment method \''.$mode.'\' supplied. '
+                .'You have to use one of the following payment methods '.
+                '['. implode(',', self::$AVAILABLE_MOBILE_MONEY) .']'
+            );
+        }
+
+        return true;
     }
 
     /**
@@ -111,13 +120,7 @@ class Transaction extends Resource
      */
     public function sendNowWithToken($mode, $token, $params = [], $headers = [])
     {
-        if (!$this->mobileMoneyModeAvailable($mode)) {
-            throw new \InvalidArgumentException(
-                'Invalid payment method \''.$mode.'\' supplied. '
-                .'You have to use one of the following payment methods '.
-                '['. implode(',', self::$AVAILABLE_MOBILE_MONEY) .']'
-            );
-        }
+        static::mobileMoneyModeAvailable($mode);
 
         $url = '/' . $mode;
         $params = array_merge(['token' => $token], $params);
