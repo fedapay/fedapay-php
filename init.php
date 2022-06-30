@@ -21,6 +21,7 @@ require(dirname(__FILE__) . '/lib/Error/SignatureVerification.php');
 // API operations
 require(dirname(__FILE__) . '/lib/ApiOperations/All.php');
 require(dirname(__FILE__) . '/lib/ApiOperations/Create.php');
+require(dirname(__FILE__) . '/lib/ApiOperations/Search.php');
 require(dirname(__FILE__) . '/lib/ApiOperations/Delete.php');
 require(dirname(__FILE__) . '/lib/ApiOperations/Request.php');
 require(dirname(__FILE__) . '/lib/ApiOperations/Retrieve.php');
