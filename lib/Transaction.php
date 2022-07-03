@@ -35,7 +35,7 @@ class Transaction extends Resource
      */
     private static $AVAILABLE_MOBILE_MONEY = [
         'mtn', 'moov', 'mtn_ci', 'moov_tg', 'mtn_open', 'airtel_ne', 'free_sn',
-        'togocel'
+        'togocel', 'mtn_ecw'
     ];
 
     /**
@@ -170,21 +170,6 @@ class Transaction extends Resource
         $tokenObject = $this->generateToken([], $headers);
 
         return $this->sendNowWithToken($mode, $tokenObject->token, $params, $headers);
-    }
-
-    /**
-     * Send Request for CMS
-     * @param array $params
-     * @param array $headers
-     *
-     * @return FedaPay\FedaPayObject
-     */
-    public function updateCms($params = [], $headers = [])
-    {
-        $url = $this->instanceUrl() . '/cms';
-
-        list($response, $opts) = static::_staticRequest('put', $url, $params, $headers);
-        return Util::arrayToFedaPayObject($response, $opts);
     }
 
     /**
