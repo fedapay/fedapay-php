@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests;
+namespace Tests\HttpClient;
 
 use FedaPay\HttpClient\CurlClient;
 use FedaPay\FedaPay;
+use Tests\BaseTestCase;
 
 class CurlClientTest extends BaseTestCase
 {
@@ -61,7 +62,9 @@ class CurlClientTest extends BaseTestCase
 
     private function createFakeRandomGenerator($returnValue = 1.0)
     {
-        $fakeRandomGenerator = $this->getMock('FedaPay\Util\RandomGenetator', ['randFloat']);
+        $fakeRandomGenerator = $this->getMockBuilder('FedaPay\Util\RandomGenetator')
+            ->setMethods(['randFloat'])
+            ->getMock();
         $fakeRandomGenerator->method('randFloat')->willReturn($returnValue);
         return $fakeRandomGenerator;
     }

@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests;
+namespace Tests\Util;
 
 use FedaPay\Util;
+use Tests\BaseTestCase;
 
 class UtilTest extends BaseTestCase
 {

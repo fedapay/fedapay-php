@@ -399,10 +399,11 @@ class TransactionTest extends BaseTestCase
 
     /**
      * Should fail to send Mobile Money
-     * @expectedException \InvalidArgumentException
      */
     public function testShouldFailToSendMobileMoneyRequestWithInvalidMode()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],

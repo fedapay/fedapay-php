@@ -13,7 +13,7 @@ abstract class BaseTestCase extends TestCase
     const OAUTH_TOKEN = 'oauth_test_token_123';
     const API_BASE = 'https://dev-api.fedapay.com';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         \FedaPay\FedaPay::setApiKey(self::API_KEY);
         \FedaPay\FedaPay::setApiBase(self::API_BASE);
@@ -27,7 +27,7 @@ abstract class BaseTestCase extends TestCase
         ];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // Back to default
         \FedaPay\FedaPay::setApiKey(null);
@@ -120,5 +120,14 @@ abstract class BaseTestCase extends TestCase
         \FedaPay\Requestor::setHttpClient($mock);
 
         return $mock;
+    }
+
+    protected function setExpectedException($exception, $message = null)
+    {
+        $this->expectException($exception);
+
+        if (null !== $message) {
+            $this->expectExceptionMessage($message);
+        }
     }
 }
