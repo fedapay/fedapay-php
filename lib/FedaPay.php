@@ -58,7 +58,7 @@ class FedaPay
     /**
      * Sets the API key to be used for requests.
      *
-     * @param string $apiKey
+     * @param  string $apiKey
      * @return void
      */
     public static function setApiKey($apiKey)
@@ -78,7 +78,7 @@ class FedaPay
     /**
      * Sets the API base to be used for requests.
      *
-     * @param string $apiBase
+     * @param  string $apiBase
      * @return void
      */
     public static function setApiBase($apiBase)
@@ -97,7 +97,7 @@ class FedaPay
     /**
      * Sets the token to be used for requests.
      *
-     * @param string $token
+     * @param  string $token
      * @return void
      */
     public static function setToken($token)
@@ -117,7 +117,7 @@ class FedaPay
     /**
      * Sets the account id to be used for connected account.
      *
-     * @param string $token
+     * @param  string $token
      * @return void
      */
     public static function setAccountId($accountId)
@@ -134,7 +134,7 @@ class FedaPay
     }
 
     /**
-     * @param string $apiVersion The API version.
+     * @param  string $apiVersion The API version.
      * @return void
      */
     public static function setApiVersion($apiVersion)
@@ -151,7 +151,7 @@ class FedaPay
     }
 
     /**
-     * @param bool $verify The verify ssl certificates value.
+     * @param  bool $verify The verify ssl certificates value.
      * @return void
      */
     public static function setVerifySslCerts($verify)
@@ -172,7 +172,7 @@ class FedaPay
     }
 
     /**
-     * @param string $path The path of the certificate.
+     * @param  string $path The path of the certificate.
      * @return void
      */
     public static function setCaBundlePath($path)
@@ -189,7 +189,7 @@ class FedaPay
     }
 
     /**
-     * @param string $environment The API environment.
+     * @param  string $environment The API environment.
      * @return void
      */
     public static function setEnvironment($environment)
@@ -206,7 +206,7 @@ class FedaPay
     }
 
     /**
-     * @param string $locale The API locale.
+     * @param  string $locale The API locale.
      * @return void
      */
     public static function setLocale($locale)

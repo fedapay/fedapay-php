@@ -9,7 +9,8 @@ trait Delete
 {
     /**
      * Send a detele request
-     * @param  array $headers
+     *
+     * @param array $headers
      */
     public function delete($headers = [])
     {

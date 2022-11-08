@@ -68,32 +68,32 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
     }
 
     // ArrayAccess methods
-    public function offsetSet($k, $v)
+    public function offsetSet(mixed $k, mixed $v): void
     {
         $this->$k = $v;
     }
 
-    public function offsetExists($k)
+    public function offsetExists(mixed $k): bool
     {
         return array_key_exists($k, $this->_values);
     }
 
-    public function offsetUnset($k)
+    public function offsetUnset(mixed $k): void
     {
         unset($this->$k);
     }
 
-    public function offsetGet($k)
+    public function offsetGet(mixed $k): mixed
     {
         return array_key_exists($k, $this->_values) ? $this->_values[$k] : null;
     }
 
-    public function keys()
+    public function keys(): array
     {
         return array_keys($this->_values);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->_values;
     }
@@ -103,13 +103,13 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
         return json_encode($this->__toArray(true), JSON_PRETTY_PRINT);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $class = get_class($this);
         return $class . ' JSON: ' . $this->__toJSON();
     }
 
-    public function __toArray($recursive = false)
+    public function __toArray($recursive = false): array
     {
         if ($recursive) {
             return Util::convertFedaPayObjectToArray($this->_values);
@@ -118,7 +118,7 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
         }
     }
 
-    public function serializeParameters()
+    public function serializeParameters(): array
     {
         $params = [];
 

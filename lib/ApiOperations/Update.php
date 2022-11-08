@@ -9,9 +9,10 @@ trait Update
 {
     /**
      * Static method to update a resource
-     * @param string $id     The ID of the API resource to update.
-     * @param array $params The request params
-     * @param array $headers the request headers
+     *
+     * @param string $id      The ID of the API resource to update.
+     * @param array  $params  The request params
+     * @param array  $headers the request headers
      *
      * @return Resource the updated API resource
      */

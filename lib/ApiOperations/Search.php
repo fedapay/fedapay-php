@@ -9,6 +9,7 @@ trait Search
 {
     /**
      * Static method to search resources
+     *
      * @param array $params
      * @param array $headers
      *

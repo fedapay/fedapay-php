@@ -38,6 +38,7 @@ abstract class Util
 
     /**
      * Convert a a response to fedapay object
+     *
      * @param array $resp The response object
      * @param array $opts Additional options.
      *
@@ -84,7 +85,7 @@ abstract class Util
      * Converts an array to FedaPay object.
      *
      * @param array $array The PHP array to convert.
-     * @param array $opts Additional options.
+     * @param array $opts  Additional options.
      *
      * @return \FedaPay\FedaPayObject
      */
@@ -105,7 +106,7 @@ abstract class Util
     /**
      * Recursively converts the PHP FedaPay object to an array.
      *
-     * @param array $values The PHP FedaPay object to convert.
+     * @param  array $values The PHP FedaPay object to convert.
      * @return array
      */
     public static function convertFedaPayObjectToArray($values)
@@ -127,8 +128,9 @@ abstract class Util
 
     /**
      * Strip api version from key
+     *
      * @param string $key
-     * @param array $opts
+     * @param array  $opts
      *
      * @return string
      */
@@ -144,7 +146,8 @@ abstract class Util
 
     /**
      * Check a date falue
-     * @param mixed $date
+     *
+     * @param  mixed $date
      * @return mixed
      */
     public static function toDateString($date)
@@ -228,8 +231,8 @@ abstract class Util
      * Compares two strings for equality. The time taken is independent of the
      * number of characters that match.
      *
-     * @param string $a one of the strings to compare.
-     * @param string $b the other string to compare.
+     * @param  string $a one of the strings to compare.
+     * @param  string $b the other string to compare.
      * @return bool true if the strings are equal, false otherwise.
      */
     public static function secureCompare($a, $b)

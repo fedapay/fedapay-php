@@ -3,10 +3,10 @@
 namespace FedaPay;
 
 /**
-* Class Requestor
-*
-* @package FedaPay
-*/
+ * Class Requestor
+ *
+ * @package FedaPay
+ */
 class Requestor
 {
     const SANDBOX_BASE = 'https://sandbox-api.fedapay.com';
@@ -16,9 +16,10 @@ class Requestor
     const DEVELOPMENT_BASE = 'https://dev-api.fedapay.com';
 
     /**
-    * Http Client
-    * @var GuzzleHttp\ClientInterface
-    */
+     * Http Client
+     *
+     * @var GuzzleHttp\ClientInterface
+     */
     protected static $httpClient;
 
     /**
@@ -50,13 +51,13 @@ class Requestor
     }
 
     /**
-    * @param string     $method
-    * @param string     $url
-    * @param array|null $params
-    * @param array|null $headers
-    *
-    * @return array An API response.
-    */
+     * @param string     $method
+     * @param string     $url
+     * @param array|null $params
+     * @param array|null $headers
+     *
+     * @return array An API response.
+     */
     public function request($method, $path, $params = null, $headers = null)
     {
         $params = $params ?: [];
@@ -80,7 +81,8 @@ class Requestor
 
     /**
      * Format http request error
-     * @param GuzzleHttp\Exception\RequestException $e
+     *
+     * @param  GuzzleHttp\Exception\RequestException $e
      * @throws Error\ApiConnection
      * @return void
      */
@@ -101,6 +103,7 @@ class Requestor
 
     /**
      * Return the default request params
+     *
      * @return array
      */
     protected function defaultParams()
@@ -116,6 +119,7 @@ class Requestor
 
     /**
      * Return the default request headers
+     *
      * @return array
      */
     protected function defaultHeaders()
@@ -140,6 +144,7 @@ class Requestor
 
     /**
      * Return the base url of the requests
+     *
      * @return string
      */
     protected function baseUrl()
@@ -152,21 +157,22 @@ class Requestor
         }
 
         switch ($environment) {
-            case 'development':
-            case 'dev':
-                return self::DEVELOPMENT_BASE;
-            case 'sandbox':
-            case 'test':
-            case null:
-                return self::SANDBOX_BASE;
-            case 'production':
-            case 'live':
-                return self::PRODUCTION_BASE;
+        case 'development':
+        case 'dev':
+            return self::DEVELOPMENT_BASE;
+        case 'sandbox':
+        case 'test':
+        case null:
+            return self::SANDBOX_BASE;
+        case 'production':
+        case 'live':
+            return self::PRODUCTION_BASE;
         }
     }
 
     /**
      * Return the request url
+     *
      * @return string
      */
     protected function url($path)
@@ -200,10 +206,10 @@ class Requestor
     }
 
     /**
-     * @param string $rbody A JSON string.
-     * @param int $rcode
-     * @param array $rheaders
-     * @param array $resp
+     * @param string $rbody    A JSON string.
+     * @param int    $rcode
+     * @param array  $rheaders
+     * @param array  $resp
      *
      * @throws Error\InvalidRequest if the error is caused by the user.
      */

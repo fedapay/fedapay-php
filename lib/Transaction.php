@@ -31,6 +31,7 @@ class Transaction extends Resource
 
     /**
      * Available Mobile Money modes for send now
+     *
      * @var array
      */
     private static $AVAILABLE_MOBILE_MONEY = [
@@ -40,6 +41,7 @@ class Transaction extends Resource
 
     /**
      * Paid status list
+     *
      * @var array
      */
     private static $PAID_STATUS = [
@@ -50,9 +52,9 @@ class Transaction extends Resource
     /**
      * Check the transaction mode for send now request
      *
-     * @param string $mode
+     * @param  string $mode
      * @return boolean
-     * @throw \InvalidArgumentException
+     * @throw  \InvalidArgumentException
      */
     protected static function mobileMoneyModeAvailable($mode)
     {
@@ -99,6 +101,7 @@ class Transaction extends Resource
 
     /**
      * Generate a payment token and url
+     *
      * @return FedaPay\FedaPayObject
      */
     public function generateToken($params = [], $headers = [])
@@ -111,10 +114,11 @@ class Transaction extends Resource
 
     /**
      * Send Mobile Money request with token
+     *
      * @param string $mode
      * @param string $token
-     * @param array $params
-     * @param array $headers
+     * @param array  $params
+     * @param array  $headers
      *
      * @return FedaPay\FedaPayObject
      */
@@ -131,6 +135,7 @@ class Transaction extends Resource
 
     /**
      * Return transaction receipt URL
+     *
      * @param array $force
      * @param array $params
      * @param array $headers
@@ -159,9 +164,10 @@ class Transaction extends Resource
 
     /**
      * Send Mobile Money request
+     *
      * @param string $mode
-     * @param array $params
-     * @param array $headers
+     * @param array  $params
+     * @param array  $headers
      *
      * @return FedaPay\FedaPayObject
      */
@@ -174,10 +180,11 @@ class Transaction extends Resource
 
     /**
      * Get transactions fees details
+     *
      * @param string $token
      * @param string $mode
-     * @param array $params
-     * @param array $headers
+     * @param array  $params
+     * @param array  $headers
      *
      * @return FedaPay\FedaPayObject
      */

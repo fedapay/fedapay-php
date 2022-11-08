@@ -9,6 +9,7 @@ trait Save
 {
     /**
      * Update the resource
+     *
      * @param array $headers the request headers
      *
      * @return Resource the updated API resource

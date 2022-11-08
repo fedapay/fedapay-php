@@ -9,6 +9,7 @@ trait All
 {
     /**
      * Static method to retrive a list of resources
+     *
      * @param array $params
      * @param array $headers
      *

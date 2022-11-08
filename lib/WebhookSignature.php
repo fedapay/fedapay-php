@@ -22,12 +22,12 @@ abstract class WebhookSignature
      * SignatureVerification exception if the verification fails for any
      * reason.
      *
-     * @param string $payload the payload sent by FedaPay.
-     * @param string $header the contents of the signature header sent by
-     *  FedaPay.
-     * @param string $secret secret used to generate the signature.
-     * @param int $tolerance maximum difference allowed between the header's
-     *  timestamp and the current time
+     * @param  string $payload   the payload sent by FedaPay.
+     * @param  string $header    the contents of the signature header sent by
+     *                           FedaPay.
+     * @param  string $secret    secret used to generate the signature.
+     * @param  int    $tolerance maximum difference allowed between the header's
+     *                           timestamp and the current time
      * @throws \FedaPay\Error\SignatureVerification if the verification fails.
      * @return bool
      */
@@ -85,7 +85,7 @@ abstract class WebhookSignature
     /**
      * Extracts the timestamp in a signature header.
      *
-     * @param string $header the signature header
+     * @param  string $header the signature header
      * @return int the timestamp contained in the header, or -1 if no valid
      *  timestamp is found
      */
@@ -109,8 +109,8 @@ abstract class WebhookSignature
     /**
      * Extracts the signatures matching a given scheme in a signature header.
      *
-     * @param string $header the signature header
-     * @param string $scheme the signature scheme to look for.
+     * @param  string $header the signature header
+     * @param  string $scheme the signature scheme to look for.
      * @return array the list of signatures matching the provided scheme.
      */
     private static function getSignatures($header, $scheme)
@@ -133,8 +133,8 @@ abstract class WebhookSignature
      *
      * The current scheme used by FedaPay ("v1") is HMAC/SHA-256.
      *
-     * @param string $payload the payload to sign.
-     * @param string $secret the secret used to generate the signature.
+     * @param  string $payload the payload to sign.
+     * @param  string $secret  the secret used to generate the signature.
      * @return string the signature as a string.
      */
     private static function computeSignature($payload, $secret)

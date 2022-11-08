@@ -9,7 +9,8 @@ trait Retrieve
 {
     /**
      * Static method to retrive a resource
-     * @param mixed $id
+     *
+     * @param  mixed $id
      * @return FedaPay\FedaPayObject
      */
     public static function retrieve($id, $params = [], $headers = [])

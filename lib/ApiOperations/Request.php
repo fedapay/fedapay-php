@@ -9,7 +9,8 @@ trait Request
 {
     /**
      * Validate request params
-     * @param array $params
+     *
+     * @param  array $params
      * @throws Error\InvalidRequest
      */
     protected static function _validateParams($params = null)
@@ -25,10 +26,11 @@ trait Request
 
     /**
      * Static method to send request
+     *
      * @param string $method
      * @param string $path
-     * @param array $params
-     * @param array $headers
+     * @param array  $params
+     * @param array  $headers
      *
      * @return array
      */

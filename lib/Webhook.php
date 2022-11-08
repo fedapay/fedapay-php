@@ -23,12 +23,12 @@ abstract class Webhook
      * \FedaPay\SignatureVerificationException if the signature verification
      * fails for any reason.
      *
-     * @param string $payload the payload sent by FedaPay.
-     * @param string $sigHeader the contents of the signature header sent by
-     *  FedaPay.
-     * @param string $secret secret used to generate the signature.
-     * @param int $tolerance maximum difference allowed between the header's
-     *  timestamp and the current time
+     * @param  string $payload   the payload sent by FedaPay.
+     * @param  string $sigHeader the contents of the signature header sent by
+     *                           FedaPay.
+     * @param  string $secret    secret used to generate the signature.
+     * @param  int    $tolerance maximum difference allowed between the header's
+     *                           timestamp and the current time
      * @return \FedaPay\Event the Event instance
      * @throws \UnexpectedValueException if the payload is not valid JSON,
      * @throws \FedaPay\Error\SignatureVerification if the verification fails.

@@ -131,30 +131,30 @@ class CurlClient implements ClientInterface
         }
 
         switch ($method) {
-            case 'post':
-                $opts[CURLOPT_POST] = 1;
-                $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
-                break;
-            case 'put':
-                $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
-                $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
-                break;
-            case 'get':
-                $opts[CURLOPT_HTTPGET] = 1;
-                if (count($params) > 0) {
-                    $encoded = Util\Util::encodeParameters($params);
-                    $absUrl = "$absUrl?$encoded";
-                }
-                break;
-            case 'delete':
-                $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
-                if (count($params) > 0) {
-                    $encoded = Util\Util::encodeParameters($params);
-                    $absUrl = "$absUrl?$encoded";
-                }
-                break;
-            default:
-                throw new Error\InvalidRequest("Unrecognized method $method");
+        case 'post':
+            $opts[CURLOPT_POST] = 1;
+            $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
+            break;
+        case 'put':
+            $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
+            $opts[CURLOPT_POSTFIELDS] = Util\Util::encodeParameters($params);
+            break;
+        case 'get':
+            $opts[CURLOPT_HTTPGET] = 1;
+            if (count($params) > 0) {
+                $encoded = Util\Util::encodeParameters($params);
+                $absUrl = "$absUrl?$encoded";
+            }
+            break;
+        case 'delete':
+            $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+            if (count($params) > 0) {
+                $encoded = Util\Util::encodeParameters($params);
+                $absUrl = "$absUrl?$encoded";
+            }
+            break;
+        default:
+            throw new Error\InvalidRequest("Unrecognized method $method");
         }
 
         // It is only safe to retry network failures on POST requests if we
@@ -250,31 +250,31 @@ class CurlClient implements ClientInterface
     }
 
     /**
-     * @param string $url
-     * @param int $errno
-     * @param string $message
-     * @param int $numRetries
+     * @param  string $url
+     * @param  int    $errno
+     * @param  string $message
+     * @param  int    $numRetries
      * @throws Error\ApiConnection
      */
     private function handleCurlError($url, $errno, $message, $numRetries)
     {
         switch ($errno) {
-            case CURLE_COULDNT_CONNECT:
-            case CURLE_COULDNT_RESOLVE_HOST:
-            case CURLE_OPERATION_TIMEOUTED:
-                $msg = "Could not connect to FedaPay ($url).  Please check your "
-                 . "internet connection and try again.  If this problem persists";
-                break;
-            case CURLE_SSL_CACERT:
-            case CURLE_SSL_PEER_CERTIFICATE:
-                $msg = "Could not verify FedaPay's SSL certificate.  Please make sure "
-                 . "that your network is not intercepting certificates.  "
-                 . "(Try going to $url in your browser.)  "
-                 . "If this problem persists,";
-                break;
-            default:
-                $msg = "Unexpected error communicating with FedaPay.  "
-                 . "If this problem persists,";
+        case CURLE_COULDNT_CONNECT:
+        case CURLE_COULDNT_RESOLVE_HOST:
+        case CURLE_OPERATION_TIMEOUTED:
+            $msg = "Could not connect to FedaPay ($url).  Please check your "
+             . "internet connection and try again.  If this problem persists";
+            break;
+        case CURLE_SSL_CACERT:
+        case CURLE_SSL_PEER_CERTIFICATE:
+            $msg = "Could not verify FedaPay's SSL certificate.  Please make sure "
+             . "that your network is not intercepting certificates.  "
+             . "(Try going to $url in your browser.)  "
+             . "If this problem persists,";
+            break;
+        default:
+            $msg = "Unexpected error communicating with FedaPay.  "
+             . "If this problem persists,";
         }
         $msg .= " let us know at support@fedapay.com.";
 
@@ -291,9 +291,10 @@ class CurlClient implements ClientInterface
      * Checks if an error is a problem that we should retry on. This includes both
      * socket errors that may represent an intermittent problem and some special
      * HTTP statuses.
-     * @param int $errno
-     * @param int $rcode
-     * @param int $numRetries
+     *
+     * @param  int $errno
+     * @param  int $rcode
+     * @param  int $numRetries
      * @return bool
      */
     private function shouldRetry($errno, $rcode, $numRetries)

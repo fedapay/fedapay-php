@@ -70,6 +70,7 @@ class Payout extends Resource
 
     /**
      * Start the payout
+     *
      * @return FedaPay\FedaPayObject
      */
     public function schedule($scheduled_at, $params = [], $headers = [])
@@ -89,6 +90,7 @@ class Payout extends Resource
 
     /**
      * Send the payout now
+     *
      * @return FedaPay\FedaPayObject
      */
     public function sendNow($params = [], $headers = [])
@@ -107,9 +109,9 @@ class Payout extends Resource
     /**
      * Start a scheduled payout
      *
-     * @param array $payouts list of payouts id to start. One at least
-     * @param null|DateTime $scheduled_at If null, payouts should be send now.
-     * @param array $headers
+     * @param  array         $payouts      list of payouts id to start. One at least
+     * @param  null|DateTime $scheduled_at If null, payouts should be send now.
+     * @param  array         $headers
      * @return FedaPay\FedaPayObject
      */
     public static function scheduleAll($payouts = [], $params = [], $headers = [])
@@ -143,9 +145,9 @@ class Payout extends Resource
     /**
      * Send all payouts now
      *
-     * @param array $payouts list of payouts id to start. One at least
-     * @param array $params If null, payouts should be send now.
-     * @param array $headers
+     * @param  array $payouts list of payouts id to start. One at least
+     * @param  array $params  If null, payouts should be send now.
+     * @param  array $headers
      * @return FedaPay\FedaPayObject
      */
     public static function sendAllNow($payouts = [], $params = [], $headers = [])

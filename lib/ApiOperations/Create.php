@@ -9,6 +9,7 @@ trait Create
 {
     /**
      * Static method to create a resources
+     *
      * @param array $params
      * @param array $headers
      *
