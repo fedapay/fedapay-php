@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Faker\Factory;
-
 class AccountTest extends BaseTestCase
 {
     /**

@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Faker\Factory;
-
 class CustomerTest extends BaseTestCase
 {
     /**
@@ -69,12 +67,11 @@ class CustomerTest extends BaseTestCase
      */
     public function testShouldCreateACustomer()
     {
-        $faker = Factory::create();
         $data = [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastName,
-            'email' => $faker->unique()->email,
-            'phone' => $faker->phoneNumber
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '+22966000001'
         ];
 
         $body = [
@@ -107,12 +104,11 @@ class CustomerTest extends BaseTestCase
      */
     public function testShouldRetrievedACustomer()
     {
-        $faker = Factory::create();
         $data = [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastName,
-            'email' => $faker->unique()->email,
-            'phone' => $faker->phoneNumber
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john.doe@exemple.com',
+            'phone' => '+2296600000001'
         ];
 
         $body = [
@@ -145,12 +141,11 @@ class CustomerTest extends BaseTestCase
      */
     public function testShouldUpdateACustomer()
     {
-        $faker = Factory::create();
         $data = [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastName,
-            'email' => $faker->unique()->email,
-            'phone' => $faker->phoneNumber
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john.doe@exemple.com',
+            'phone' => '+2296600000001'
         ];
 
         $body = [
@@ -183,12 +178,11 @@ class CustomerTest extends BaseTestCase
      */
     public function testShouldUpdateACustomerWithSave()
     {
-        $faker = Factory::create();
         $data = [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastName,
-            'email' => $faker->unique()->email,
-            'phone' => $faker->phoneNumber
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john.doe@exemple.com',
+            'phone' => '+2296600000001'
         ];
         $body = [
             'v1/customer' => [
@@ -224,12 +218,11 @@ class CustomerTest extends BaseTestCase
      */
     public function testShouldDeleteACustomer()
     {
-        $faker = Factory::create();
         $data = [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastName,
-            'email' => $faker->unique()->email,
-            'phone' => $faker->phoneNumber
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john.doe@exemple.com',
+            'phone' => '+2296600000001'
         ];
 
         $body = [

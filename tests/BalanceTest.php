@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Faker\Factory;
-
 class BalanceTest extends BaseTestCase
 {
     /**

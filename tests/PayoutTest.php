@@ -242,7 +242,8 @@ class PayoutTest extends BaseTestCase
             'scheduled_at' => '2018-11-01 18:30:22'
         ]];
 
-        $this->setExpectedException('\InvalidArgumentException', 'Invalid id argument. You must specify payout id.');
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid id argument. You must specify payout id.');
 
         \FedaPay\Payout::scheduleAll($data);
     }

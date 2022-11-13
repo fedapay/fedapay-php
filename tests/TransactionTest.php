@@ -55,12 +55,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldCreateATransaction()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -165,12 +164,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldUpdateATransaction()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -224,12 +222,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldUpdateATransactionWithSave()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -295,12 +292,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldDeleteATransaction()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -343,12 +339,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldGenerateTransactionToken()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -403,12 +398,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldFailToSendMobileMoneyRequestWithInvalidMode()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -441,6 +435,11 @@ class TransactionTest extends BaseTestCase
 
         $this->mockRequest('post', '/v1/transactions', $data, $body);
 
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Invalid payment method 'fake' supplied. You have to use one of the ".
+            "following payment methods [mtn,moov,mtn_ci,moov_tg,mtn_open,airtel_ne,free_sn,togocel,mtn_ecw]"
+        );
         $transaction = \FedaPay\Transaction::create($data);
 
         $transaction->sendNowWithToken('fake', 'PAYEMENT_TOKEN');
@@ -451,12 +450,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldSendMtnRequestWithToken()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -504,12 +502,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldSendMtnRequest()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];
@@ -565,12 +562,11 @@ class TransactionTest extends BaseTestCase
      */
     public function testShouldSendFeesRequest()
     {
-        $faker = Factory::create();
         $data = [
             'customer' => ['id' => 1],
             'currency' => ['iso' => 'XOF'],
             'description' => 'Description',
-            'callback_url' => $faker->url,
+            'callback_url' => 'http://localhost/callback',
             'amount' => 1000,
             'include' => 'customer,currency'
         ];

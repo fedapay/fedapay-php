@@ -13,7 +13,8 @@ abstract class BaseTestCase extends TestCase
     const OAUTH_TOKEN = 'oauth_test_token_123';
     const API_BASE = 'https://dev-api.fedapay.com';
 
-    protected function setUp()
+    /** @before */
+    protected function setUpConfig()
     {
         \FedaPay\FedaPay::setApiKey(self::API_KEY);
         \FedaPay\FedaPay::setApiBase(self::API_BASE);
@@ -27,7 +28,8 @@ abstract class BaseTestCase extends TestCase
         ];
     }
 
-    protected function tearDown()
+    /** @after */
+    protected function tearDownConfig()
     {
         // Back to default
         \FedaPay\FedaPay::setApiKey(null);

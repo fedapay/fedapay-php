@@ -96,11 +96,10 @@ class PageTest extends BaseTestCase
      */
     public function testShouldCreateAPage()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
@@ -130,11 +129,10 @@ class PageTest extends BaseTestCase
      */
     public function testShouldRetrievedAPage()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
@@ -166,11 +164,10 @@ class PageTest extends BaseTestCase
       */
     public function testShouldUpdateAPage()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
@@ -202,11 +199,10 @@ class PageTest extends BaseTestCase
      */
     public function testShouldUpdateAPageWithSave()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
@@ -244,11 +240,10 @@ class PageTest extends BaseTestCase
      */
     public function testShouldDeleteAPage()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
@@ -274,11 +269,10 @@ class PageTest extends BaseTestCase
 
     public function testShouldVerifyPage()
     {
-        $faker = Factory::create();
         $data = [
-            'name' => $faker->name(),
-            'reference' => $faker->word,
-            'description' => $faker->text(100),
+            'name' => 'Page name',
+            'reference' => 'page-reference',
+            'description' => 'Page description',
             'currency_id' => 1
         ];
 
