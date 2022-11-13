@@ -103,11 +103,10 @@ class InvoiceTest extends BaseTestCase
      */
     public function testShouldCreateAnInvoice()
     {
-        $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'number' => 4,
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];
@@ -139,11 +138,10 @@ class InvoiceTest extends BaseTestCase
      */
     public function testShouldRetrievedAnInvoice()
     {
-        $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'number' => 4,
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];
@@ -177,11 +175,10 @@ class InvoiceTest extends BaseTestCase
       */
     public function testShouldUpdateAnInvoice()
     {
-        $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'number' => 4,
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];
@@ -215,11 +212,10 @@ class InvoiceTest extends BaseTestCase
      */
     public function testShouldUpdateAnInvoiceWithSave()
     {
-        $faker = Factory::create();
         $data = [
             'number' => 1,
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];
@@ -260,11 +256,10 @@ class InvoiceTest extends BaseTestCase
      */
     public function testShouldDeleteAInvoice()
     {
-        $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'number' => 4,
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];
@@ -292,11 +287,10 @@ class InvoiceTest extends BaseTestCase
 
     public function testShouldVerifyInvoice()
     {
-        $faker = Factory::create();
         $data = [
-            'number' => $faker->numberBetween(0, 5),
-            'reference' => $faker->word,
-            'notes' => $faker->text(100),
+            'number' => 4,
+            'reference' => 'reference-invoice',
+            'notes' => 'Invoice content',
             'currency_id' => 1,
             'account_id' => 1
         ];

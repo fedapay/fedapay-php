@@ -1,4 +1,4 @@
-# FedaPay PHP [![Build Status](https://travis-ci.org/fedapay/fedapay-php.svg?branch=master)](https://travis-ci.org/fedapay/fedapay-php)
+# FedaPay PHP [![Build Status](https://travis-ci.com/fedapay/fedapay-php.svg?branch=master)](https://travis-ci.org/fedapay/fedapay-php)
 
 You can sign up for a FedaPay account at https://fedapay.com.
 

@@ -35,7 +35,7 @@ class RequestorTest extends BaseTestCase
         );
         $requestor = new \FedaPay\Requestor;
 
-        $this->setExpectedException('\FedaPay\Error\ApiConnection');
+        $this->expectException('\FedaPay\Error\ApiConnection');
         $requestor->request('get', '/path', ['foo' => '2'], ['X-Custom' => 'foo']);
     }
 
@@ -63,7 +63,7 @@ class RequestorTest extends BaseTestCase
         );
         $requestor = new \FedaPay\Requestor;
 
-        $this->setExpectedException('\FedaPay\Error\ApiConnection');
+        $this->expectException('\FedaPay\Error\ApiConnection');
         $requestor->request('get', '/path', ['foo' => '2'], [
             'X-Custom' => 'foo'
         ]);
@@ -80,7 +80,7 @@ class RequestorTest extends BaseTestCase
         );
         $requestor = new \FedaPay\Requestor;
 
-        $this->setExpectedException('\FedaPay\Error\ApiConnection', 'unable to parse');
+        $this->expectException('\FedaPay\Error\ApiConnection', 'unable to parse');
         $requestor->request('get', '/path');
     }
 
@@ -95,7 +95,7 @@ class RequestorTest extends BaseTestCase
         );
         $requestor = new \FedaPay\Requestor;
 
-        $this->setExpectedException('\FedaPay\Error\ApiConnection', 'Error Message');
+        $this->expectException('\FedaPay\Error\ApiConnection', 'Error Message');
         $requestor->request('get', '/path');
     }
 }

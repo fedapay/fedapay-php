@@ -61,7 +61,7 @@ class CurlClientTest extends BaseTestCase
 
     private function createFakeRandomGenerator($returnValue = 1.0)
     {
-        $fakeRandomGenerator = $this->getMock('FedaPay\Util\RandomGenetator', ['randFloat']);
+        $fakeRandomGenerator = $this->createMock('\FedaPay\Util\RandomGenerator');
         $fakeRandomGenerator->method('randFloat')->willReturn($returnValue);
         return $fakeRandomGenerator;
     }
@@ -106,7 +106,8 @@ class CurlClientTest extends BaseTestCase
         $withBadClosure = new CurlClient(function () {
             return 'thisShouldNotWork';
         });
-        $this->setExpectedException('FedaPay\Error\ApiConnection', "Non-array value returned by defaultOptions CurlClient callback");
+        $this->expectException('FedaPay\Error\ApiConnection');
+        $this->expectExceptionMessage('Non-array value returned by defaultOptions CurlClient callback');
         $withBadClosure->request('get', 'https://httpbin.org/status/200', [], [], false);
     }
 

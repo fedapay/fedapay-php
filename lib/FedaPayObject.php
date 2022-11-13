@@ -68,21 +68,25 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
     }
 
     // ArrayAccess methods
+    #[\ReturnTypeWillChange]
     public function offsetSet($k, $v)
     {
         $this->$k = $v;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($k)
     {
         return array_key_exists($k, $this->_values);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($k)
     {
         unset($this->$k);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($k)
     {
         return array_key_exists($k, $this->_values) ? $this->_values[$k] : null;
@@ -93,6 +97,7 @@ class FedaPayObject implements \ArrayAccess, \JsonSerializable
         return array_keys($this->_values);
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->_values;

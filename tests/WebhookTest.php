@@ -35,31 +35,26 @@ class WebhookTest extends BaseTestCase
         $this->assertEquals("evt_test_webhook", $event->id);
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testInvalidJson()
     {
+        $this->expectException('\UnexpectedValueException');
         $payload = "this is not valid JSON";
         $sigHeader = $this->generateHeader(["payload" => $payload]);
         Webhook::constructEvent($payload, $sigHeader, self::SECRET);
     }
 
-    /**
-     * @expectedException \FedaPay\Error\SignatureVerification
-     */
     public function testValidJsonAndInvalidHeader()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
         $sigHeader = "bad_header";
         Webhook::constructEvent(self::EVENT_PAYLOAD, $sigHeader, self::SECRET);
     }
 
-    /**
-     * @expectedException \FedaPay\Error\SignatureVerification
-     * @expectedExceptionMessage Unable to extract timestamp and signatures from header
-     */
     public function testMalformedHeader()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
+        $this->expectExceptionMessage('Unable to extract timestamp and signatures from header');
+
         $sigHeader = "i'm not even a real signature header";
         WebhookSignature::verifyHeader(self::EVENT_PAYLOAD, $sigHeader, self::SECRET);
     }
@@ -70,36 +65,32 @@ class WebhookTest extends BaseTestCase
      */
     public function testNoSignaturesWithExpectedScheme()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
+        $this->expectExceptionMessage('No signatures found with expected scheme');
         $sigHeader = $this->generateHeader(["scheme" => "v0"]);
         WebhookSignature::verifyHeader(self::EVENT_PAYLOAD, $sigHeader, self::SECRET);
     }
 
-    /**
-     * @expectedException \FedaPay\Error\SignatureVerification
-     * @expectedExceptionMessage No signatures found matching the expected signature for payload
-     */
     public function testNoValidSignatureForPayload()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
+        $this->expectExceptionMessage('No signatures found matching the expected signature for payload');
         $sigHeader = $this->generateHeader(["signature" => "bad_signature"]);
         WebhookSignature::verifyHeader(self::EVENT_PAYLOAD, $sigHeader, self::SECRET);
     }
 
-    /**
-     * @expectedException \FedaPay\Error\SignatureVerification
-     * @expectedExceptionMessage Timestamp outside the tolerance zone
-     */
     public function testTimestampTooOld()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
+        $this->expectExceptionMessage('Timestamp outside the tolerance zone');
         $sigHeader = $this->generateHeader(["timestamp" => time() - 15]);
         WebhookSignature::verifyHeader(self::EVENT_PAYLOAD, $sigHeader, self::SECRET, 10);
     }
 
-    /**
-     * @expectedException \FedaPay\Error\SignatureVerification
-     * @expectedExceptionMessage Timestamp outside the tolerance zone
-     */
     public function testTimestampTooRecent()
     {
+        $this->expectException('\FedaPay\Error\SignatureVerification');
+        $this->expectExceptionMessage('Timestamp outside the tolerance zone');
         $sigHeader = $this->generateHeader(["timestamp" => time() + 15]);
         WebhookSignature::verifyHeader(self::EVENT_PAYLOAD, $sigHeader, self::SECRET, 10);
     }

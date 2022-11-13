@@ -32,8 +32,8 @@ class ResourceTest extends BaseTestCase
      */
     public function testShouldThrowInvalidRequest()
     {
-        $this->setExpectedException(
-            \FedaPay\Error\InvalidRequest::class,
+        $this->expectException(\FedaPay\Error\InvalidRequest::class);
+        $this->expectExceptionMessage(
             'Could not determine which URL to request: Tests\Fixtures\Foo instance has invalid ID: '
         );
         Fixtures\Foo::resourcePath(null);
