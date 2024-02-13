@@ -14,7 +14,7 @@ trait Search
      *
      * @return array FedaPay\FedaPayObject
      */
-    public static function search($q, $params = [], $headers = [])
+    public static function search($q = '*', $params = [], $headers = [])
     {
         $params['search'] = $q;
         self::_validateParams($params);

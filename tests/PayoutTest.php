@@ -149,6 +149,71 @@ class PayoutTest extends BaseTestCase
     }
 
     /**
+     * Should return array of FedaPay\Payout
+     */
+    public function testShouldCreatePayoutInBatch()
+    {
+        $data = [
+            'customer' => ['id' => 1],
+            'currency' => ['iso' => 'XOF'],
+            'amount' => 1000,
+            'mode' => 'mtn',
+            'scheduled_at' => '2018-03-12T09:09:03.969Z',
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/payout_batch' => [
+                'klass' => 'v1/payout_batch',
+                'payouts' => [
+                    [
+                        'amount' => 1000,
+                        'currency_id' => 1,
+                        'created_at' => '2018-10-23T15:21:50.434Z',
+                        'customer_id' => 1,
+                        'deleted_at' => null,
+                        'failed_at' => null,
+                        'id' => 13,
+                        'klass' => 'v1/payout',
+                        'last_error_code' => null,
+                        'last_error_message' => null,
+                        'mode' => 'mtn',
+                        'reference' => '1540308110435',
+                        'scheduled_at' => '2018-11-12T09:09:03.969Z',
+                        'sent_at' => null,
+                        'status' => 'pending',
+                        'updated_at' => '2018-10-23T15:21:50.434Z',
+                        'customer' => [
+                            'klass' => 'v1/customer',
+                            'id' => 1,
+                            'firstname' => 'SOHOU',
+                            'lastname' => 'Zidial',
+                            'email' => 'zinsou@test.com',
+                            'account_id' => 1,
+                            'created_at' => '2018-10-17T16:03:24.061Z',
+                            'updated_at' => '2018-10-17T16:03:24.061Z'
+                        ]
+                    ]
+                ],
+                'errors' => []
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/payouts/batch', $data, $body);
+
+        $object = \FedaPay\Payout::createInBatch($data);
+
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $object);
+        $this->assertEquals(13, $object->payouts[0]->id);
+        $this->assertEquals('1540308110435', $object->payouts[0]->reference);
+        $this->assertEquals(1000, $object->payouts[0]->amount);
+        $this->assertEquals('pending', $object->payouts[0]->status);
+        $this->assertInstanceOf(\FedaPay\Customer::class, $object->payouts[0]->customer);
+        $this->assertEquals(1, $object->payouts[0]->customer->id);
+        $this->assertEquals('mtn', $object->payouts[0]->mode);
+    }
+
+    /**
      * Should retrieve a Payout
      */
     public function testShouldRetrievedAPayout()

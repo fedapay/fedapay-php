@@ -31,6 +31,7 @@ class Payout extends Resource
     use ApiOperations\Search;
     use ApiOperations\Retrieve;
     use ApiOperations\Create;
+    use ApiOperations\CreateInBatch;
     use ApiOperations\Update;
     use ApiOperations\Save;
     use ApiOperations\Delete;
