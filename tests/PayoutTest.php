@@ -154,11 +154,13 @@ class PayoutTest extends BaseTestCase
     public function testShouldCreatePayoutInBatch()
     {
         $data = [
-            'customer' => ['id' => 1],
-            'currency' => ['iso' => 'XOF'],
-            'amount' => 1000,
-            'mode' => 'mtn',
-            'scheduled_at' => '2018-03-12T09:09:03.969Z',
+            'payouts' => [
+                'customer' => ['id' => 1],
+                'currency' => ['iso' => 'XOF'],
+                'amount' => 1000,
+                'mode' => 'mtn',
+                'scheduled_at' => '2018-03-12T09:09:03.969Z'
+            ],
             'include' => 'customer,currency'
         ];
 

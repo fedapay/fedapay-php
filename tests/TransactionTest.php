@@ -110,6 +110,72 @@ class TransactionTest extends BaseTestCase
     }
 
     /**
+     * Should return array of FedaPay\Transaction
+     */
+    public function testShouldCreateTransactionInBatch()
+    {
+        $data = [
+            'transactions' => [
+                'customer' => ['id' => 1],
+                'currency' => ['iso' => 'XOF'],
+                'description' => 'Description',
+                'callback_url' => 'http://localhost/callback',
+                'amount' => 1000
+            ],
+            'include' => 'customer,currency'
+        ];
+
+        $body = [
+            'v1/transaction_batch' => [
+                'klass' => 'v1/transaction_batch',
+                'transactions' => [
+                    [
+                        'id' => 1,
+                        'klass' => 'v1/transaction',
+                        'transaction_key' => '0KJAU01',
+                        'reference' => '109329828',
+                        'amount' => 100,
+                        'description' => 'Description',
+                        'callback_url' => 'http://e-shop.com',
+                        'status' => 'pending',
+                        'customer' => [
+                            'id' => 1,
+                            'klass' => 'v1/customer',
+                        ],
+                        'currency' => [
+                            'id' => 1,
+                            'klass' => 'v1/currency',
+                            'iso' => 'XOF'
+                        ],
+                        'mode' => null,
+                        'created_at' => '2018-03-12T09:09:03.969Z',
+                        'updated_at' => '2018-03-12T09:09:03.969Z',
+                        'paid_at' => '2018-03-12T09:09:03.969Z'
+                    ]
+                ],
+                'errors' => []
+            ]
+        ];
+
+        $this->mockRequest('post', '/v1/transactions/batch', $data, $body);
+
+        $object = \FedaPay\Transaction::createInBatch($data);
+
+        $this->assertEquals(1, $object->transactions[0]->id);
+        $this->assertEquals('0KJAU01', $object->transactions[0]->transaction_key);
+        $this->assertEquals('109329828', $object->transactions[0]->reference);
+        $this->assertEquals(100, $object->transactions[0]->amount);
+        $this->assertEquals('Description', $object->transactions[0]->description);
+        $this->assertEquals('http://e-shop.com', $object->transactions[0]->callback_url);
+        $this->assertEquals('pending', $object->transactions[0]->status);
+        $this->assertInstanceOf(\FedaPay\Customer::class, $object->transactions[0]->customer);
+        $this->assertEquals(1, $object->transactions[0]->customer->id);
+        $this->assertInstanceOf(\FedaPay\Currency::class, $object->transactions[0]->currency);
+        $this->assertEquals(1, $object->transactions[0]->currency->id);
+        $this->assertEquals(null, $object->transactions[0]->mode);
+    }
+
+    /**
      * Should retrieve a Transaction
      */
     public function testShouldRetrievedATransaction()

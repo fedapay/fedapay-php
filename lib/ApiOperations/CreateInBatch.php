@@ -17,11 +17,13 @@ trait CreateInBatch
     public static function createInBatch($params = [], $headers = [])
     {
         $path = static::resourcePath('batch');
+        $className = static::className();
 
         list($response, $opts) = static::_staticRequest('post', $path, $params, $headers);
 
         $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
 
-        return $object->payout_batch;
+        $data = "{$className}_batch";
+        return $object->$data;
     }
 }
