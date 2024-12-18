@@ -71,18 +71,24 @@ class Payout extends Resource
 
     /**
      * Start the payout
+     * @param string $scheduled_at
+     * @param array|string|null $params
+     *
      * @return FedaPay\FedaPayObject
      */
     public function schedule($scheduled_at, $params = [], $headers = [])
     {
         $scheduled_at = Util::toDateString($scheduled_at);
 
-        $_params = [
-            'payouts' => [[
-                'id' => $this->id,
-                'scheduled_at' => $scheduled_at
-            ]]
-        ];
+        $payout_params = [ 'id' => $this->id, 'scheduled_at' => $scheduled_at ];
+
+        if (isset($params['phone_number'])) {
+            $payout_params['phone_number'] = $params['phone_number'];
+            unset($params['phone_number']); // Remove phone_number from params
+        }
+
+        $_params = [ 'payouts' => [ $payout_params ] ];
+
         $params = array_merge($_params, $params);
 
         return $this->_start($params, $headers);
@@ -90,15 +96,21 @@ class Payout extends Resource
 
     /**
      * Send the payout now
+     * @param array|string|null $params
+     * @param array|string|null $headers
+     *
      * @return FedaPay\FedaPayObject
      */
     public function sendNow($params = [], $headers = [])
     {
-        $_params = [
-            'payouts' => [[
-                'id' => $this->id
-            ]]
-        ];
+        $payout_params = [ 'id' => $this->id ];
+
+        if (isset($params['phone_number'])) {
+            $payout_params['phone_number'] = $params['phone_number'];
+            unset($params['phone_number']); // Remove phone_number from params
+        }
+
+        $_params = [ 'payouts' => [$payout_params] ];
 
         $params = array_merge($_params, $params);
 
@@ -117,7 +129,7 @@ class Payout extends Resource
     {
         $items = [];
 
-        foreach ($payouts as $payout) {
+        foreach ($payouts as $key => $payout) {
             $item = [];
             if (!array_key_exists('id', $payout)) {
                 throw new \InvalidArgumentException(
@@ -128,6 +140,11 @@ class Payout extends Resource
 
             if (array_key_exists('scheduled_at', $payout)) {
                 $item['scheduled_at'] = Util::toDateString($payout['scheduled_at']);
+            }
+
+            if (isset($params[$key]['phone_number'])) {
+                $item['phone_number'] = $params[$key]['phone_number'];
+                unset($params[$key]['phone_number']); // Remove phone_number from params
             }
 
             $items[] = $item;
@@ -153,7 +170,7 @@ class Payout extends Resource
     {
         $items = [];
 
-        foreach ($payouts as $payout) {
+        foreach ($payouts as $key => $payout) {
             $item = [];
             if (!array_key_exists('id', $payout)) {
                 throw new \InvalidArgumentException(
@@ -161,6 +178,11 @@ class Payout extends Resource
                 );
             }
             $item['id'] = $payout['id'];
+
+            if (isset($params[$key]['phone_number'])) {
+                $item['phone_number'] = $params[$key]['phone_number'];
+                unset($params[$key]['phone_number']); // Remove phone_number from params
+            }
 
             $items[] = $item;
         }

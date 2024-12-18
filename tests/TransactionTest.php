@@ -504,7 +504,7 @@ class TransactionTest extends BaseTestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             "Invalid payment method 'fake' supplied. You have to use one of the ".
-            "following payment methods [mtn,moov,mtn_ci,moov_tg,mtn_open,airtel_ne,free_sn,togocel,mtn_ecw]"
+            "following payment methods [mtn,moov,mtn_ci,moov_tg,mtn_open,airtel_ne,free_sn,togocel,mtn_ecw,mtn_open_ci,wave_direct_ci]"
         );
         $transaction = \FedaPay\Transaction::create($data);
 

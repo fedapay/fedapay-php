@@ -301,6 +301,62 @@ class PayoutTest extends BaseTestCase
     }
 
     /**
+     * Should start a Payout with phone number
+     */
+    public function testShouldScheduleAPayoutWithPhoneNumber()
+    {
+        $payout = $this->createPayout();
+
+        $body = [
+            'v1/payouts' => [
+                [
+                    'klass' => 'v1/payout',
+                    'id' => 1,
+                    'reference' => '1540316134325',
+                    'amount' => 1000,
+                    'status' => 'started',
+                    'customer_id' => 1,
+                    'currency_id' => 1,
+                    'mode' => 'mtn',
+                    'last_error_code' => null,
+                    'last_error_message' => null,
+                    'created_at' => '2018-10-23T17:35:34.325Z',
+                    'updated_at' => '2018-10-23T17:36:40.086Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
+                    'sent_at' => null,
+                    'started_at' => '2018-11-01 18:30:22',
+                    'failed_at' => null,
+                    'deleted_at' => null
+                ]
+            ]
+        ];
+
+        $data = [
+            'payouts' => [[
+                'id' => 1,
+                'scheduled_at' => '2018-11-01 18:30:22',
+                'phone_number' => [
+                    'number' => '66000001',
+                    'country' => 'BJ'
+                ]
+            ]]
+        ];
+
+        $this->mockRequest('put', '/v1/payouts/start', $data, $body);
+
+        $payout->schedule('2018-11-01 18:30:22', [
+            'phone_number' => [
+                'number' => '66000001',
+                'country' => 'BJ'
+            ]
+        ]);
+
+        $this->assertEquals('2018-11-01 18:30:22', $payout->scheduled_at);
+        $this->assertEquals('2018-11-01 18:30:22', $payout->started_at);
+        $this->assertEquals('started', $payout->status);
+    }
+
+    /**
      * Should fail schedule all payouts
      */
     public function testShouldFailScheduleAllPayouts()
@@ -407,6 +463,59 @@ class PayoutTest extends BaseTestCase
         $this->assertEquals('sent', $payout->status);
     }
 
+    /**
+     * Should send a Payout now with phone number
+     */
+    public function testShouldSendAPayoutNowWithPhoneNumber()
+    {
+        $payout = $this->createPayout();
+
+        $body = [
+            'v1/payouts' => [
+                [
+                    'klass' => 'v1/payout',
+                    'id' => 1,
+                    'reference' => '1540316134325',
+                    'amount' => 1000,
+                    'status' => 'sent',
+                    'customer_id' => 1,
+                    'currency_id' => 1,
+                    'mode' => 'mtn',
+                    'last_error_code' => null,
+                    'last_error_message' => null,
+                    'created_at' => '2018-10-23T17:35:34.325Z',
+                    'updated_at' => '2018-10-23T17:36:40.086Z',
+                    'scheduled_at' => '2018-11-01 18:30:22',
+                    'sent_at' => '2018-11-01 18:30:22',
+                    'started_at' => '2018-11-01 18:30:22',
+                    'failed_at' => null,
+                    'deleted_at' => null
+                ]
+            ]
+        ];
+
+        $data = [
+            'payouts' => [[
+                'id' => 1,
+                'phone_number' => [
+                    'number' => '66000001',
+                    'country' => 'BJ'
+                ]
+            ]]
+        ];
+
+        $this->mockRequest('put', '/v1/payouts/start', $data, $body);
+
+        $payout->sendNow([
+            'phone_number' => [
+                'number' => '66000001',
+                'country' => 'BJ'
+            ]
+        ]);
+
+        $this->assertEquals('2018-11-01 18:30:22', $payout->sent_at);
+        $this->assertEquals('sent', $payout->status);
+    }
 
     /**
      * Should send all payouts now
