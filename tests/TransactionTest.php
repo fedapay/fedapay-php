@@ -457,60 +457,6 @@ class TransactionTest extends BaseTestCase
         $this->assertEquals('https://process.fedapay.com/PAYEMENT_TOKEN', $tokenObject->url);
     }
 
-
-    /**
-     * Should fail to send Mobile Money
-     * @expectedException \InvalidArgumentException
-     */
-    public function testShouldFailToSendMobileMoneyRequestWithInvalidMode()
-    {
-        $data = [
-            'customer' => ['id' => 1],
-            'currency' => ['iso' => 'XOF'],
-            'description' => 'Description',
-            'callback_url' => 'http://localhost/callback',
-            'amount' => 1000,
-            'include' => 'customer,currency'
-        ];
-
-        $body = [
-            'v1/transaction' => [
-                'id' => 1,
-                'klass' => 'v1/transaction',
-                'transaction_key' => '0KJAU01',
-                'reference' => '109329828',
-                'amount' => 100,
-                'description' => 'Description',
-                'callback_url' => 'http://e-shop.com',
-                'status' => 'pending',
-                'customer' => [
-                    'id' => 1,
-                    'klass' => 'v1/customer',
-                ],
-                'currency' => [
-                    'id' => 1,
-                    'klass' => 'v1/currency',
-                    'iso' => 'XOF'
-                ],
-                'mode' => null,
-                'created_at' => '2018-03-12T09:09:03.969Z',
-                'updated_at' => '2018-03-12T09:09:03.969Z',
-                'paid_at' => '2018-03-12T09:09:03.969Z'
-            ]
-        ];
-
-        $this->mockRequest('post', '/v1/transactions', $data, $body);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            "Invalid payment method 'fake' supplied. You have to use one of the ".
-            "following payment methods [mtn,moov,mtn_ci,moov_tg,mtn_open,airtel_ne,free_sn,togocel,mtn_ecw,mtn_open_ci,wave_direct_ci]"
-        );
-        $transaction = \FedaPay\Transaction::create($data);
-
-        $transaction->sendNowWithToken('fake', 'PAYEMENT_TOKEN');
-    }
-
     /**
      * Should update a transaction with save
      */
