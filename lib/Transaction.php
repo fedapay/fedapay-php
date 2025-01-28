@@ -31,15 +31,6 @@ class Transaction extends Resource
     use ApiOperations\Delete;
 
     /**
-     * Available Mobile Money modes for send now
-     * @var array
-     */
-    private static $AVAILABLE_MOBILE_MONEY = [
-        'mtn', 'moov', 'mtn_ci', 'moov_tg', 'mtn_open', 'airtel_ne', 'free_sn',
-        'togocel', 'mtn_ecw', 'mtn_open_ci', 'wave_direct_ci'
-    ];
-
-    /**
      * Paid status list
      * @var array
      */
@@ -47,26 +38,6 @@ class Transaction extends Resource
         'approved', 'transferred', 'refunded',
         'approved_partially_refunded', 'transferred_partially_refunded'
     ];
-
-    /**
-     * Check the transaction mode for send now request
-     *
-     * @param string $mode
-     * @return boolean
-     * @throw \InvalidArgumentException
-     */
-    protected static function mobileMoneyModeAvailable($mode)
-    {
-        if (!in_array($mode, self::$AVAILABLE_MOBILE_MONEY)) {
-            throw new \InvalidArgumentException(
-                'Invalid payment method \''.$mode.'\' supplied. '
-                .'You have to use one of the following payment methods '.
-                '['. implode(',', self::$AVAILABLE_MOBILE_MONEY) .']'
-            );
-        }
-
-        return true;
-    }
 
     /**
      * Check if the transaction was paid
@@ -121,8 +92,6 @@ class Transaction extends Resource
      */
     public function sendNowWithToken($mode, $token, $params = [], $headers = [])
     {
-        static::mobileMoneyModeAvailable($mode);
-
         $url = '/' . $mode;
         $params = array_merge(['token' => $token], $params);
 
