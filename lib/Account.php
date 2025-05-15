@@ -23,4 +23,14 @@ class Account extends Resource
     use ApiOperations\Update;
     use ApiOperations\Save;
     use ApiOperations\Delete;
+
+    public static function light($params = [], $headers = [])
+    {
+        $path = static::resourcePath('light');
+
+        list($response, $opts) = static::_staticRequest('get', $url, $params, $headers);
+        $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
+
+        return $object->$className;
+    }
 }

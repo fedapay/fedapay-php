@@ -48,6 +48,9 @@ require(dirname(__FILE__) . '/lib/Payout.php');
 require(dirname(__FILE__) . '/lib/Page.php');
 require(dirname(__FILE__) . '/lib/Invoice.php');
 
+// OAuth
+require(dirname(__FILE__) . '/lib/OAuth/Client.php');
+
 // Webhooks
 require(dirname(__FILE__) . '/lib/Webhook.php');
 require(dirname(__FILE__) . '/lib/WebhookSignature.php');

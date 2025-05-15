@@ -34,7 +34,13 @@ abstract class Resource extends FedaPayObject
      */
     public static function getRequestor()
     {
-        return self::$requestor ?: new Requestor;
+        if (self::$requestor) {
+            return self::$requestor;
+        }
+
+        self::$requestor = new Requestor;
+
+        return self::$requestor;
     }
 
     public static function className()

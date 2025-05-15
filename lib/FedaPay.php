@@ -23,6 +23,12 @@ class FedaPay
     // @var string|null The account ID for connected accounts requests.
     public static $accountId = null;
 
+    // @var string|null The Oauth client Id.
+    public static $oauthClientId = null;
+
+    // @var string|null The Oauth client Secret.
+    public static $oauthClientSecret = null;
+
     // @var string The environment for the FedaPay API.
     protected static $environment = 'sandbox';
 
@@ -123,6 +129,44 @@ class FedaPay
     public static function setAccountId($accountId)
     {
         self::$accountId = $accountId;
+    }
+
+    /**
+     * @return string The Oauth client id.
+     */
+    public static function getOauthClientId()
+    {
+        return self::$oauthClientId;
+    }
+
+    /**
+     * Sets the Oauth client id.
+     *
+     * @param string $oauthClientId
+     * @return void
+     */
+    public static function setOauthClientId($oauthClientId)
+    {
+        self::$oauthClientId = $oauthClientId;
+    }
+
+    /**
+     * @return string The Oauth client secret.
+     */
+    public static function getOauthClientSecret()
+    {
+        return self::$oauthClientSecret;
+    }
+
+    /**
+     * Sets the Oauth client id.
+     *
+     * @param string $oauthClientId
+     * @return void
+     */
+    public static function setOauthClientSecret($oauthClientSecret)
+    {
+        self::$oauthClientSecret = $oauthClientSecret;
     }
 
     /**
