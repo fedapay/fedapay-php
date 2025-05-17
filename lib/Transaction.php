@@ -82,6 +82,19 @@ class Transaction extends Resource
     }
 
     /**
+     * Generate a payment token and url from transaction id method
+     * @return FedaPay\FedaPayObject
+     */
+    public static function generateTokenFromId($id, $params = [], $headers = [])
+    {
+        $path = static::resourcePath($id) . '/token';
+
+        list($response, $opts) = static::_staticRequest('post', $path, $params, $headers);
+
+        return Util::arrayToFedaPayObject($response, $opts);
+    }
+
+    /**
      * Send Mobile Money request with token
      * @param string $mode
      * @param string $token

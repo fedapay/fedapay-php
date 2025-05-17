@@ -42,4 +42,16 @@ class Page extends Resource
 
         return $object->page_verify;
     }
+
+    public static function light($reference, $params = [], $headers = [])
+    {
+        $base = static::resourcePath($reference);
+        $url = "$base/light";
+        $className = static::className();
+
+        list($response, $opts) = static::_staticRequest('get', $url, $params, $headers);
+        $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
+
+        return $object->$className;
+    }
 }

@@ -460,6 +460,24 @@ class TransactionTest extends BaseTestCase
     /**
      * Should update a transaction with save
      */
+    public function testShouldGenerateTransactionTokenFromId()
+    {
+        $body = [
+            'token' => 'PAYEMENT_TOKEN',
+            'url' => 'https://process.fedapay.com/PAYEMENT_TOKEN',
+        ];
+
+        $this->mockRequest('post', '/v1/transactions/1/token', [], $body);
+
+        $tokenObject = \FedaPay\Transaction::generateTokenFromId(1);
+        $this->assertInstanceOf(\FedaPay\FedaPayObject::class, $tokenObject);
+        $this->assertEquals('PAYEMENT_TOKEN', $tokenObject->token);
+        $this->assertEquals('https://process.fedapay.com/PAYEMENT_TOKEN', $tokenObject->url);
+    }
+
+    /**
+     * Should update a transaction with save
+     */
     public function testShouldSendMtnRequestWithToken()
     {
         $data = [

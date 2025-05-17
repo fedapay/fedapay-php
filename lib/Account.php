@@ -27,8 +27,9 @@ class Account extends Resource
     public static function light($params = [], $headers = [])
     {
         $path = static::resourcePath('light');
+        $className = static::className();
 
-        list($response, $opts) = static::_staticRequest('get', $url, $params, $headers);
+        list($response, $opts) = static::_staticRequest('get', $path, $params, $headers);
         $object = \FedaPay\Util\Util::arrayToFedaPayObject($response, $opts);
 
         return $object->$className;

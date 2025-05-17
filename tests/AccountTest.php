@@ -190,4 +190,36 @@ class AccountTest extends BaseTestCase
 
         $account->delete();
     }
+
+    /**
+     * Should get account light info
+     */
+    public function testShouldGetAccountLightInfo()
+    {
+        $data = [
+            'name' => 'My account',
+        ];
+
+        $body = [
+            'v1/account' => [
+                'country' => 'BJ',
+                'created_at' => '2018-03-12T09:09:03.969Z',
+                'id' => 1,
+                'klass' => 'v1/account',
+                'name' => $data['name'],
+                'timezone' => 'UTC',
+                'updated_at' => '2018-03-12T09:09:03.969Z'
+            ]
+        ];
+
+        $this->mockRequest('get', '/v1/accounts/light', [], $body, 200, ['FedaPay-Pos-Code' => '0001']);
+
+        $account = \FedaPay\Account::light([], ['FedaPay-Pos-Code' => '0001']);
+
+        $this->assertInstanceOf(\FedaPay\Account::class, $account);
+        $this->assertEquals($account->name, $data['name']);
+        $this->assertEquals($account->id, 1);
+        $this->assertEquals($account->country, 'BJ');
+        $this->assertEquals($account->timezone, 'UTC');
+    }
 }
