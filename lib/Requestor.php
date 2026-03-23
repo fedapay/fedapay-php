@@ -125,9 +125,12 @@ class Requestor
         $accountId = FedaPay::getAccountId();
 
         $default = [
-            'X-Version' => FedaPay::VERSION,
-            'X-Api-Version' => $apiVersion,
-            'X-Source' => 'FedaPay PhpLib',
+            // Deprecated 'X-Version' => FedaPay::VERSION,
+            'X-FedaPay-Lib-Version' => FedaPay::VERSION,
+            // Deprecated 'X-Api-Version' => $apiVersion,
+            'X-FedaPay-Api-Version' => $apiVersion,
+            // Deprecated 'X-Source' => 'FedaPay PhpLib',
+            'X-FedaPay-Lib' => 'FedaPay PhpLib',
             'Authorization' => "Bearer $auth"
         ];
 

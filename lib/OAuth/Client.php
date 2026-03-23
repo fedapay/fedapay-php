@@ -13,7 +13,8 @@ class Client extends Resource
     public static function grantClientCredentials()
     {
         list($response, $opts) = static::_staticRequest(
-            'post', '/oauth/token',
+            'post',
+            '/oauth/token',
             [
                 'grant_type' => 'client_credentials',
                 'client_id' => FedaPay::getOauthClientId(),

@@ -10,7 +10,7 @@ use FedaPay\Util\Inflector;
  *
  * @package FedaPay
  */
-abstract class Resource extends FedaPayObject
+class Resource extends FedaPayObject
 {
     use ApiOperations\Request;
 
@@ -102,5 +102,15 @@ abstract class Resource extends FedaPayObject
     public function instanceUrl()
     {
         return static::resourcePath($this['id']);
+    }
+
+    /**
+     * Send any request
+     * @return FedaPay\FedaPayObject
+     */
+    public static function request($method, $url, $params = [], $headers = [])
+    {
+        list($response, $opts) = static::_staticRequest($method, $url, $params, $headers);
+        return Util::arrayToFedaPayObject($response, $opts);
     }
 }

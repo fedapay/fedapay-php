@@ -57,7 +57,7 @@ class RequestorTest extends BaseTestCase
             [
                 'Authorization' => 'Bearer mytoken',
                 'FedaPay-Account' => 898,
-                'X-Api-Version' => 'v3',
+                'X-FedaPay-Api-Version' => 'v3',
                 'X-Custom' => 'foo'
             ]
         );
