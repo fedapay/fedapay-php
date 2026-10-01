@@ -62,7 +62,7 @@ class Resource extends FedaPayObject
 
         $class = str_replace('_', '', $class);
         $name = urlencode($class);
-        $name = strtolower($name);
+        $name = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
 
         return $name;
     }
