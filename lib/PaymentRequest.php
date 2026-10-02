@@ -42,9 +42,7 @@ namespace FedaPay;
 class PaymentRequest extends Resource
 {
     use ApiOperations\All;
-    use ApiOperations\Search;
     use ApiOperations\Retrieve;
-    use ApiOperations\CreateInBatch;
     use ApiOperations\Create;
     use ApiOperations\Update;
     use ApiOperations\Save;
