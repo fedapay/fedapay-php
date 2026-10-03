@@ -11,7 +11,7 @@ class ResourceTest extends BaseTestCase
     public function testReturnClassName()
     {
         $this->assertEquals(Fixtures\Foo::className(), 'foo');
-        $this->assertEquals(Fixtures\FooTest::className(), 'footest');
+        $this->assertEquals(Fixtures\FooTest::className(), 'foo_test');
     }
 
     /**
@@ -21,9 +21,9 @@ class ResourceTest extends BaseTestCase
     public function testShouldReturnClassUrl()
     {
         $this->assertEquals(Fixtures\Foo::classPath(), '/foos');
-        $this->assertEquals(Fixtures\FooTest::classPath(), '/footests');
-        $this->assertEquals(Fixtures\FooPerson::classPath(), '/foopeople');
-        $this->assertEquals(Fixtures\FooCurrency::classPath(), '/foocurrencies');
+        $this->assertEquals(Fixtures\FooTest::classPath(), '/foo_tests');
+        $this->assertEquals(Fixtures\FooPerson::classPath(), '/foo_people');
+        $this->assertEquals(Fixtures\FooCurrency::classPath(), '/foo_currencies');
     }
 
     /**
